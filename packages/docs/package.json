@@ -1,0 +1,14 @@
+{
+  "name": "@es-drager/docs",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "docs:dev": "vite",
+    "docs:build": "vue-tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vitepress": "^1.0.0-rc.33"
+  }
+}
