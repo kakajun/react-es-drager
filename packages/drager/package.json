@@ -1,22 +1,22 @@
 {
-  "name": "es-drager",
+  "name": "react-es-drager",
   "version": "1.2.11",
-  "description": "A draggable, resizable, rotatable component based on vue3",
+  "description": "A draggable, resizable, rotatable component based on react",
   "keywords": [
     "drag",
     "resize",
     "rotate",
-    "vue-drager",
-    "vue-drag-resize",
-    "vue-drager",
+    "react-drager",
+    "react-drag-resize",
+    "react-drager",
     "es-drager"
   ],
-  "homepage": "https://github.com/vangleer/es-drager",
+  "homepage": "https://github.com/kakajun/react-es-drager",
   "bugs": {
-    "url": "https://github.com/vangleer/es-drager/issues"
+    "url": "https://github.com/kakajun/react-es-drager/issues"
   },
   "license": "MIT",
-  "author": "huangwantong <965002107@qq.com>",
+  "author": "kakajun <253495832@qq.com>",
   "files": [
     "lib"
   ],
@@ -32,13 +32,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/vangleer/es-drager.git"
+    "url": "https://github.com/kakajun/es-drager.git"
   },
   "scripts": {
     "build": "vite build ."
-  },
-  "peerDependencies": {
-    "vue": ">=3.2.0"
   },
   "typings": "lib/index.d.ts"
 }

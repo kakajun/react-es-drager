@@ -2,8 +2,8 @@ import { createHashRouter, createBrowserRouter, Navigate } from 'react-router-do
 import HomeLayout from './views/Home'
 import React from 'react'
 import Basic from './examples/Basic'
-import Comprehensive from './examples/Comprehensive'
-import Moveble from './examples/Moveble'
+// import Comprehensive from './examples/Comprehensive'
+// import Moveble from './examples/Moveble'
 
 export const menuRoutes = [
   {
@@ -12,21 +12,21 @@ export const menuRoutes = [
     meta: {
       title: 'basic'
     }
-  },
-  {
-    path: '/comprehensive',
-    element: <Comprehensive />,
-    meta: {
-      title: 'comprehensive'
-    }
-  },
-  {
-    path: '/moveble',
-    element: <Moveble />,
-    meta: {
-      title: 'moveble'
-    }
   }
+  // {
+  //   path: '/comprehensive',
+  //   element: <Comprehensive />,
+  //   meta: {
+  //     title: 'comprehensive'
+  //   }
+  // },
+  // {
+  //   path: '/moveble',
+  //   element: <Moveble />,
+  //   meta: {
+  //     title: 'moveble'
+  //   }
+  // }
 ]
 
 export const router = createHashRouter([
@@ -36,7 +36,7 @@ export const router = createHashRouter([
     children: [
       {
         path: '/',
-        element: <Navigate to="/comprehensive" replace />
+        element: <Navigate to="/basic" replace />
       },
       ...menuRoutes
     ]

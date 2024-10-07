@@ -14,10 +14,9 @@
     "release": "pnpm --filter ./packages/sketch-ruler release"
   },
   "devDependencies": {
-    "react-sketch-ruler": "workspace:*",
+    "@es-drager/editor": "workspace:*",
+     "react-es-drager": "workspace:*",
     "less": "^4.2.0",
-    "simple-panzoom": "^1.0.8",
-    "prop-types": "^15.8.1",
     "gh-pages": "^6.1.1",
     "esprint": "^3.6.0",
     "@types/node": "^22.7.4",

@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.common.json",
+
+  "compilerOptions": {
+    "outDir": "lib",
+    "jsx": "react-jsx",
+    "allowImportingTsExtensions": true,
+    "emitDeclarationOnly": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "allowJs": false
+  },
+  "include": ["**/*.tsx", "**/*.ts", "**/*.json"]
+}

@@ -3,7 +3,7 @@ import lightGithubIcon from '@/assets/images/light-github.svg'
 import darkGithubIcon from '@/assets/images/dark-github.svg'
 import lightThemeIcon from '@/assets/images/light-theme.svg'
 import darkThemeIcon from '@/assets/images/dark-theme.svg'
-import logo from '/logo.png'
+import logo from '/logo/logo4.png'
 import { Link } from 'react-router-dom'
 import './Header.less'
 
