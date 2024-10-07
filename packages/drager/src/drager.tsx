@@ -15,6 +15,7 @@ import {
 import Rotate from './rotate'
 import { DragData, DragerProps, EventType } from './drager.ts'
 import { useDrager } from './use-drager'
+import './drager.less'
 const Drager: React.FC<DragerProps> = (props) => {
   const {
     // tag,
