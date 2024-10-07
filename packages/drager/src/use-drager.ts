@@ -8,7 +8,7 @@ import {
   checkCollision,
   getBoundingClientRectByScale
 } from './utils'
-import { useMarkline, useKeyEvent } from './hooks'
+import { useKeyEvent } from './hooks'
 
 interface UseDragerResult {
   isMousedown: boolean
@@ -37,7 +37,7 @@ export function useDrager(
 
   const mouseSet = new Set()
 
-  const { marklineEmit } = useMarkline(targetRef, props)
+  // const { marklineEmit } = useMarkline(targetRef, props)
 
   function onMousedown(e: MouseTouchEvent) {
     mouseSet.add((e as MouseEvent).button)
@@ -57,7 +57,7 @@ export function useDrager(
       ;[minX, maxX, minY, maxY] = getBoundary()
     }
 
-    marklineEmit('drag-start')
+    // marklineEmit('drag-start')
     emit && emit('drag-start', dragData)
 
     const onMousemove = (e: MouseTouchEvent) => {
@@ -84,17 +84,17 @@ export function useDrager(
 
       emit && emit('drag', dragData)
 
-      nextTick(() => {
-        const markLine = marklineEmit('drag')!
-        if (props.snap) {
-          if (markLine.diffX) {
-            setDragData((prev) => ({ ...prev, left: prev.left + markLine.diffX }))
-          }
-          if (markLine.diffY) {
-            setDragData((prev) => ({ ...prev, top: prev.top + markLine.diffY }))
-          }
-        }
-      })
+      // nextTick(() => {
+      //   const markLine = marklineEmit('drag')!
+      //   if (props.snap) {
+      //     if (markLine.diffX) {
+      //       setDragData((prev) => ({ ...prev, left: prev.left + markLine.diffX }))
+      //     }
+      //     if (markLine.diffY) {
+      //       setDragData((prev) => ({ ...prev, top: prev.top + markLine.diffY }))
+      //     }
+      //   }
+      // })
     }
 
     setupMove(onMousemove, (e: MouseTouchEvent) => {
@@ -106,7 +106,7 @@ export function useDrager(
       }
       mouseSet.clear()
       setIsMousedown(false)
-      marklineEmit('drag-end')
+      // marklineEmit('drag-end')
       emit && emit('drag-end', dragData)
     })
   }

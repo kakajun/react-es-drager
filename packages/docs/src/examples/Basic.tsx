@@ -48,7 +48,6 @@ const BasicComponent = () => {
             top={index * 150 + 30}
             {...item}
             style={{ color: item.color }}
-            t={t}
           >
             {t(item.text)}
           </Drager>

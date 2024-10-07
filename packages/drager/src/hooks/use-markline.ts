@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { DragerProps, MarklineData } from '../drager'
+import { getBoundingClientRectByScale } from '../utils'
+
 type MarklineEvent = 'drag-start' | 'drag' | 'drag-end'
 
 const isFn = (value: any): value is Function => typeof value === 'function'
@@ -15,8 +17,8 @@ export function useMarkline(
 
   useEffect(() => {
     if (targetRef.current) {
-      parentRef.current = targetRef.current.offsetParent || document.body
-      parentRectRef.current = getBoundingClientRectByScale(parentRef.current, props.scaleRatio)
+      // parentRef.current = targetRef.current.offsetParent || document.body
+      // parentRectRef.current = getBoundingClientRectByScale(parentRef.current, props.scaleRatio)
     }
   }, [targetRef, props.scaleRatio])
 
@@ -177,7 +179,7 @@ function initLine(dir: 'x' | 'y' = 'x', parent: Element, color = '') {
     line.style.width = '100%'
   }
 
-  parent.appendChild(line)
+  parent && parent.appendChild(line)
   return line
 }
 
