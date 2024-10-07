@@ -5,5 +5,5 @@
   // See the tsconfigs in /src/server etc for the real versions.
 
   "files": [],
-  "references": [{ "path": "./packages/docs" }, { "path": "./packages/sketch-ruler" }]
+  "references": [{ "path": "./packages/docs" }, { "path": "./packages/drager" }]
 }

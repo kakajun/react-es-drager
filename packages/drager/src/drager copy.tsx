@@ -46,9 +46,6 @@ const Drager: React.FC<DragerProps> = (props) => {
     checkCollision
   } = props
   const dragRef = useRef<HTMLElement | null>(null)
-  const emitFn = (type: string, ...args: any[]) => {
-    console.log(`Emitting ${type}`, ...args) // 示例日志输出
-  }
   const {
     selected,
     setSelected,
@@ -65,11 +62,11 @@ const Drager: React.FC<DragerProps> = (props) => {
     setSelected(propsSelected)
   }, [propsSelected])
 
-  // useEffect(() => {
-  //   if (dragRef.current && setRef) {
-  //     setRef(dragRef.current)
-  //   }
-  // }, [dragRef, setRef])
+  useEffect(() => {
+    if (dragRef.current && setRef) {
+      setRef(dragRef.current)
+    }
+  }, [dragRef, setRef])
 
   const handleRotateEnd = (angle: number) => {
     setDotList(getDotList(angle, resizeList))
@@ -222,6 +219,10 @@ const Drager: React.FC<DragerProps> = (props) => {
     return d
   }
 
+  const emitFn = (type: string, ...args: any[]) => {
+    console.log(`Emitting ${type}`, ...args) // 示例日志输出
+  }
+
   const showRotate = useMemo(
     () => rotatable && !disabled && selected,
     [resizable, disabled, selected]
@@ -254,6 +255,33 @@ const Drager: React.FC<DragerProps> = (props) => {
       onClick={(e) => e.stopPropagation()}
     >
       <slot />
+      {showResize && (
+        <>
+          {dotList.map((item, index) => (
+            <div
+              key={index}
+              className="es-drager-dot"
+              data-side={item.side}
+              style={{ ...item }}
+              onMouseDown={(e) => onDotMousedown(item, e)}
+              onTouchStart={(e) => onDotMousedown(item, e)}
+            >
+              <div className="es-drager-dot-handle" />
+            </div>
+          ))}
+        </>
+      )}
+      {showRotate && (
+        <Rotate
+          vModel={dragData.angle}
+          element={dragRef.current}
+          onRotate={(angle) => emitFn('rotate', dragData)}
+          onRotateStart={() => emitFn('rotate-start', dragData)}
+          onRotateEnd={handleRotateEnd}
+        >
+          <slot name="rotate" />
+        </Rotate>
+      )}
     </div>
   )
 }

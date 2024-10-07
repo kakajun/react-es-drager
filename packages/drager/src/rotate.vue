@@ -84,17 +84,3 @@ function onRotateMousedown(e: MouseTouchEvent) {
 }
 </script>
 
-<style lang="scss">
-.es-drager-rotate {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translate(-50%, -200%);
-  &-handle {
-    width: 16px;
-    height: 16px;
-    font-size: 20px;
-    color: var(--es-drager-color);
-  }
-}
-</style>

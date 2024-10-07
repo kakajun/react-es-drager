@@ -1,12 +1,4 @@
-import {
-  Ref,
-  onMounted,
-  ref,
-  ExtractPropTypes,
-  nextTick,
-  watch,
-  onBeforeUnmount
-} from 'vue'
+import React, { useEffect, useState, useRef } from 'react'
 import { DragerProps, DragData } from './drager'
 import {
   setupMove,
@@ -17,56 +9,69 @@ import {
   getBoundingClientRectByScale
 } from './utils'
 import { useMarkline, useKeyEvent } from './hooks'
+
+interface UseDragerResult {
+  isMousedown: boolean
+  selected: boolean
+  setSelected: (selected: boolean) => void
+  setDragData: (data: DragData) => void
+  getBoundary: () => number[]
+  checkDragerCollision: () => boolean | undefined
+  dragData: DragData
+}
+
 export function useDrager(
-  targetRef: Ref<HTMLElement | null>,
-  props: ExtractPropTypes<typeof DragerProps>,
-  emit: Function
-) {
-  const isMousedown = ref(false)
-  const selected = ref(false)
-  const dragData = ref<DragData>({
+  targetRef: React.MutableRefObject<HTMLElement | null>,
+  props: DragerProps,
+  emit: (event: string, data: DragData) => void
+): UseDragerResult {
+  const [isMousedown, setIsMousedown] = useState(false)
+  const [selected, setSelected] = useState(false)
+  const [dragData, setDragData] = useState<DragData>({
     width: props.width,
     height: props.height,
     left: props.left,
     top: props.top,
     angle: props.angle
   })
-  const { marklineEmit } = useMarkline(targetRef, props)
-  // 限制多个鼠标键按下的情况
+
   const mouseSet = new Set()
+
+  const { marklineEmit } = useMarkline(targetRef, props)
+
   function onMousedown(e: MouseTouchEvent) {
     mouseSet.add((e as MouseEvent).button)
     if (props.disabled) return
-    isMousedown.value = true
-    selected.value = true
+
+    setIsMousedown(true)
+    setSelected(true)
+
     let { clientX: downX, clientY: downY } = getXY(e)
-    const { left, top } = dragData.value
+    const { left, top } = dragData
     let minX = 0,
       maxX = 0,
       minY = 0,
       maxY = 0
+
     if (props.boundary) {
       ;[minX, maxX, minY, maxY] = getBoundary()
     }
 
     marklineEmit('drag-start')
-    emit && emit('drag-start', dragData.value)
+    emit && emit('drag-start', dragData)
+
     const onMousemove = (e: MouseTouchEvent) => {
-      // 不是一个按键不执行移动
       if (mouseSet.size > 1) return
+
       const { clientX, clientY } = getXY(e)
       let moveX = (clientX - downX) / props.scaleRatio + left
       let moveY = (clientY - downY) / props.scaleRatio + top
-      
-      // 是否开启网格对齐
+
       if (props.snapToGrid) {
-        // 当前位置
-        let { left: curX, top: curY } = dragData.value
-        // 移动距离
+        const { left: curX, top: curY } = dragData
         const diffX = moveX - curX
         const diffY = moveY - curY
 
-        // 计算网格移动距离
         moveX = curX + calcGrid(diffX, props.gridX)
         moveY = curY + calcGrid(diffY, props.gridY)
       }
@@ -74,22 +79,19 @@ export function useDrager(
       if (props.boundary) {
         ;[moveX, moveY] = fixBoundary(moveX, moveY, minX, maxX, minY, maxY)
       }
-      
-      dragData.value.left = moveX
-      dragData.value.top = moveY
 
-      emit && emit('drag', dragData.value)
+      setDragData((prev) => ({ ...prev, left: moveX, top: moveY }))
+
+      emit && emit('drag', dragData)
 
       nextTick(() => {
         const markLine = marklineEmit('drag')!
-        // 是否开启吸附
         if (props.snap) {
           if (markLine.diffX) {
-            dragData.value.left += markLine.diffX
+            setDragData((prev) => ({ ...prev, left: prev.left + markLine.diffX }))
           }
-    
           if (markLine.diffY) {
-            dragData.value.top += markLine.diffY
+            setDragData((prev) => ({ ...prev, top: prev.top + markLine.diffY }))
           }
         }
       })
@@ -99,41 +101,34 @@ export function useDrager(
       if (props.checkCollision) {
         const isCollision = checkDragerCollision()
         if (isCollision) {
-          dragData.value.top = top
-          dragData.value.left = left
+          setDragData((prev) => ({ ...prev, top, left }))
         }
       }
       mouseSet.clear()
-      isMousedown.value = false
+      setIsMousedown(false)
       marklineEmit('drag-end')
-      emit && emit('drag-end', dragData.value)
+      emit && emit('drag-end', dragData)
     })
   }
+
   const getBoundary = () => {
     let minX = 0,
       minY = 0
-    const { left, top, height, width, angle } = dragData.value
-    const parentEl = targetRef.value!.offsetParent || document.body
-    const parentElRect = getBoundingClientRectByScale(parentEl!,props.scaleRatio)
-    
+    const { left, top, height, width, angle } = dragData
+    const parentEl = targetRef.current?.offsetParent || document.body
+    const parentElRect = getBoundingClientRectByScale(parentEl!, props.scaleRatio)
+
     if (angle) {
-      const rect = getBoundingClientRectByScale(targetRef.value!,props.scaleRatio)
-      minX = rect.left  - Math.floor(left - (rect.width - width) + parentElRect.left )
-      minY = rect.top - Math.floor(top - (rect.height - height) + parentElRect.top )
+      const rect = getBoundingClientRectByScale(targetRef.current!, props.scaleRatio)
+      minX = rect.left - Math.floor(left - (rect.width - width) + parentElRect.left)
+      minY = rect.top - Math.floor(top - (rect.height - height) + parentElRect.top)
     }
 
-    // 最大x
     const maxX = parentElRect.width - width
-    // 最大y
     const maxY = parentElRect.height - height
-    return [minX, maxX - minX, minY, maxY - minY, parentElRect.width , parentElRect.height ]
+    return [minX, maxX - minX, minY, maxY - minY, parentElRect.width, parentElRect.height]
   }
-  /**
-   * @param moveX 移动的X
-   * @param moveY 移动的Y
-   * @param maxX 最大移动X距离
-   * @param maxY 最大移动Y距离
-   */
+
   const fixBoundary = (
     moveX: number,
     moveY: number,
@@ -142,90 +137,87 @@ export function useDrager(
     minY: number,
     maxY: number
   ) => {
-    // 判断x最小最大边界
     moveX = moveX < minX ? minX : moveX
     moveX = moveX > maxX ? maxX : moveX
-
-    // 判断y最小最大边界
     moveY = moveY < minY ? minY : moveY
     moveY = moveY > maxY ? maxY : moveY
     return [moveX, moveY]
   }
+
   const checkDragerCollision = () => {
-    const parentEl = targetRef.value!.offsetParent || document.body
-    const broList = Array.from(parentEl.children).filter(item => {
-      return item !== targetRef.value! && item.classList.contains('es-drager')
+    const parentEl = targetRef.current?.offsetParent || document.body
+    const broList = Array.from(parentEl.children).filter((item) => {
+      return item !== targetRef.current && item.classList.contains('es-drager')
     })
     for (let i = 0; i < broList.length; i++) {
       const item = broList[i]
-      const flag = checkCollision(targetRef.value!, item, props.scaleRatio)
+      const flag = checkCollision(targetRef.current!, item, props.scaleRatio)
       if (flag) return true
     }
   }
-  const clickOutsize = () => {
-    selected.value = false
-  }
-  // 键盘事件
-  const { onKeydown, onKeyup } = useKeyEvent(
-    props,
-    dragData,
-    selected,
-    {
-      getBoundary,
-      fixBoundary,
-      checkDragerCollision,
-      emit
-    }
-  )
-  watch(selected, val => {
-    // 聚焦/失焦
-    if (val) {
-      emit('focus', val)
-      // 点击其它区域
-      document.addEventListener('click', clickOutsize, { once: true })
-    } else {
-      emit('blur', val)
-    }
 
-    if (props.disabledKeyEvent) return
-    // 每次选中注册键盘事件
-    if (val) {
-      document.addEventListener('keydown', onKeydown)
-      document.addEventListener('keyup', onKeyup)
-    } else {
-      // 不是选中移除
-      document.removeEventListener('keydown', onKeydown)
-      document.removeEventListener('keyup', onKeyup)
-    }
+  const clickOutsize = () => {
+    setSelected(false)
+  }
+
+  const { onKeydown, onKeyup } = useKeyEvent(props, dragData, selected, {
+    getBoundary,
+    fixBoundary,
+    checkDragerCollision,
+    emit
   })
 
-  onMounted(() => {
-    if (!targetRef.value) return
-    // 没传宽高使用元素默认
-    if (!dragData.value.width && !dragData.value.height) {
-      const { width, height } = getBoundingClientRectByScale(targetRef.value,props.scaleRatio)
-      // 获取默认宽高
-      dragData.value = {
-        ...dragData.value,
+  useEffect(() => {
+    if (!targetRef.current) return
+
+    if (!dragData.width && !dragData.height) {
+      const { width, height } = getBoundingClientRectByScale(targetRef.current, props.scaleRatio)
+      setDragData((prev) => ({
+        ...prev,
         width: width || 100,
         height: height || 100
+      }))
+    }
+
+    targetRef.current.addEventListener('mousedown', onMousedown)
+    targetRef.current.addEventListener('touchstart', onMousedown, { passive: true })
+
+    return () => {
+      targetRef.current?.removeEventListener('mousedown', onMousedown)
+      targetRef.current?.removeEventListener('touchstart', onMousedown)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (selected) {
+      emit('focus', selected)
+      document.addEventListener('click', clickOutsize, { once: true })
+
+      if (!props.disabledKeyEvent) {
+        document.addEventListener('keydown', onKeydown)
+        document.addEventListener('keyup', onKeyup)
+      }
+    } else {
+      emit('blur', selected)
+
+      if (!props.disabledKeyEvent) {
+        document.removeEventListener('keydown', onKeydown)
+        document.removeEventListener('keyup', onKeyup)
       }
     }
 
-    targetRef.value.addEventListener('mousedown', onMousedown)
-    targetRef.value.addEventListener('touchstart', onMousedown, {
-      passive: true
-    })
-  })
+    return () => {
+      document.removeEventListener('click', clickOutsize)
+      document.removeEventListener('keydown', onKeydown)
+      document.removeEventListener('keyup', onKeyup)
+    }
+  }, [selected])
 
-  onBeforeUnmount(() => {
-    document.removeEventListener('click', clickOutsize)
-    document.removeEventListener('keydown', onKeydown)
-    document.removeEventListener('keyup', onKeyup)
-  })
   return {
     isMousedown,
     selected,
+    setSelected,
+    setDragData,
     dragData,
     getBoundary,
     checkDragerCollision

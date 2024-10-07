@@ -1,29 +1,51 @@
-import { ExtractPropTypes, Ref, computed, onMounted, ref } from 'vue'
+import { useState, useEffect, useRef } from 'react'
 import { DragerProps, MarklineData } from '../drager'
-import { getBoundingClientRectByScale } from '../utils'
 type MarklineEvent = 'drag-start' | 'drag' | 'drag-end'
+
 const isFn = (value: any): value is Function => typeof value === 'function'
+
 export function useMarkline(
-  targetRef: Ref<HTMLElement | null>,
-  props: ExtractPropTypes<typeof DragerProps>
+  targetRef: React.MutableRefObject<HTMLElement | null>,
+  props: DragerProps
 ) {
-  let lineX: HTMLElement | null = null
-  let lineY: HTMLElement | null = null
-  const parent = computed(() => targetRef.value!.offsetParent || document.body)
-  const parentRect = computed(() => getBoundingClientRectByScale(parent.value,props.scaleRatio))
-  
-  const lines = ref<any>({ x: [], y: [] })
+  const [lineX, setLineX] = useState<HTMLElement | null>(null)
+  const [lineY, setLineY] = useState<HTMLElement | null>(null)
+  const parentRef = useRef<HTMLElement | null>(null)
+  const parentRectRef = useRef<DOMRect | null>(null)
+
+  useEffect(() => {
+    if (targetRef.current) {
+      parentRef.current = targetRef.current.offsetParent || document.body
+      parentRectRef.current = getBoundingClientRectByScale(parentRef.current, props.scaleRatio)
+    }
+  }, [targetRef, props.scaleRatio])
+
+  const lines = useRef<{
+    x: Array<{ top: number; showTop: number }> | null
+    y: Array<{ left: number; showLeft: number }> | null
+  }>({
+    x: null,
+    y: null
+  })
+
   const init = () => {
     if (props.markline && !isFn(props.markline)) {
       if (!lineX) {
-        lineX = document.querySelector(`.es-drager-markline-x`) || initLine('x', parent.value!, props.color)
+        lineX =
+          document.querySelector<HTMLElement>('.es-drager-markline-x') ||
+          initLine('x', parentRef.current!, props.color)
+        setLineX(lineX)
       }
-    
+
       if (!lineY) {
-        lineY = document.querySelector(`.es-drager-markline-y`) || initLine('y', parent.value!, props.color)
+        lineY =
+          document.querySelector<HTMLElement>('.es-drager-markline-y') ||
+          initLine('y', parentRef.current!, props.color)
+        setLineY(lineY)
       }
     }
   }
+
   const update = (marklineData: MarklineData = {}) => {
     if (!props.markline) return
 
@@ -32,34 +54,39 @@ export function useMarkline(
     }
 
     if (marklineData.left === null) {
-      lineX!.style.display = 'none'
+      if (lineX) lineX.style.display = 'none'
     } else {
-      lineX!.style.left = marklineData.left + 'px'
-      lineX!.style.backgroundColor = props.color
-      lineX!.style.display = 'block'
-    }
-    
-    if (marklineData.top === null) {
-      lineY!.style.display = 'none'
-    } else {
-      lineY!.style.top = marklineData.top + 'px'
-      lineY!.style.backgroundColor = props.color
-      lineY!.style.display = 'block'
-    }
-  }
-  // 吸附
-  const handleDragStart = () => {
-    const source = getBoundingClientRectByScale(targetRef.value!,props.scaleRatio)
-    const elList = document.querySelectorAll('.es-drager')
-    const targets = []
-    for (let i = 0; i < elList.length; i++) {
-      const el = elList[i]
-      if (el !== targetRef.value) {
-        targets.push(getBoundingClientRectByScale(el,props.scaleRatio))
+      if (lineX) {
+        lineX.style.left = `${marklineData.left}px`
+        lineX.style.backgroundColor = props.color
+        lineX.style.display = 'block'
       }
     }
 
-    lines.value = calcLines(targets, source)
+    if (marklineData.top === null) {
+      if (lineY) lineY.style.display = 'none'
+    } else {
+      if (lineY) {
+        lineY.style.top = `${marklineData.top}px`
+        lineY.style.backgroundColor = props.color
+        lineY.style.display = 'block'
+      }
+    }
+  }
+
+  const handleDragStart = () => {
+    const source = getBoundingClientRectByScale(targetRef.current!, props.scaleRatio)
+    const elList = document.querySelectorAll('.es-drager')
+    const targets = []
+
+    for (let i = 0; i < elList.length; i++) {
+      const el = elList[i] as HTMLElement
+      if (el !== targetRef.current) {
+        targets.push(getBoundingClientRectByScale(el, props.scaleRatio))
+      }
+    }
+
+    lines.current = calcLines(targets, source)
   }
 
   const handleDrag = () => {
@@ -69,28 +96,33 @@ export function useMarkline(
       diffX: 0,
       diffY: 0
     }
-    const source = getBoundingClientRectByScale(targetRef.value!,props.scaleRatio)
-    for (let i = 0; i < lines.value.y.length; i++) {
-      const { top, showTop } = lines.value.y[i]
 
-      if (Math.abs(top - source.top) < props.snapThreshold) {
-        markLine.diffY = top - source.top
-        markLine.top = showTop - parentRect.value.top
-        break
+    const source = getBoundingClientRectByScale(targetRef.current!, props.scaleRatio)
+    const snapThreshold = props.snapThreshold ?? 10
+    if (lines.current?.y) {
+      for (let i = 0; i < lines.current.y.length; i++) {
+        const { top, showTop } = lines.current.y[i]
+
+        if (Math.abs(top - source.top) < snapThreshold) {
+          markLine.diffY = top - source.top
+          markLine.top = showTop - (parentRectRef.current?.top ?? 0)
+          break
+        }
       }
     }
 
-    for (let i = 0; i < lines.value.x.length; i++) {
-      const { left, showLeft } = lines.value.x[i]
+    if (lines.current?.x) {
+      for (let i = 0; i < lines.current.x.length; i++) {
+        const { left, showLeft } = lines.current.x[i]
 
-      if (Math.abs(left - source.left) < props.snapThreshold) {
-        markLine.diffX = left - source.left
-        markLine.left = showLeft - parentRect.value.left
-        break
+        if (Math.abs(left - source.left) < snapThreshold) {
+          markLine.diffX = left - source.left
+          markLine.left = showLeft - (parentRectRef.current?.left ?? 0)
+          break
+        }
       }
     }
-    
-    // 更新markline
+
     update(markLine)
     return markLine
   }
@@ -101,22 +133,26 @@ export function useMarkline(
 
   const marklineEmit = (type: MarklineEvent) => {
     if (!props.snap && !props.markline) return
-    switch(type) {
+
+    switch (type) {
       case 'drag-start':
         handleDragStart()
         break
       case 'drag':
-        return handleDrag()
+        handleDrag()
+        break
       case 'drag-end':
         handleDragEnd()
+        break
+      default:
         break
     }
   }
 
-  onMounted(() => {
+  useEffect(() => {
     init()
-  })
-  
+  }, [props.markline, props.color])
+
   return {
     marklineEmit
   }
@@ -140,7 +176,7 @@ function initLine(dir: 'x' | 'y' = 'x', parent: Element, color = '') {
     line.style.height = '1px'
     line.style.width = '100%'
   }
-  
+
   parent.appendChild(line)
   return line
 }
@@ -149,13 +185,10 @@ function initLine(dir: 'x' | 'y' = 'x', parent: Element, color = '') {
 function calcLines(list: DOMRect[], current: DOMRect) {
   const lines: any = { x: [], y: [] }
   const { width = 0, height = 0 } = current
-  list.forEach(block => {
-    const {
-      top: ATop,
-      left: ALeft,
-      width: AWidth,
-      height: AHeight
-    } = block as any
+
+  list.forEach((block) => {
+    const { top: ATop, left: ALeft, width: AWidth, height: AHeight } = block
+
     lines.y.push({ showTop: ATop, top: ATop }) // 顶对顶
     lines.y.push({ showTop: ATop, top: ATop - height }) // 顶对底
 
@@ -175,7 +208,7 @@ function calcLines(list: DOMRect[], current: DOMRect) {
       showLeft: ALeft + AWidth / 2,
       left: ALeft + AWidth / 2 - width / 2
     }) // 中
-    lines.x.push({ showLeft: ALeft + AWidth, left: ALeft + AWidth - width })
+    lines.x.push({ showLeft: ALeft + AWidth, left: ALeft + AWidth - width }) // 右对左
     lines.x.push({ showLeft: ALeft, left: ALeft - width }) // 左对右
   })
 

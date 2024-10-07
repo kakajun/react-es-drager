@@ -2,6 +2,7 @@
   "name": "react-es-drager",
   "version": "1.2.11",
   "description": "A draggable, resizable, rotatable component based on react",
+  "type": "module",
   "keywords": [
     "drag",
     "resize",
@@ -20,19 +21,11 @@
   "files": [
     "lib"
   ],
-  "main": "./lib/index.umd.js",
-  "module": "./lib/index.es.js",
-  "exports": {
-    ".": {
-      "import": "./lib/index.es.js",
-      "require": "./lib/index.umd.js",
-      "types": "./lib/index.d.ts"
-    },
-    "./*": "./*"
-  },
+  "main": "./index.tsx",
+  "module": "./index.tsx",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kakajun/es-drager.git"
+    "url": "https://github.com/kakajun/react-es-drager.git"
   },
   "scripts": {
     "build": "vite build ."

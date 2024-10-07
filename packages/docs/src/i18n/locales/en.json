@@ -1,11 +1,14 @@
 {
   "route": {
     "basic": "Basic Example",
-    "comprehensive": "comprehensive",
-    "comprehensive2": "comprehensive2",
-    "customizeButtons": "customizeButtons",
-    "moveble": "moveble combination",
-    "Selecto": "Selecto test"
+    "event": "Event Related",
+    "grid": "Grid",
+    "info": "Detailed Information",
+    "slot": "Using Slots",
+    "chart": "ECharts",
+    "markline": "Markline",
+    "group": "Combination & Split",
+    "menu": "Menu ToolBar"
   },
   "common": {
     "code": "Code",
