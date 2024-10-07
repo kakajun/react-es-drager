@@ -1,23 +1,24 @@
 {
+  "extends": "../../tsconfig.common.json",
+
   "compilerOptions": {
-    "target": "ESNext",
-    "useDefineForClassFields": true,
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "strict": true,
-    "jsx": "preserve",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "esModuleInterop": true,
-    "lib": ["ESNext", "DOM"],
-    "skipLibCheck": true,
-    "noEmit": true,
+    "jsx": "react",
+    "outDir": "dist",
+    "target": "ES2020",
+    "module": "ES2022",
+    "moduleResolution": "node",
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
-    },
-    "types": ["@types/node"]
+    }
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": [
+    "src/**/*", // 包含 src 目录下的所有文件
+    "src/i18n/locales/zh.json", // 显式指定需要包含的 JSON 文件
+    "src/i18n/locales/en.json" // 显式指定需要包含的 JSON 文
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts" // 排除测试文件
+  ]
 }

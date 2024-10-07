@@ -1,32 +1,9 @@
 {
-  "compilerOptions": {
-    "baseUrl": ".",
-    "rootDir": ".",
-    "target": "ESNext",
-    "useDefineForClassFields": true,
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "strict": true,
-    "jsx": "preserve",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "esModuleInterop": true,
-    "allowJs": true,
-    "lib": ["ESNext", "DOM"],
-    "skipLibCheck": true,
-    "noEmit": true,
-    "paths": {
-      "@es-drager/*": [
-        "packages/*"
-      ],
-      "es-drager": [
-        "packages/"
-      ]
-    },
-  },
-  "references": [{ "path": "./tsconfig.node.json" }],
-  "types": [
-    "node",
-    "vite/client"
-  ]
+  "extends": "./tsconfig.common.json",
+
+  // This tsconfig exists solely to provide nice code completion for IDEs.
+  // See the tsconfigs in /src/server etc for the real versions.
+
+  "files": [],
+  "references": [{ "path": "./packages/docs" }, { "path": "./packages/sketch-ruler" }]
 }

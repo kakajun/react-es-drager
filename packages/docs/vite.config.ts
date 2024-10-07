@@ -1,20 +1,16 @@
 import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
+import react from '@vitejs/plugin-react'
 import { resolve } from 'path'
 const pathResolve = (dir: string): string => {
   return resolve(__dirname, '.', dir)
 }
-export default defineConfig(({ mode }) => {
-  return {
-    plugins: [vue()],
-    base: mode === 'production' ? '/es-drager' : '',
+// https://vitejs.dev/config/
+export default defineConfig({
+  base: './',
     resolve: {
-      alias: {
-        '@': pathResolve('src')
-      }
-    },
-    server: {
-      host: true
+    alias: {
+      '@': pathResolve('src')
     }
-  }
+  },
+  plugins: [react()]
 })
