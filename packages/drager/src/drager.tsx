@@ -16,6 +16,7 @@ import Rotate from './rotate'
 import { DragData, DragerProps, EventType } from './drager.ts'
 import { useDrager } from './use-drager'
 import './drager.less'
+
 const Drager: React.FC<DragerProps> = (props) => {
   const {
     // tag,
@@ -25,7 +26,7 @@ const Drager: React.FC<DragerProps> = (props) => {
     border = true,
     resizable = true,
     rotatable,
-    zIndex,
+    zIndex = 1,
     color = '#3a7afe',
     width = 100,
     // height,
@@ -39,14 +40,15 @@ const Drager: React.FC<DragerProps> = (props) => {
     // equalProportion,
     maxWidth,
     maxHeight,
-    scaleRatio,
     snapToGrid,
     gridX = 50,
     gridY = 50,
     boundary,
     checkCollision
   } = props
+
   const dragRef = useRef<HTMLElement | null>(null)
+
   const emitFn = (type: string, ...args: any[]) => {
     console.log(`Emitting ${type}`, ...args) // 示例日志输出
   }
@@ -60,11 +62,12 @@ const Drager: React.FC<DragerProps> = (props) => {
     // checkDragerCollision
   } = useDrager(dragRef, props, emitFn)
 
+  const [dragStyle, setDragStyle] = useState({})
+  let bb = {}
   useEffect(() => {
     setSelected(propsSelected)
   }, [propsSelected])
-
-  const dragStyle = useMemo(() => {
+  const getdragStyle = () => {
     const { width, height, left, top, angle } = dragData
     const style: any = {}
     if (width) {
@@ -73,6 +76,8 @@ const Drager: React.FC<DragerProps> = (props) => {
     if (height) {
       style.height = withUnit(height)
     }
+    console.log(width, height, left, withUnit(left), 'mmmmmmmmmmm')
+
     return {
       ...style,
       left: withUnit(left),
@@ -81,6 +86,9 @@ const Drager: React.FC<DragerProps> = (props) => {
       transform: `rotate(${angle}deg)`,
       '--es-drager-color': color
     }
+  }
+  useEffect(() => {
+    setDragStyle(getdragStyle())
   }, [dragData, zIndex, color]) // 依赖项列表
 
   return (

@@ -50,6 +50,7 @@ const BasicComponent = () => {
             style={{ color: item.color }}
           >
             {t(item.text)}
+            left:{item.left}
           </Drager>
         ))
       )}

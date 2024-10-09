@@ -25,16 +25,19 @@ export function useDrager(
   props: DragerProps,
   emit: (event: string, data: DragData) => void
 ): UseDragerResult {
+  const scaleRatio = props.scaleRatio || 1
   const [isMousedown, setIsMousedown] = useState(false)
   const [selected, setSelected] = useState(false)
   const [dragData, setDragData] = useState<DragData>({
-    width: props.width,
-    height: props.height,
-    left: props.left,
-    top: props.top,
-    angle: props.angle
+    width: props.width || 100,
+    height: props.height || 100,
+    left: props.left || 0,
+    top: props.top || 0,
+    angle: props.angle || 0
   })
-
+  useEffect(() => {
+    console.log('Drag data updated:', dragData)
+  }, [dragData])
   const mouseSet = new Set()
 
   // const { marklineEmit } = useMarkline(targetRef, props)
@@ -62,46 +65,34 @@ export function useDrager(
 
     const onMousemove = (e: MouseTouchEvent) => {
       if (mouseSet.size > 1) return
-
+      debugger
       const { clientX, clientY } = getXY(e)
-      let moveX = (clientX - downX) / props.scaleRatio + left
-      let moveY = (clientY - downY) / props.scaleRatio + top
+      let moveX = (clientX - downX) / scaleRatio + left
+      let moveY = (clientY - downY) / scaleRatio + top
 
       if (props.snapToGrid) {
         const { left: curX, top: curY } = dragData
         const diffX = moveX - curX
         const diffY = moveY - curY
 
-        moveX = curX + calcGrid(diffX, props.gridX)
-        moveY = curY + calcGrid(diffY, props.gridY)
+        moveX = curX + calcGrid(diffX, props.gridX || 50)
+        moveY = curY + calcGrid(diffY, props.gridY || 50)
       }
 
       if (props.boundary) {
         ;[moveX, moveY] = fixBoundary(moveX, moveY, minX, maxX, minY, maxY)
       }
+      console.log(moveX, moveY, 'bbbbbbbb')
 
       setDragData((prev) => ({ ...prev, left: moveX, top: moveY }))
-
       emit && emit('drag', dragData)
-
-      // nextTick(() => {
-      //   const markLine = marklineEmit('drag')!
-      //   if (props.snap) {
-      //     if (markLine.diffX) {
-      //       setDragData((prev) => ({ ...prev, left: prev.left + markLine.diffX }))
-      //     }
-      //     if (markLine.diffY) {
-      //       setDragData((prev) => ({ ...prev, top: prev.top + markLine.diffY }))
-      //     }
-      //   }
-      // })
     }
 
     setupMove(onMousemove, (e: MouseTouchEvent) => {
       if (props.checkCollision) {
         const isCollision = checkDragerCollision()
         if (isCollision) {
-          setDragData((prev) => ({ ...prev, top, left }))
+          // setDragData((prev) => ({ ...prev, top, left }))
         }
       }
       mouseSet.clear()
@@ -116,10 +107,10 @@ export function useDrager(
       minY = 0
     const { left, top, height, width, angle } = dragData
     const parentEl = targetRef.current?.offsetParent || document.body
-    const parentElRect = getBoundingClientRectByScale(parentEl!, props.scaleRatio)
+    const parentElRect = getBoundingClientRectByScale(parentEl!, scaleRatio)
 
     if (angle) {
-      const rect = getBoundingClientRectByScale(targetRef.current!, props.scaleRatio)
+      const rect = getBoundingClientRectByScale(targetRef.current!, scaleRatio)
       minX = rect.left - Math.floor(left - (rect.width - width) + parentElRect.left)
       minY = rect.top - Math.floor(top - (rect.height - height) + parentElRect.top)
     }
@@ -151,7 +142,7 @@ export function useDrager(
     })
     for (let i = 0; i < broList.length; i++) {
       const item = broList[i]
-      const flag = checkCollision(targetRef.current!, item, props.scaleRatio)
+      const flag = checkCollision(targetRef.current!, item, scaleRatio || 1)
       if (flag) return true
     }
   }
@@ -171,12 +162,12 @@ export function useDrager(
     if (!targetRef.current) return
 
     if (!dragData.width && !dragData.height) {
-      const { width, height } = getBoundingClientRectByScale(targetRef.current, props.scaleRatio)
-      setDragData((prev) => ({
-        ...prev,
-        width: width || 100,
-        height: height || 100
-      }))
+      const { width, height } = getBoundingClientRectByScale(targetRef.current, scaleRatio || 1)
+      // setDragData((prev) => ({
+      //   ...prev,
+      //   width: width || 100,
+      //   height: height || 100
+      // }))
     }
 
     targetRef.current.addEventListener('mousedown', onMousedown)
