@@ -12,7 +12,7 @@ import {
   getXY,
   MouseTouchEvent
 } from './utils'
-import Rotate from './rotate'
+// import Rotate from './rotate'
 import { DragData, DragerProps, EventType } from './drager.ts'
 import { useDrager } from './use-drager'
 import './drager.less'

@@ -14,8 +14,7 @@
     "release": "pnpm --filter ./packages/sketch-ruler release"
   },
   "devDependencies": {
-    "@es-drager/editor": "workspace:*",
-     "react-es-drager": "workspace:*",
+    "react-es-drager": "workspace:*",
     "less": "^4.2.0",
     "gh-pages": "^6.1.1",
     "esprint": "^3.6.0",
