@@ -1,4 +1,3 @@
-
 import { DragerProps, DragData } from '../drager'
 
 type UtilFN = {
@@ -10,7 +9,7 @@ type UtilFN = {
     maxX: number,
     minY: number,
     maxY: number
-  ) => [number, number]
+  ) => number[]
   checkDragerCollision: () => boolean
   emit: (event: string, ...args: any[]) => void
 }

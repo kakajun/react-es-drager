@@ -16,7 +16,7 @@ interface UseDragerResult {
   setSelected: (selected: boolean) => void
   setDragData: (data: DragData) => void
   getBoundary: () => number[]
-  checkDragerCollision: () => boolean | undefined
+  checkDragerCollision: () => boolean
   dragData: DragData
 }
 
@@ -145,13 +145,14 @@ export function useDrager(
       const flag = checkCollision(targetRef.current!, item, scaleRatio || 1)
       if (flag) return true
     }
+    return false
   }
 
   const clickOutsize = () => {
     setSelected(false)
   }
 
-  const { onKeydown, onKeyup } = useKeyEvent(props, dragData, selected, {
+  const { handleKeyDown, handleKeyUp } = useKeyEvent(props, dragData, selected, {
     getBoundary,
     fixBoundary,
     checkDragerCollision,
@@ -163,11 +164,11 @@ export function useDrager(
 
     if (!dragData.width && !dragData.height) {
       const { width, height } = getBoundingClientRectByScale(targetRef.current, scaleRatio || 1)
-      // setDragData((prev) => ({
-      //   ...prev,
-      //   width: width || 100,
-      //   height: height || 100
-      // }))
+      setDragData((prev) => ({
+        ...prev,
+        width: width || 100,
+        height: height || 100
+      }))
     }
 
     targetRef.current.addEventListener('mousedown', onMousedown)
@@ -177,7 +178,7 @@ export function useDrager(
       targetRef.current?.removeEventListener('mousedown', onMousedown)
       targetRef.current?.removeEventListener('touchstart', onMousedown)
     }
-  }, [])
+  }, [dragData])
 
   useEffect(() => {
     if (selected) {
@@ -185,22 +186,22 @@ export function useDrager(
       document.addEventListener('click', clickOutsize, { once: true })
 
       if (!props.disabledKeyEvent) {
-        document.addEventListener('keydown', onKeydown)
-        document.addEventListener('keyup', onKeyup)
+        document.addEventListener('keydown', handleKeyDown)
+        document.addEventListener('keyup', handleKeyUp)
       }
     } else {
       emit('blur', selected)
 
       if (!props.disabledKeyEvent) {
-        document.removeEventListener('keydown', onKeydown)
-        document.removeEventListener('keyup', onKeyup)
+        document.removeEventListener('keydown', handleKeyDown)
+        document.removeEventListener('keyup', handleKeyUp)
       }
     }
 
     return () => {
       document.removeEventListener('click', clickOutsize)
-      document.removeEventListener('keydown', onKeydown)
-      document.removeEventListener('keyup', onKeyup)
+      document.removeEventListener('keydown', handleKeyDown)
+      document.removeEventListener('keyup', handleKeyUp)
     }
   }, [selected])
 
