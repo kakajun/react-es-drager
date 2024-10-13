@@ -29,17 +29,18 @@ const Drager: React.FC<DragerProps> = (props) => {
     zIndex = 1,
     color = '#3a7afe',
     width = 100,
+    scaleRatio = 1,
     // height,
     // left,
     // top,
     // angle,
     resizeList,
-    // minWidth,
-    // minHeight,
-    // aspectRatio,
-    // equalProportion,
-    maxWidth,
-    maxHeight,
+    minWidth = 1,
+    minHeight = 1,
+    aspectRatio = 1,
+    equalProportion,
+    maxWidth = 99999,
+    maxHeight = 9999,
     snapToGrid,
     gridX = 50,
     gridY = 50,
@@ -55,19 +56,166 @@ const Drager: React.FC<DragerProps> = (props) => {
   const {
     selected,
     setSelected,
-    // setDragData,
+    setDragData,
     dragData,
-    isMousedown
-    // getBoundary,
-    // checkDragerCollision
+    isMousedown,
+    getBoundary,
+    checkDragerCollision
   } = useDrager(dragRef, props, emitFn)
+  const [dotList, setDotList] = useState(getDotList(0, resizeList))
+  const onDotMousedown = (dotInfo: any, e: MouseTouchEvent) => {
+    if (disabled) return
 
-  const [dragStyle, setDragStyle] = useState({})
-  let bb = {}
+    e.stopPropagation()
+
+    const { clientX, clientY } = getXY(e)
+    const downX = clientX
+    const downY = clientY
+    const { width, height, left, top } = dragData
+
+    const centerX = left + width / 2
+    const centerY = top + height / 2
+
+    const rect = {
+      width,
+      height,
+      centerX,
+      centerY,
+      rotateAngle: dragData.angle
+    }
+    const type = dotInfo.side
+    emitFn('resize-start', dragData)
+    let boundaryInfo: number[] = []
+    if (boundary) {
+      boundaryInfo = getBoundary()
+    }
+
+    const onMousemove = (e: MouseTouchEvent) => {
+      const { clientX, clientY } = getXY(e)
+      let deltaX = (clientX - downX) / scaleRatio
+      let deltaY = (clientY - downY) / scaleRatio
+
+      if (snapToGrid) {
+        deltaX = calcGrid(deltaX, gridX)
+        deltaY = calcGrid(deltaY, gridY)
+      }
+
+      const alpha = Math.atan2(deltaY, deltaX)
+      const deltaL = getLength(deltaX, deltaY)
+      const isShiftKey = e.shiftKey
+
+      const beta = alpha - degToRadian(rect.rotateAngle)
+      const deltaW = deltaL * Math.cos(beta)
+      const deltaH = deltaL * Math.sin(beta)
+      const ratio =
+        (equalProportion || isShiftKey) && !aspectRatio ? rect.width / rect.height : aspectRatio
+
+      const {
+        position: { centerX, centerY },
+        size: { width, height }
+      } = getNewStyle(
+        type,
+        { ...rect, rotateAngle: rect.rotateAngle },
+        deltaW,
+        deltaH,
+        ratio,
+        minWidth,
+        minHeight
+      )
+
+      const pData = centerToTL({
+        centerX,
+        centerY,
+        width,
+        height,
+        angle: dragData.angle
+      })
+
+      let d = {
+        ...dragData,
+        ...formatData(pData, centerX, centerY)
+      }
+
+      if (maxWidth > 0) {
+        d.width = Math.min(d.width, maxWidth)
+      }
+      if (maxHeight > 0) {
+        d.height = Math.min(d.height, maxHeight)
+      }
+
+      if (boundary) {
+        d = fixResizeBoundary(d, boundaryInfo, ratio)
+      }
+
+      setDragData(d)
+      emitFn('resize', dragData)
+    }
+
+    setupMove(onMousemove, () => {
+      if (checkCollision && checkDragerCollision()) {
+        setDragData({ ...dragData, width, height, left, top })
+      }
+      emitFn('resize-end', dragData)
+    })
+  }
+  const fixResizeBoundary = (d: DragData, boundaryInfo: number[], ratio: number | undefined) => {
+    const [minX, maxX, minY, maxY, parentWidth, parentHeight] = boundaryInfo
+
+    const isMinLeft = d.left < minX
+    const isMaxLeft = d.left + d.width > parentWidth
+    const isMinTop = d.top < minY
+    const isMaxTop = d.top + d.height > parentHeight
+
+    if (isMinLeft) {
+      d.left = minX
+      d.width = dragData.width
+    }
+
+    if (isMinTop) {
+      d.top = minY
+      d.height = dragData.height
+    }
+
+    if (isMaxLeft || isMaxTop) {
+      if (isMaxLeft) {
+        d.left = dragData.left
+      }
+
+      if (isMaxTop) {
+        d.top = dragData.top
+      }
+
+      if (!isMaxTop) {
+        d.width = parentWidth - d.left
+      }
+
+      if (!isMaxLeft) {
+        d.height = parentHeight - d.top
+      }
+    }
+
+    if ((isMaxTop || isMinTop) && ratio) {
+      d.width = dragData.width
+      d.left = dragData.left
+    }
+
+    if ((isMaxLeft || isMinLeft) && ratio) {
+      d.height = dragData.height
+      d.top = dragData.top
+    }
+
+    return d
+  }
+  const showRotate = useMemo(
+    () => rotatable && !disabled && selected,
+    [resizable, disabled, selected]
+  )
+  const showResize = useMemo(() => resizable && !disabled, [resizable, disabled])
+
   useEffect(() => {
     setSelected(propsSelected)
   }, [propsSelected])
-  const getdragStyle = () => {
+  const dragStyle = useMemo(() => {
     const { width, height, left, top, angle } = dragData
     const style: any = {}
     if (width) {
@@ -76,8 +224,6 @@ const Drager: React.FC<DragerProps> = (props) => {
     if (height) {
       style.height = withUnit(height)
     }
-    console.log(width, height, left, withUnit(left), 'mmmmmmmmmmm')
-
     return {
       ...style,
       left: withUnit(left),
@@ -86,9 +232,6 @@ const Drager: React.FC<DragerProps> = (props) => {
       transform: `rotate(${angle}deg)`,
       '--es-drager-color': color
     }
-  }
-  useEffect(() => {
-    setDragStyle(getdragStyle())
   }, [dragData, zIndex, color]) // 依赖项列表
 
   return (
@@ -105,6 +248,22 @@ const Drager: React.FC<DragerProps> = (props) => {
       onClick={(e) => e.stopPropagation()}
     >
       {props.children}
+      {showResize && (
+        <>
+          {dotList.map((item, index) => (
+            <div
+              key={index}
+              className="es-drager-dot"
+              data-side={item.side}
+              style={{ ...item }}
+              onMouseDown={(e) => onDotMousedown(item, e)}
+              onTouchStart={(e) => onDotMousedown(item, e)}
+            >
+              <div className="es-drager-dot-handle" />
+            </div>
+          ))}
+        </>
+      )}
     </div>
   )
 }
