@@ -8,7 +8,7 @@ import {
   checkCollision,
   getBoundingClientRectByScale
 } from './utils'
-import { useKeyEvent } from './hooks'
+import { useMarkline, useKeyEvent } from './hooks'
 
 interface UseDragerResult {
   isMousedown: boolean
@@ -21,7 +21,7 @@ interface UseDragerResult {
 }
 
 export function useDrager(
-  targetRef: React.MutableRefObject<HTMLElement | null>,
+  targetRef: React.MutableRefObject<HTMLDivElement | null>,
   props: DragerProps
 ): UseDragerResult {
   const { onDragStart, onDrag, onDragEnd, onFocus, onBlur } = props
@@ -35,10 +35,11 @@ export function useDrager(
     top: props.top || 0,
     angle: props.angle || 0
   })
-
+  const { marklineEmit } = useMarkline(targetRef, props)
+  // 限制多个鼠标键按下的情况
   const mouseSet = new Set()
 
-  // const { marklineEmit } = useMarkline(targetRef, props)
+
 
   function onMousedown(e: MouseTouchEvent) {
     mouseSet.add((e as MouseEvent).button)
@@ -57,7 +58,7 @@ export function useDrager(
     if (props.boundary) {
       ;[minX, maxX, minY, maxY] = getBoundary()
     }
-
+    marklineEmit('drag-start')
     onDragStart && onDragStart(dragData)
     let newDragData = dragData
     const onMousemove = (e: MouseTouchEvent) => {
@@ -92,10 +93,28 @@ export function useDrager(
       }
       mouseSet.clear()
       setIsMousedown(false)
-      // marklineEmit('drag-end')
+      marklineEmit('drag-end')
       onDragEnd && onDragEnd(newDragData)
     })
   }
+
+  useEffect(() => {
+    const handleDrag = async () => {
+      const markLine = marklineEmit('drag')
+
+      if (props.snap && markLine) {
+        if (markLine.diffX) {
+          dragData.left += markLine.diffX
+        }
+
+        if (markLine.diffY) {
+          dragData.top += markLine.diffY
+        }
+      }
+    }
+
+    handleDrag()
+  }, [props.snap, dragData])
 
   const getBoundary = () => {
     let minX = 0,

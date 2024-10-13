@@ -282,6 +282,8 @@ const Drager: React.FC<DragerProps> = (props) => {
     setDragData({ ...dragData, angle: rotate })
     onRotate && onRotate({ ...dragData, angle: rotate })
   }
+
+
   return (
     <div
       ref={dragRef}
