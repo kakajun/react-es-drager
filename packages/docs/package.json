@@ -6,7 +6,7 @@
   "private": false,
   "scripts": {
     "dev": "vite  --host 0.0.0.0",
-    "build:demo": "vite build",
+    "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {

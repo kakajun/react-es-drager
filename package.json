@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "pnpm build && pnpm --filter ./packages/docs dev",
     "build": "pnpm --filter ./packages/sketch-ruler build",
-    "build:demo": "pnpm build && pnpm --filter ./packages/docs build",
+    "build:demo": "pnpm --filter ./packages/docs build",
     "format": "prettier --write  \"packages/**/src/**/*.{js,ts,json,tsx,less,vue,html,md}\"",
     "lint": "esprint check --workers=4 --fix",
     "changelog": "pnpm --filter ./packages/sketch-ruler changelog",
