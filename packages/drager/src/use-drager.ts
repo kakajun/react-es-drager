@@ -39,8 +39,6 @@ export function useDrager(
   // 限制多个鼠标键按下的情况
   const mouseSet = new Set()
 
-
-
   function onMousedown(e: MouseTouchEvent) {
     mouseSet.add((e as MouseEvent).button)
     if (props.disabled) return
@@ -104,11 +102,11 @@ export function useDrager(
 
       if (props.snap && markLine) {
         if (markLine.diffX) {
-          dragData.left += markLine.diffX
+          setDragData((prev) => ({ ...prev, left: dragData.left + markLine.diffX }))
         }
 
         if (markLine.diffY) {
-          dragData.top += markLine.diffY
+          setDragData((prev) => ({ ...prev, top: dragData.top + markLine.diffY }))
         }
       }
     }

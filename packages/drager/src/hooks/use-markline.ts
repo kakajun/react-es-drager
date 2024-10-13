@@ -11,14 +11,15 @@ export function useMarkline(
   props: DragerProps
 ) {
   const scaleRatio = props.scaleRatio || 1
-  let lineX: HTMLDivElement | null = null
-  let lineY: HTMLDivElement | null = null
+  const lineX = useRef<HTMLDivElement | null>(null)
+  const lineY = useRef<HTMLDivElement | null>(null)
   const parentRef = useRef<HTMLDivElement | null>(null)
   const parentRectRef = useRef<DOMRect | null>(null)
 
   useEffect(() => {
     if (targetRef.current) {
       parentRef.current = targetRef.current.offsetParent || document.body
+
       parentRectRef.current = getBoundingClientRectByScale(parentRef.current, scaleRatio)
     }
   }, [targetRef, props.scaleRatio])
@@ -33,14 +34,14 @@ export function useMarkline(
 
   const init = () => {
     if (props.markline && !isFn(props.markline)) {
-      if (!lineX) {
-        lineX =
+      if (!lineX.current) {
+        lineX.current =
           document.querySelector<HTMLDivElement>('.es-drager-markline-x') ||
           initLine('x', parentRef.current!, props.color)
       }
 
-      if (!lineY) {
-        lineY =
+      if (!lineY.current) {
+        lineY.current =
           document.querySelector<HTMLDivElement>('.es-drager-markline-y') ||
           initLine('y', parentRef.current!, props.color)
       }
@@ -57,20 +58,20 @@ export function useMarkline(
     if (marklineData.left === null) {
       if (lineX) lineX.style.display = 'none'
     } else {
-      if (lineX) {
-        lineX.style.left = `${marklineData.left}px`
-        lineX.style.backgroundColor = props.color
-        lineX.style.display = 'block'
+      if (lineX.current) {
+        lineX.current.style.left = `${marklineData.left}px`
+        lineX.current.style.backgroundColor = props.color
+        lineX.current.style.display = 'block'
       }
     }
 
     if (marklineData.top === null) {
       if (lineY) lineY.style.display = 'none'
     } else {
-      if (lineY) {
-        lineY.style.top = `${marklineData.top}px`
-        lineY.style.backgroundColor = props.color
-        lineY.style.display = 'block'
+      if (lineY.current) {
+        lineY.current.style.top = `${marklineData.top}px`
+        lineY.current.style.backgroundColor = props.color
+        lineY.current.style.display = 'block'
       }
     }
   }
@@ -123,7 +124,6 @@ export function useMarkline(
         }
       }
     }
-
     update(markLine)
     return markLine
   }
