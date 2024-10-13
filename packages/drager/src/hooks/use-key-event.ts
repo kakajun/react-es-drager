@@ -11,14 +11,13 @@ type UtilFN = {
     maxY: number
   ) => number[]
   checkDragerCollision: () => boolean
-  emit: (event: string, ...args: any[]) => void
 }
 
 export function useKeyEvent(
   props: DragerProps,
   dragData: DragData,
   selected: boolean,
-  { getBoundary, fixBoundary, checkDragerCollision, emit }: UtilFN
+  { getBoundary, fixBoundary, checkDragerCollision }: UtilFN
 ) {
   let oldLeft = 0
   let oldTop = 0

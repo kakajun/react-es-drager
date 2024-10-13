@@ -13,7 +13,7 @@ import {
   MouseTouchEvent
 } from './utils'
 import Rotate from './rotate'
-import { DragData, DragerProps, EventType } from './drager.ts'
+import { DragData, DragerProps } from './drager.ts'
 import { useDrager } from './use-drager'
 import './drager.less'
 
@@ -49,14 +49,23 @@ const Drager: React.FC<DragerProps> = (props) => {
     gridY = 50,
     boundary,
     children,
-    checkCollision
+    checkCollision,
+    onChange,
+    // onDrag,
+    onResize,
+    onResizeStart,
+    onResizeEnd,
+    // onDragStart,
+    // onDragEnd,
+    // onFocus,
+    // onBlur,
+    onRotate,
+    onRotateStart,
+    onRotateEnd
   } = props
 
-  const dragRef = useRef<HTMLElement | null>(null)
+  const dragRef = useRef<HTMLDivElement>(null)
 
-  const emitFn = (type: string, ...args: any[]) => {
-    // console.log(`Emitting ${type}`, ...args) // 示例日志输出
-  }
   const {
     selected,
     setSelected,
@@ -65,12 +74,13 @@ const Drager: React.FC<DragerProps> = (props) => {
     isMousedown,
     getBoundary,
     checkDragerCollision
-  } = useDrager(dragRef, props, emitFn)
+  } = useDrager(dragRef, props)
 
   const [dotList, setDotList] = useState(getDotList(0, resizeList))
 
   const handleRotateEnd = (angle: number) => {
     setDotList(getDotList(angle, resizeList))
+    onRotateEnd && onRotateEnd({ ...dragData, angle })
   }
 
   const onDotMousedown = (dotInfo: any, e: MouseTouchEvent) => {
@@ -94,12 +104,12 @@ const Drager: React.FC<DragerProps> = (props) => {
       rotateAngle: dragData.angle
     }
     const type = dotInfo.side
-    emitFn('resize-start', dragData)
+    onResizeStart && onResizeStart(dragData)
     let boundaryInfo: number[] = []
     if (boundary) {
       boundaryInfo = getBoundary()
     }
-
+    let d: DragData | null = null
     const onMousemove = (e: MouseTouchEvent) => {
       const { clientX, clientY } = getXY(e)
       let deltaX = (clientX - downX) / scaleRatio
@@ -141,7 +151,7 @@ const Drager: React.FC<DragerProps> = (props) => {
         angle: dragData.angle
       })
 
-      let d = {
+      d = {
         ...dragData,
         ...formatData(pData, centerX, centerY)
       }
@@ -156,16 +166,16 @@ const Drager: React.FC<DragerProps> = (props) => {
       if (boundary) {
         d = fixResizeBoundary(d, boundaryInfo, ratio)
       }
-
       setDragData(d)
-      emitFn('resize', dragData)
+      onResize && onResize(d)
     }
 
     setupMove(onMousemove, () => {
       if (checkCollision && checkDragerCollision()) {
         setDragData({ ...dragData, width, height, left, top })
       }
-      emitFn('resize-end', dragData)
+      // emitFn('resize-end', dragData)
+      d && onResizeEnd && onResizeEnd(d)
     })
   }
 
@@ -226,6 +236,11 @@ const Drager: React.FC<DragerProps> = (props) => {
   useEffect(() => {
     setSelected(propsSelected)
   }, [propsSelected])
+
+  useEffect(() => {
+    onChange && onChange(dragData)
+  }, [dragData])
+
   const dragStyle = useMemo(() => {
     const { width, height, left, top, angle } = dragData
     const style: any = {}
@@ -265,7 +280,7 @@ const Drager: React.FC<DragerProps> = (props) => {
   )
   const setRotate = (rotate: number) => {
     setDragData({ ...dragData, angle: rotate })
-    emitFn('rotate', rotate)
+    onRotate && onRotate({ ...dragData, angle: rotate })
   }
   return (
     <div
@@ -300,10 +315,10 @@ const Drager: React.FC<DragerProps> = (props) => {
 
       {showRotate && (
         <Rotate
-          angle={dragData.angle}
+          dragData={dragData}
           element={dragRef.current}
           onRotate={setRotate}
-          onRotateStart={() => emitFn('rotate-start', dragData)}
+          onRotateStart={onRotateStart}
           onRotateEnd={handleRotateEnd}
         >
           {rotateSlot}

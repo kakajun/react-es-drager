@@ -22,9 +22,9 @@ interface UseDragerResult {
 
 export function useDrager(
   targetRef: React.MutableRefObject<HTMLElement | null>,
-  props: DragerProps,
-  emit: (event: string, data: DragData) => void
+  props: DragerProps
 ): UseDragerResult {
+  const { onDragStart, onDrag, onDragEnd, onFocus, onBlur } = props
   const scaleRatio = props.scaleRatio || 1
   const [isMousedown, setIsMousedown] = useState(false)
   const [selected, setSelected] = useState(false)
@@ -58,9 +58,8 @@ export function useDrager(
       ;[minX, maxX, minY, maxY] = getBoundary()
     }
 
-    // marklineEmit('drag-start')
-    emit && emit('drag-start', dragData)
-
+    onDragStart && onDragStart(dragData)
+    let newDragData = dragData
     const onMousemove = (e: MouseTouchEvent) => {
       if (mouseSet.size > 1) return
       const { clientX, clientY } = getXY(e)
@@ -79,23 +78,22 @@ export function useDrager(
       if (props.boundary) {
         ;[moveX, moveY] = fixBoundary(moveX, moveY, minX, maxX, minY, maxY)
       }
-      console.log(moveX, moveY, 'bbbbbbbb')
-
+      newDragData = { ...dragData, left: moveX, top: moveY }
       setDragData((prev) => ({ ...prev, left: moveX, top: moveY }))
-      emit && emit('drag', dragData)
+      onDrag && onDrag(newDragData)
     }
 
     setupMove(onMousemove, (e: MouseTouchEvent) => {
       if (props.checkCollision) {
         const isCollision = checkDragerCollision()
         if (isCollision) {
-          // setDragData((prev) => ({ ...prev, top, left }))
+          setDragData((prev) => ({ ...prev, top, left }))
         }
       }
       mouseSet.clear()
       setIsMousedown(false)
       // marklineEmit('drag-end')
-      emit && emit('drag-end', dragData)
+      onDragEnd && onDragEnd(newDragData)
     })
   }
 
@@ -152,8 +150,7 @@ export function useDrager(
   const { handleKeyDown, handleKeyUp } = useKeyEvent(props, dragData, selected, {
     getBoundary,
     fixBoundary,
-    checkDragerCollision,
-    emit
+    checkDragerCollision
   })
 
   useEffect(() => {
@@ -179,7 +176,7 @@ export function useDrager(
 
   useEffect(() => {
     if (selected) {
-      emit('focus', selected)
+      onFocus && onFocus(selected)
       document.addEventListener('click', clickOutsize, { once: true })
 
       if (!props.disabledKeyEvent) {
@@ -187,8 +184,7 @@ export function useDrager(
         document.addEventListener('keyup', handleKeyUp)
       }
     } else {
-      emit('blur', selected)
-
+      onBlur && onBlur(selected)
       if (!props.disabledKeyEvent) {
         document.removeEventListener('keydown', handleKeyDown)
         document.removeEventListener('keyup', handleKeyUp)

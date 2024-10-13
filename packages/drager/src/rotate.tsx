@@ -1,26 +1,26 @@
 import React, { useRef } from 'react'
 import { getXY, MouseTouchEvent, setupMove } from './utils'
+import { DragData } from './drager.ts'
 import './rotate.less'
 
 interface RotateProps {
   children: React.ReactNode
-  angle: number
+  dragData: DragData
   element: HTMLElement | null
-  onUpdateModelValue: (value: number) => void
   onRotate: (angle: number) => void
-  onRotateStart: (angle: number) => void
+  onRotateStart?: (data: DragData) => void
   onRotateEnd: (angle: number) => void
 }
 
 const Rotate: React.FC<RotateProps> = ({
-  angle,
+  dragData,
   element,
   children,
   onRotate,
   onRotateStart,
   onRotateEnd
 }) => {
-  const rotateRef = useRef<HTMLElement | null>(null)
+  const rotateRef = useRef<HTMLDivElement>(null)
 
   const onRotateMousedown = (e: MouseTouchEvent) => {
     if (!element) {
@@ -29,26 +29,23 @@ const Rotate: React.FC<RotateProps> = ({
     }
 
     e.stopPropagation()
-
     const { width, height, left, top } = element.getBoundingClientRect()
     const centerX = left + width / 2
     const centerY = top + height / 2
-
-    onRotateStart(angle)
-
+    onRotateStart && onRotateStart(dragData)
+    let newAngle = 0
     const onMousemove = (e: MouseTouchEvent) => {
       const { clientX, clientY } = getXY(e)
       const diffX = centerX - clientX
       const diffY = centerY - clientY
-
       const radians = Math.atan2(diffY, diffX)
       const deg = (radians * 180) / Math.PI - 90
-      const newAngle = (deg + 360) % 360
+      newAngle = (deg + 360) % 360
       onRotate(newAngle)
     }
 
     const onMouseup = () => {
-      onRotateEnd(angle)
+      onRotateEnd(newAngle)
     }
 
     setupMove(onMousemove, onMouseup)

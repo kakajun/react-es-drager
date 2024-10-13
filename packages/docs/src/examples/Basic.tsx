@@ -10,6 +10,7 @@ const dragList = [
     {
       color: '#ff9f00',
       text: 'examples.rotate',
+      // angle: 30,
       rotatable: true,
       resizable: false
     },
