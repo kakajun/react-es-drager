@@ -116,9 +116,6 @@ importers:
       i18next-browser-languagedetector:
         specifier: ^8.0.0
         version: 8.0.0
-      react-es-drager:
-        specifier: workspace:*
-        version: link:../drager
       react-i18next:
         specifier: ^15.0.2
         version: 15.0.2(i18next@23.15.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
