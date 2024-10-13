@@ -35,6 +35,10 @@ jobs:
       - name: Install and Build 🔧
         run: |
           pnpm i --no-frozen-lockfile
+          pnpm build
+          
+      - name:  Build doc
+        run: |
           pnpm build:demo
 
       - name: Deploy 🚀

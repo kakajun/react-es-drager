@@ -65,7 +65,6 @@ export function useDrager(
 
     const onMousemove = (e: MouseTouchEvent) => {
       if (mouseSet.size > 1) return
-      debugger
       const { clientX, clientY } = getXY(e)
       let moveX = (clientX - downX) / scaleRatio + left
       let moveY = (clientY - downY) / scaleRatio + top

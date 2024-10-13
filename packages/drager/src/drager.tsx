@@ -12,7 +12,7 @@ import {
   getXY,
   MouseTouchEvent
 } from './utils'
-// import Rotate from './rotate'
+import Rotate from './rotate'
 import { DragData, DragerProps, EventType } from './drager.ts'
 import { useDrager } from './use-drager'
 import './drager.less'
@@ -62,7 +62,13 @@ const Drager: React.FC<DragerProps> = (props) => {
     getBoundary,
     checkDragerCollision
   } = useDrager(dragRef, props, emitFn)
+
   const [dotList, setDotList] = useState(getDotList(0, resizeList))
+
+  const handleRotateEnd = (angle: number) => {
+    setDotList(getDotList(angle, resizeList))
+  }
+
   const onDotMousedown = (dotInfo: any, e: MouseTouchEvent) => {
     if (disabled) return
 
@@ -158,6 +164,7 @@ const Drager: React.FC<DragerProps> = (props) => {
       emitFn('resize-end', dragData)
     })
   }
+
   const fixResizeBoundary = (d: DragData, boundaryInfo: number[], ratio: number | undefined) => {
     const [minX, maxX, minY, maxY, parentWidth, parentHeight] = boundaryInfo
 
@@ -234,6 +241,21 @@ const Drager: React.FC<DragerProps> = (props) => {
     }
   }, [dragData, zIndex, color]) // 依赖项列表
 
+  // 处理children
+  const [defaultSlot, btnSlot] = React.Children.toArray(children).reduce(
+    (acc: [React.ReactNode | null, React.ReactNode | null], child: React.ReactNode) => {
+      if (React.isValidElement(child)) {
+        if (child.props.slot === 'default') {
+          acc[0] = child
+        } else if (child.props.slot === 'btn') {
+          acc[1] = child
+        }
+      }
+      return acc
+    },
+    [null, null] // 初始化 acc 为数组
+  )
+  
   return (
     <div
       ref={dragRef}
@@ -263,6 +285,18 @@ const Drager: React.FC<DragerProps> = (props) => {
             </div>
           ))}
         </>
+      )}
+
+      {showRotate && (
+        <Rotate
+          vModel={dragData.angle}
+          element={dragRef.current}
+          onRotate={(angle) => emitFn('rotate', dragData)}
+          onRotateStart={() => emitFn('rotate-start', dragData)}
+          onRotateEnd={handleRotateEnd}
+        >
+          <slot name="rotate" />
+        </Rotate>
       )}
     </div>
   )
