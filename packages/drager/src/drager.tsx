@@ -17,6 +17,9 @@ import { DragData, DragerProps, EventType } from './drager.ts'
 import { useDrager } from './use-drager'
 import './drager.less'
 
+type Slot = React.ReactNode | null
+type ChildrenSlots = [Slot, Slot, Slot]
+
 const Drager: React.FC<DragerProps> = (props) => {
   const {
     // tag,
@@ -45,13 +48,14 @@ const Drager: React.FC<DragerProps> = (props) => {
     gridX = 50,
     gridY = 50,
     boundary,
+    children,
     checkCollision
   } = props
 
   const dragRef = useRef<HTMLElement | null>(null)
 
   const emitFn = (type: string, ...args: any[]) => {
-    console.log(`Emitting ${type}`, ...args) // 示例日志输出
+    // console.log(`Emitting ${type}`, ...args) // 示例日志输出
   }
   const {
     selected,
@@ -241,21 +245,28 @@ const Drager: React.FC<DragerProps> = (props) => {
     }
   }, [dragData, zIndex, color]) // 依赖项列表
 
-  // 处理children
-  const [defaultSlot, btnSlot] = React.Children.toArray(children).reduce(
-    (acc: [React.ReactNode | null, React.ReactNode | null], child: React.ReactNode) => {
+  const [defaultSlot, resizeSlot, rotateSlot] = React.Children.toArray(children).reduce(
+    (acc: ChildrenSlots, child: React.ReactNode) => {
       if (React.isValidElement(child)) {
-        if (child.props.slot === 'default') {
-          acc[0] = child
-        } else if (child.props.slot === 'btn') {
+        const slot = child.props.slot
+        if (slot === 'rotate') {
+          acc[2] = child
+        } else if (slot === 'resize') {
           acc[1] = child
+        } else {
+          acc[0] = child
         }
+      } else {
+        acc[0] = child
       }
       return acc
     },
-    [null, null] // 初始化 acc 为数组
+    [null, null, null]
   )
-  
+  const setRotate = (rotate: number) => {
+    setDragData({ ...dragData, angle: rotate })
+    emitFn('rotate', rotate)
+  }
   return (
     <div
       ref={dragRef}
@@ -269,7 +280,7 @@ const Drager: React.FC<DragerProps> = (props) => {
       style={dragStyle}
       onClick={(e) => e.stopPropagation()}
     >
-      {props.children}
+      {defaultSlot}
       {showResize && (
         <>
           {dotList.map((item, index) => (
@@ -281,7 +292,7 @@ const Drager: React.FC<DragerProps> = (props) => {
               onMouseDown={(e) => onDotMousedown(item, e)}
               onTouchStart={(e) => onDotMousedown(item, e)}
             >
-              <div className="es-drager-dot-handle" />
+              {resizeSlot || <div className="es-drager-dot-handle" />}
             </div>
           ))}
         </>
@@ -289,13 +300,13 @@ const Drager: React.FC<DragerProps> = (props) => {
 
       {showRotate && (
         <Rotate
-          vModel={dragData.angle}
+          angle={dragData.angle}
           element={dragRef.current}
-          onRotate={(angle) => emitFn('rotate', dragData)}
+          onRotate={setRotate}
           onRotateStart={() => emitFn('rotate-start', dragData)}
           onRotateEnd={handleRotateEnd}
         >
-          <slot name="rotate" />
+          {rotateSlot}
         </Rotate>
       )}
     </div>

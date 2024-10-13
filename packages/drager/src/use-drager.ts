@@ -35,9 +35,7 @@ export function useDrager(
     top: props.top || 0,
     angle: props.angle || 0
   })
-  useEffect(() => {
-    console.log('Drag data updated:', dragData)
-  }, [dragData])
+
   const mouseSet = new Set()
 
   // const { marklineEmit } = useMarkline(targetRef, props)

@@ -63,6 +63,7 @@ export interface DragerProps extends ComponentPropsWithRef<'div'> {
   snap?: boolean
   snapThreshold?: number
   markline?: boolean | ((data: MarklineData) => void)
+  children: React.ReactNode
 }
 
 export interface DragData {
