@@ -56,7 +56,7 @@ export function useMarkline(
     }
 
     if (marklineData.left === null) {
-      if (lineX) lineX.style.display = 'none'
+      if (lineX.current) lineX.current.style.display = 'none'
     } else {
       if (lineX.current) {
         lineX.current.style.left = `${marklineData.left}px`
@@ -66,7 +66,7 @@ export function useMarkline(
     }
 
     if (marklineData.top === null) {
-      if (lineY) lineY.style.display = 'none'
+      if (lineY.current) lineY.current.style.display = 'none'
     } else {
       if (lineY.current) {
         lineY.current.style.top = `${marklineData.top}px`

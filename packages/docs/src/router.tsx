@@ -2,8 +2,8 @@ import { createHashRouter, createBrowserRouter, Navigate } from 'react-router-do
 import HomeLayout from './views/Home'
 import React from 'react'
 import Basic from './examples/Basic'
-// import Comprehensive from './examples/Comprehensive'
-// import Moveble from './examples/Moveble'
+import Event from './examples/Event'
+// import Group from './examples/Group'
 
 export const menuRoutes = [
   {
@@ -12,21 +12,63 @@ export const menuRoutes = [
     meta: {
       title: 'basic'
     }
+  },
+  {
+    path: 'event',
+    element: <Event></Event>,
+    meta: {
+      title: 'event'
+    }
   }
   // {
-  //   path: '/comprehensive',
-  //   element: <Comprehensive />,
+  //   path: 'grid',
+  //   component: () => import('@/examples/grid.vue'),
   //   meta: {
-  //     title: 'comprehensive'
+  //     title: 'grid'
   //   }
   // },
   // {
-  //   path: '/moveble',
-  //   element: <Moveble />,
+  //   path: 'info',
+  //   component: () => import('@/examples/info.vue'),
   //   meta: {
-  //     title: 'moveble'
+  //     title: 'info'
+  //   }
+  // },
+  // {
+  //   path: 'slot',
+  //   component: () => import('@/examples/slot.vue'),
+  //   meta: {
+  //     title: 'slot'
+  //   }
+  // },
+  // {
+  //   path: 'chart',
+  //   component: () => import('@/examples/chart.vue'),
+  //   meta: {
+  //     title: 'chart'
+  //   }
+  // },
+  // {
+  //   path: 'markline',
+  //   component: () => import('@/examples/markline.vue'),
+  //   meta: {
+  //     title: 'markline'
+  //   }
+  // },
+  // {
+  //   path: 'group',
+  //   element: <Group></Group>,
+  //   meta: {
+  //     title: 'group'
   //   }
   // }
+  // {
+  //   path: 'menu',
+  //   component: () => import('@/examples/menu.vue'),
+  //   meta: {
+  //     title: 'menu'
+  //   }
+  // },
 ]
 
 export const router = createHashRouter([
