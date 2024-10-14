@@ -1,16 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react'
-import {
-  Form,
-  Row,
-  Col,
-  InputNumber,
-  ButtonGroup,
-  Tooltip,
-  Button,
-  Divider,
-  CheckboxGroup,
-  CheckboxButton
-} from 'element-plus'
+import { Form, Row, Col, InputNumber, Tooltip, Button, Divider, Checkbox, Flex } from 'antd'
 import { useEditorStore } from '@es-drager/editor/src/store'
 import InputNumberComponent from '../components/InputNumber'
 import SvgIcon from '../components/svgIcon/SvgIcon'
@@ -134,7 +123,7 @@ const PositionForm = () => {
       <Divider />
 
       <Row>
-        <ButtonGroup style={{ display: 'inline-flex' }}>
+        <Flex gap="small" vertical>
           {alignX.map((item) => (
             <Tooltip placement="top" showAfter={300} content={item.label}>
               <Button style={{ flex: 1 }} onClick={() => handleAlign(item.value)}>
@@ -142,11 +131,11 @@ const PositionForm = () => {
               </Button>
             </Tooltip>
           ))}
-        </ButtonGroup>
+        </Flex>
       </Row>
 
       <Row>
-        <ButtonGroup style={{ display: 'inline-flex' }}>
+        <Flex gap="small" vertical>
           {alignY.map((item) => (
             <Tooltip placement="top" showAfter={300} content={item.label}>
               <Button style={{ flex: 1 }} onClick={() => handleAlign(item.value)}>
@@ -154,21 +143,21 @@ const PositionForm = () => {
               </Button>
             </Tooltip>
           ))}
-        </ButtonGroup>
+        </Flex>
       </Row>
 
       <Divider />
 
       <Row>
-        <CheckboxGroup vModel={options1Value} size="small" onChange={handleOptions1Change}>
+        <Checkbox.Group vModel={options1Value} size="small" onChange={handleOptions1Change}>
           {options1.map((item) => (
             <Tooltip placement="top" showAfter={300} content={item.label}>
-              <CheckboxButton style={{ flex: 1 }} label={item.value} value={item.value}>
+              <Checkbox style={{ flex: 1 }} value={item.value} value={item.value}>
                 <SvgIcon name={item.value} size={20} />
-              </CheckboxButton>
+              </Checkbox>
             </Tooltip>
           ))}
-        </CheckboxGroup>
+        </Checkbox.Group>
       </Row>
     </Form>
   )

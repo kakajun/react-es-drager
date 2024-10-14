@@ -1,122 +1,122 @@
-import React, { useState, useRef, useEffect } from 'react';
-import ESDrager, { DragData } from 'es-drager';
-import 'es-drager/lib/style.css';
-import { omit, events, pickStyle } from '../../utils';
-import { EditorDataType, ComponentType } from '../../types';
-import GridRect from './GridRect';
-import Area from './Area';
-import TextEditor from './TextEditor';
-import { useArea, CommandStateType, useActions } from '../../hooks';
-import { useEditorStore } from '../../store';
+import React, { useState, useRef, useEffect } from 'react'
+import ESDrager, { DragData } from 'react-es-drager'
+import 'es-drager/lib/style.css'
+import { omit, events, pickStyle } from '../../utils'
+import { EditorDataType, ComponentType } from '../../types'
+import GridRect from './GridRect'
+import Area from './Area'
+import TextEditor from './TextEditor'
+import { useArea, CommandStateType, useActions } from '../../hooks'
+import { useEditorStore } from '../../store'
+import './index.less'
+const EsEditor: React.FC<{
+  modelValue: EditorDataType
+  commands: CommandStateType['commands']
+}> = ({ modelValue, commands }) => {
+  const editorRef = useRef<HTMLElement | null>(null)
+  const areaRef = useRef(null)
+  const store = useEditorStore()
 
-const EsEditor: React.FC<{ modelValue: EditorDataType; commands: CommandStateType['commands'] }> = ({
-  modelValue,
-  commands,
-}) => {
-  const editorRef = useRef<HTMLElement | null>(null);
-  const areaRef = useRef(null);
-  const store = useEditorStore();
-
-  const [data, setData] = useState(modelValue);
+  const [data, setData] = useState(modelValue)
   const [extraDragData, setExtraDragData] = useState({
     startX: 0,
     startY: 0,
     disX: 0,
-    disY: 0,
-  });
-  const [current, setCurrent] = useState<ComponentType | null>(null);
+    disY: 0
+  })
+  const [current, setCurrent] = useState<ComponentType | null>(null)
 
-  const gridSize = data.container?.gridSize || 10;
-  const scaleRatio = data.container?.scaleRatio || 1;
+  const gridSize = data.container?.gridSize || 10
+  const scaleRatio = data.container?.scaleRatio || 1
 
   const editorStyle = useMemo(() => {
-    const { width, height } = data.container.style;
+    const { width, height } = data.container.style
     return {
       ...data.container.style,
       width: `${width}px`,
       height: `${height}px`,
       transform: `scale(${scaleRatio})`,
-      transformOrigin: 'top left',
-    };
-  }, [data, scaleRatio]);
+      transformOrigin: 'top left'
+    }
+  }, [data, scaleRatio])
 
-  const { areaSelected, onEditorMouseDown, onAreaMove, onAreaUp } = useArea(data, areaRef);
+  const { areaSelected, onEditorMouseDown, onAreaMove, onAreaUp } = useArea(data, areaRef)
 
-  const { editorRect, onContextmenu, onEditorContextMenu } = useActions(data, editorRef);
+  const { editorRect, onContextmenu, onEditorContextMenu } = useActions(data, editorRef)
 
   const onDragstart = (element: ComponentType) => {
-    setCurrent(element);
+    setCurrent(element)
     if (!areaSelected) {
-      const selectedItems = data.elements.filter((item) => item.selected);
+      const selectedItems = data.elements.filter((item) => item.selected)
       if (selectedItems.length === 1) {
-        data.elements.forEach((item) => (item.selected = false));
+        data.elements.forEach((item) => (item.selected = false))
       }
     }
 
-    current?.selected = true;
+    current?.selected = true
     setExtraDragData({
       startX: current?.left!,
-      startY: current?.top!,
-    });
+      startY: current?.top!
+    })
 
-    events.emit('dragstart');
-  };
+    events.emit('dragstart')
+  }
 
   const onDragend = () => {
-    events.emit('dragend');
-  };
+    events.emit('dragend')
+  }
 
   const onDrag = (dragData: DragData) => {
-    const disX = dragData.left - extraDragData.startX;
-    const disY = dragData.top - extraDragData.startY;
+    const disX = dragData.left - extraDragData.startX
+    const disY = dragData.top - extraDragData.startY
 
     data.elements.forEach((item: ComponentType) => {
       if (item.selected && current?.id !== item.id) {
-        item.left! += disX;
-        item.top! += disY;
+        item.left! += disX
+        item.top! += disY
       }
-    });
+    })
 
     setExtraDragData({
       startX: dragData.left,
-      startY: dragData.top,
-    });
-  };
+      startY: dragData.top
+    })
+  }
 
   const onChange = (dragData: DragData, item: ComponentType) => {
     Object.keys(dragData).forEach((key) => {
-      ;(item as any)[key] = dragData[key as keyof DragData];
-    });
-  };
+      ;(item as any)[key] = dragData[key as keyof DragData]
+    })
+  }
 
   const globalEventMap = {
     dblclick: () => {
-      if (!current || !current.selected) return;
-      current.editable = true;
+      if (!current || !current.selected) return
+      current.editable = true
     },
     click: () => {
-      if (!current) return;
-      current.editable = false;
-    },
-  };
+      if (!current) return
+      current.editable = false
+    }
+  }
 
   const setGlobalEvents = (flag: 'on' | 'off' = 'on') => {
-    const eventTypes = ['dblclick', 'click'];
+    const eventTypes = ['dblclick', 'click']
     eventTypes.forEach((type) => {
       if (flag === 'on') {
-        document.addEventListener(type, (globalEventMap as any)[type]);
+        document.addEventListener(type, (globalEventMap as any)[type])
       } else {
-        document.removeEventListener(type, (globalEventMap as any)[type]);
+        document.removeEventListener(type, (globalEventMap as any)[type])
       }
-    });
-  };
+    })
+  }
 
   useEffect(() => {
-    setGlobalEvents();
+    setGlobalEvents()
     return () => {
-      setGlobalEvents('off');
-    };
-  }, []);
+      setGlobalEvents('off')
+    }
+  }, [])
 
   return (
     <div
@@ -125,8 +125,8 @@ const EsEditor: React.FC<{ modelValue: EditorDataType; commands: CommandStateTyp
       style={editorStyle}
       onMouseDown={onEditorMouseDown}
       onContextMenu={(e) => {
-        e.preventDefault();
-        onEditorContextMenu(e);
+        e.preventDefault()
+        onEditorContextMenu(e)
       }}
     >
       {data.elements.map((item) => (
@@ -146,8 +146,8 @@ const EsEditor: React.FC<{ modelValue: EditorDataType; commands: CommandStateTyp
           onDrag={onDrag}
           onChange={(e) => onChange(e, item)}
           onContextMenu={(e) => {
-            e.stopPropagation();
-            onContextmenu(e, item);
+            e.stopPropagation()
+            onContextmenu(e, item)
           }}
           onMouseDown={(e) => e.stopPropagation()}
           onClick={(e) => e.stopPropagation()}
@@ -159,30 +159,23 @@ const EsEditor: React.FC<{ modelValue: EditorDataType; commands: CommandStateTyp
             style={{
               ...pickStyle(item.style, false),
               width: '100%',
-              height: '100%',
+              height: '100%'
             }}
           >
             {item.text && (
-              <TextEditor
-                editable={item.editable}
-                text={item.text}
-                style={pickStyle(item.style)}
-              />
+              <TextEditor editable={item.editable} text={item.text} style={pickStyle(item.style)} />
             )}
           </component>
         </ESDrager>
       ))}
 
       {data.container.snapToGrid && (
-        <GridRect
-          grid={data.container.gridSize}
-          borderColor={data.container.gridColor}
-        />
+        <GridRect grid={data.container.gridSize} borderColor={data.container.gridColor} />
       )}
 
       <Area ref={areaRef} onMove={onAreaMove} onUp={onAreaUp} />
     </div>
-  );
-};
+  )
+}
 
-export default EsEditor;
+export default EsEditor

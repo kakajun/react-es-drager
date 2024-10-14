@@ -1,9 +1,9 @@
-import React from 'react';
-
+import React from 'react'
+import './MarkLine.less'
 type Props = {
-  left: number | null;
-  top: number | null;
-};
+  left: number | null
+  top: number | null
+}
 
 const EsEditorMarkline: React.FC<Props> = ({ left, top }) => {
   return (
@@ -19,7 +19,7 @@ const EsEditorMarkline: React.FC<Props> = ({ left, top }) => {
         hidden={top === null}
       />
     </>
-  );
-};
+  )
+}
 
-export default EsEditorMarkline;
+export default EsEditorMarkline

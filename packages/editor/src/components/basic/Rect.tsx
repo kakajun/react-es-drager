@@ -1,5 +1,5 @@
 import React from 'react'
-import 'Rect.less'
+import './Rect.less'
 const BasicRect: React.FC = () => {
   return <div className="es-basic-rect" />
 }

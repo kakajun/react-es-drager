@@ -1,27 +1,27 @@
-import React, { useRef, useEffect } from 'react';
-
+import React, { useRef, useEffect } from 'react'
+import './TextEditor.less'
 type Props = {
-  editable: boolean;
-  text?: string;
-};
+  editable: boolean
+  text?: string
+}
 
 const EsText: React.FC<Props> = ({ editable, text, children }) => {
-  const textRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLDivElement>(null)
 
   const selectText = () => {
-    if (!textRef.current) return;
+    if (!textRef.current) return
 
-    const range = document.createRange();
-    range.selectNode(textRef.current);
-    window.getSelection()?.removeAllRanges();
-    window.getSelection()?.addRange(range);
-  };
+    const range = document.createRange()
+    range.selectNode(textRef.current)
+    window.getSelection()?.removeAllRanges()
+    window.getSelection()?.addRange(range)
+  }
 
   useEffect(() => {
     if (editable) {
-      selectText();
+      selectText()
     }
-  }, [editable]);
+  }, [editable])
 
   return (
     <div
@@ -31,7 +31,7 @@ const EsText: React.FC<Props> = ({ editable, text, children }) => {
     >
       {text || children}
     </div>
-  );
-};
+  )
+}
 
-export default EsText;
+export default EsText
