@@ -1,0 +1,37 @@
+.es-layout-aside {
+  flex-shrink: 0;
+  width: var(--es-layout-aside-width);
+  height: 100%;
+  border-right: var(--es-border);
+  background-color: var(--es-color-bg);
+  overflow-y: auto; /* 添加垂直滚动 */
+
+  .el-collapse-item__header {
+    padding: 0 10px;
+  }
+
+  .collapse-content {
+    padding: 8px 12px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    overflow-y: auto;
+    max-height: calc(100vh - 50px);
+
+    .es-block {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 45%;
+      height: 40px;
+      border: var(--es-border);
+      margin-bottom: 10px;
+      cursor: grab;
+      background-color: var(--el-bg-color);
+
+      .block-text {
+        margin-left: 6px;
+      }
+    }
+  }
+}

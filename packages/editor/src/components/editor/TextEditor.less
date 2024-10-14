@@ -1,0 +1,18 @@
+
+.es-text {
+  width: calc(100% - 1px);
+  height: 100%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  word-break: break-all;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  &.editable {
+    z-index: 1;
+    cursor: text;
+  }
+}
+

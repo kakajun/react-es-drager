@@ -1,0 +1,37 @@
+
+.es-contentmenu {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  box-shadow: var(--el-box-shadow-light);
+  border-radius: 4px;
+  ul {
+    padding: 5px 0;
+    background-color: var(--el-bg-color-overlay);
+    border-radius: var(--el-border-radius-base);
+    padding: 5px 0;
+    li {
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+      list-style: none;
+      line-height: 22px;
+      padding: 5px 16px;
+      margin: 0;
+      font-size: var(--el-font-size-base);
+      color: var(--el-text-color-regular);
+      cursor: pointer;
+      outline: none;
+      &:hover {
+        background-color: var(--el-color-primary-light-9);
+        color: var(--el-color-primary);
+      }
+    }
+  }
+}
+
+.es-trigger {
+  position: absolute;
+}
+

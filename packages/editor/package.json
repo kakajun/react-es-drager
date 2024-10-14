@@ -1,0 +1,13 @@
+{
+  "name": "@es-drager/editor",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "devDependencies": {
+    "gsap": "^3.12.5",
+    "zustand": "5.0.0-rc.2",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^2.5.1",
+    "mitt": "^3.0.1"
+  }
+}

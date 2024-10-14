@@ -1,0 +1,18 @@
+.es-editor {
+  box-sizing: border-box;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.es-drager {
+  &.border {
+    border-width: 0;
+  }
+  &.selected {
+    border-width: 1px;
+    border-style: dashed;
+  }
+  .es-drager-mask {
+    display: none;
+  }
+}

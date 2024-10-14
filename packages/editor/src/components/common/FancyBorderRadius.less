@@ -1,0 +1,31 @@
+
+.es-fancy-border-radius {
+  display: inline-flex;
+  position: relative;
+  border: 2px dashed var(--es-border-color);
+
+  .handle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+    background-color: var(--el-color-primary);
+    cursor: pointer;
+    transition: transform 0.2s;
+
+    &.right {
+      left: 100%;
+    }
+    &.bottom {
+      top: 100%;
+      left: 100%;
+    }
+
+    &.left {
+      top: 100%;
+    }
+  }
+}
+
