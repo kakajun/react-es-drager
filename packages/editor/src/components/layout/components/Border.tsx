@@ -1,62 +1,66 @@
-<template>
-  <div v-if="store.current.style">
-    <el-row :gutter="10">
-      <el-col :span="10">边框风格:</el-col>
-      <el-col :span="14">
-        <el-select v-model="borderStyle">
-          <el-option
-            v-for="item in borderStyleList"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-      </el-col>
-    </el-row>
+import React, { useState, useEffect } from 'react';
+import InputNumber from './InputNumber';
+import ColorPicker from './ColorPicker';
+import { useEditorStore } from '@es-drager/editor/src/store';
 
-    <el-row :gutter="10">
-      <el-col :span="10">边框颜色:</el-col>
-      <el-col :span="14">
-        <ColorPicker v-model="store.current.style.borderColor" />
-      </el-col>
-    </el-row>
+const BorderSettings = () => {
+  const store = useEditorStore();
+  const [borderStyle, setBorderStyle] = useState('solid');
+  const borderStyleList = [
+    { label: '实线', value: 'solid' },
+    { label: '虚线', value: 'dashed' },
+    { label: '点线', value: 'dotted' },
+  ];
 
-    <el-row :gutter="10">
-      <el-col :span="10">边框宽度:</el-col>
-      <el-col :span="14">
-        <InputNumber v-model="store.current.style.borderWidth" />
-      </el-col>
-    </el-row>
-    <el-row :gutter="10">
-      <el-col :span="10">边框半径:</el-col>
-      <el-col :span="14">
-        <InputNumber v-model="store.current.style.borderRadius" />
-      </el-col>
-    </el-row>
-  </div>
-</template>
+  useEffect(() => {
+    setBorderStyle(store.current.style?.borderStyle || 'solid');
+  }, [store.current.style?.borderStyle]);
 
-<script setup lang="ts">
-import { computed } from 'vue'
-import InputNumber from './InputNumber.vue'
-import ColorPicker from './ColorPicker.vue'
-import { useEditorStore } from '@es-drager/editor/src/store'
-const store = useEditorStore()
-const borderStyleList = [
-  { label: '实线', value: 'solid' },
-  { label: '虚线', value: 'dashed' },
-  { label: '点线', value: 'dotted' }
-]
-const borderStyle = computed({
-  get: () => {
-    // don't need to set border style
-    // if (!store.current.style!.borderStyle) {
-    //   store.current.style!.borderStyle = 'solid'
-    // }
-    return store.current.style!.borderStyle || 'solid'
-  },
-  set: val => {
-    store.current.style!.borderStyle = val
-  }
-})
-</script>
+  useEffect(() => {
+    if (store.current.style) {
+      store.current.style.borderStyle = borderStyle;
+    }
+  }, [borderStyle]);
+
+  return (
+    <div>
+      {store.current.style && (
+        <>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+            <div style={{ width: '100px' }}>边框风格:</div>
+            <select value={borderStyle} onChange={(e) => setBorderStyle(e.target.value)}>
+              {borderStyleList.map((item) => (
+                <option key={item.value} value={item.value}>
+                  {item.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+            <div style={{ width: '100px' }}>边框颜色:</div>
+            <ColorPicker value={store.current.style.borderColor} onChange={(color) => {
+              store.current.style.borderColor = color;
+            }} />
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+            <div style={{ width: '100px' }}>边框宽度:</div>
+            <InputNumber value={store.current.style.borderWidth} onChange={(width) => {
+              store.current.style.borderWidth = width;
+            }} />
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+            <div style={{ width: '100px' }}>边框半径:</div>
+            <InputNumber value={store.current.style.borderRadius} onChange={(radius) => {
+              store.current.style.borderRadius = radius;
+            }} />
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
+
+export default BorderSettings;

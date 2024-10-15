@@ -1,4 +1,3 @@
-import { ComponentPropsWithRef } from 'react'
 
 export type IDotSide =
   | 'top'
@@ -9,17 +8,7 @@ export type IDotSide =
   | 'top-right'
   | 'bottom-left'
   | 'bottom-right'
-// export type EventType =
-//   | 'change'
-//   | 'drag'
-//   | 'drag-start'
-//   | 'drag-end'
-//   | 'resize'
-//   | 'resize-start'
-//   | 'resize-end'
-//   | 'rotate'
-//   | 'rotate-start'
-//   | 'rotate-end'
+
 export type IDot = {
   side: IDotSide
   cursor?: string

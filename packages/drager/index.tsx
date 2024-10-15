@@ -1,3 +1,3 @@
 import Drager from './src/drager.tsx'
-export type { DragerProps } from './src/drager.ts'
+export type { DragerProps, DragData } from './src/drager.ts'
 export default Drager

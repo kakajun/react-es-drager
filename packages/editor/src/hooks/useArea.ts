@@ -1,56 +1,53 @@
-import { ComponentType, EditorDataType } from '../types';
-import Area from '../components/editor/Area';
+import { ComponentType, EditorDataType } from '../types'
+import Area from '../components/editor/Area'
+import React, { useState, useEffect, useRef } from 'react'
 
 export function useArea(data: EditorDataType, areaRef: React.RefObject<Area>) {
-  const [areaSelected, setAreaSelected] = useState(false);
+  const [areaSelected, setAreaSelected] = useState(false)
 
   function onEditorMouseDown(e: React.MouseEvent) {
-    let flag = false;
+    let flag = false
     data.elements.forEach((item: ComponentType) => {
       if (item.selected) {
-        item.selected = false;
-        flag = true;
+        item.selected = false
+        flag = true
       }
-    });
+    })
 
     if (!flag) {
-      areaRef.current?.onMouseDown(e);
+      areaRef.current?.onMouseDown(e)
     }
   }
 
   function onAreaMove(areaData: { left: number; top: number; width: number; height: number }) {
     for (let i = 0; i < data.elements.length; i++) {
-      const item = data.elements[i] as Required<ComponentType>;
+      const item = data.elements[i] as Required<ComponentType>
       const containLeft =
-        areaData.left < item.left &&
-        areaData.left + areaData.width > item.left + item.width;
+        areaData.left < item.left && areaData.left + areaData.width > item.left + item.width
       const containTop =
-        areaData.top < item.top &&
-        areaData.top + areaData.height > item.top + item.height;
+        areaData.top < item.top && areaData.top + areaData.height > item.top + item.height
 
       if (containLeft && containTop) {
-        item.selected = true;
+        item.selected = true
       } else {
-        item.selected = false;
+        item.selected = false
       }
     }
   }
 
   function onAreaUp() {
-    setAreaSelected(
-      data.elements.some((item: ComponentType) => item.selected)
-    );
+    setAreaSelected(data.elements.some((item: ComponentType) => item.selected))
 
     if (areaSelected) {
       setTimeout(() => {
         document.addEventListener(
           'click',
           () => {
-            setAreaSelected(false);
+            setAreaSelected(false)
           },
           { once: true }
-        );
-      });
+        )
+      })
     }
   }
 
@@ -59,5 +56,5 @@ export function useArea(data: EditorDataType, areaRef: React.RefObject<Area>) {
     onEditorMouseDown,
     onAreaMove,
     onAreaUp
-  };
+  }
 }

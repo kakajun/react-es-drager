@@ -1,37 +1,35 @@
-import { CSSProperties, ExtractPropTypes } from 'vue'
-import { DragerProps } from 'es-drager'
+import { DragerProps } from 'react-es-drager'
 
-type DragerType = Partial<ExtractPropTypes<typeof DragerProps>>
-
-export type ComponentType = DragerType & {
+export type ComponentType = DragerProps & {
   id?: string
   component?: string
   text?: string
   group?: boolean
-  groupStyle?: any
+  groupStyle?: React.CSSProperties
   props?: any
-  style?: CSSProperties
+  style?: React.CSSProperties
   editable?: boolean
 }
+
 export type EditorDataType = {
   container: {
     snapToGrid: boolean
     markline: {
       color?: string
-      show?: Boolean
+      show?: boolean
     }
     gridSize: number
     gridColor?: string
-    style: CSSProperties
+    style: React.CSSProperties
     scaleRatio?: number
   }
   elements: ComponentType[]
 }
 
-export type IconType = DragerType & {
+export type IconType = DragerProps & {
   component?: string
   text?: string
-  style?: CSSProperties
+  style?: React.CSSProperties
   props?: any
   icon?: string
 }
@@ -39,11 +37,11 @@ export type IconType = DragerType & {
 export type ToolType = {
   label: string
   icon?: any
-  handler: Function
+  handler: () => void // 在React中通常会传递一个无返回值的函数
 }
 
 export interface EditorState {
   data: EditorDataType
   current: ComponentType
-  preview: Boolean
+  preview: boolean
 }

@@ -1,5 +1,4 @@
-export * from './src/components'
-import ESEditor from './src/components/layout/index.tsx'
+import ESEditor from './src/components/layout/index'
 export * from './src/types'
 export * from './src/components'
 export * from './src/hooks'
