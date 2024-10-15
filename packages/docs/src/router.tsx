@@ -4,7 +4,7 @@ import React from 'react'
 import Basic from './examples/Basic'
 import Event from './examples/Event'
 // import Group from './examples/Group'
-
+// import GridRect from './examples/Grid'
 export const menuRoutes = [
   {
     path: '/basic',
@@ -19,14 +19,14 @@ export const menuRoutes = [
     meta: {
       title: 'event'
     }
-  }
+  },
   // {
   //   path: 'grid',
-  //   component: () => import('@/examples/grid.vue'),
+  //   element: <GridRect></GridRect>,
   //   meta: {
   //     title: 'grid'
   //   }
-  // },
+  // }
   // {
   //   path: 'info',
   //   component: () => import('@/examples/info.vue'),

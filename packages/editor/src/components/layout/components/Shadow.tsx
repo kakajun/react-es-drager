@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Switch, Slider, Input } from 'element-plus';
+import { Row, Col, Switch, Slider, Input } from 'antd';
 import ColorPicker from './ColorPicker'; // 假设 ColorPicker 是一个自定义组件
 
 interface Props {

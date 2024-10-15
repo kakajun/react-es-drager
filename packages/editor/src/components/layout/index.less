@@ -1,0 +1,29 @@
+.es-layout-container {
+  display: flex;
+  height: calc(100% - var(--es-header-height));
+  background-color: var(--es-bg-color-page);
+}
+.es-layout-main {
+  flex: 1;
+  position: relative;
+  margin: 20px;
+  overflow: auto;
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+    background-color: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    border-radius: 6px;
+  }
+  &:hover {
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba(69, 90, 100, 0.2);
+    }
+  }
+  .es-editor-container {
+    box-shadow: var(--el-box-shadow);
+    background-color: var(--es-color-bg);
+  }
+}

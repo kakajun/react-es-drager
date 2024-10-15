@@ -1,16 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react'
-import {
-  Row,
-  ButtonGroup,
-  Tooltip,
-  Button,
-  Divider,
-  Select,
-  Option,
-  Input,
-  InputNumber,
-  Col
-} from 'element-plus'
+import { Row, Tooltip, Button, Divider, Select, Input, InputNumber, Col } from 'antd'
 import ColorPicker from '../components/ColorPicker'
 import InputNumberComponent from '../components/InputNumber'
 import SvgIcon from '../components/svgIcon/SvgIcon'
@@ -115,7 +104,7 @@ const FontStyleSettings = () => {
     <div>
       {fontStyleListFormat.map((block, index) => (
         <Row key={index}>
-          <ButtonGroup style={{ display: 'inline-flex' }}>
+          <Button.Group>
             {block.map((item) => (
               <Tooltip placement="top" showAfter={300} content={item.label}>
                 <Button
@@ -127,7 +116,7 @@ const FontStyleSettings = () => {
                 </Button>
               </Tooltip>
             ))}
-          </ButtonGroup>
+          </Button.Group>
         </Row>
       ))}
 
@@ -145,9 +134,9 @@ const FontStyleSettings = () => {
         <Col span={14}>
           <Select vModel={titleValue} placeholder="标题" onChange={handleTitleChange}>
             {titles.map((item) => (
-              <Option label={item.label} value={item.value}>
+              <Select.Option label={item.label} value={item.value}>
                 <span style={{ fontSize: item.value, fontWeight: 'bold' }}>{item.label}</span>
-              </Option>
+              </Select.Option>
             ))}
           </Select>
         </Col>
@@ -158,9 +147,9 @@ const FontStyleSettings = () => {
         <Col span={14}>
           <Select vModel={textStyle.fontFamily} placeholder="字体">
             {fontFamilyList.map((item) => (
-              <Option label={item.label} value={item.label}>
+              <Select.Option label={item.label} value={item.label}>
                 <span style={{ fontFamily: item.label }}>{item.label}</span>
-              </Option>
+              </Select.Option>
             ))}
           </Select>
         </Col>

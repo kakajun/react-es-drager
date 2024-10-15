@@ -1,25 +1,25 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { ElButton, ElDialog } from 'element-plus';
-import ace from 'ace-builds';
-import 'ace-builds/src-min-noconflict/theme-one_dark';
-import 'ace-builds/src-min-noconflict/mode-json5';
-import dayjs from 'dayjs';
+import React, { useState, useEffect, useRef } from 'react'
+import { Button, Modal  } from 'antd'
+// import ace from 'ace-builds'
+// import 'ace-builds/src-min-noconflict/theme-one_dark'
+// import 'ace-builds/src-min-noconflict/mode-json5'
+import dayjs from 'dayjs'
 
 interface Props {
   option: {
-    content?: string;
-    confirm?: (value: string) => void;
-  };
+    content?: string
+    confirm?: (value: string) => void
+  }
 }
 
 const EditorDialog: React.FC<Props> = ({ option }) => {
   const [state, setState] = useState({
     option,
-    visible: false,
-  });
+    visible: false
+  })
 
-  const editorRef = useRef<ace.Ace.Editor | null>(null);
-  const editorContainerRef = useRef<HTMLDivElement>(null);
+  const editorRef = useRef(null)
+  const editorContainerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (state.visible && editorContainerRef.current) {
@@ -30,69 +30,56 @@ const EditorDialog: React.FC<Props> = ({ option }) => {
         theme: 'ace/theme/one_dark',
         mode: 'ace/mode/json5',
         tabSize: 4,
-        readOnly: false,
-      });
+        readOnly: false
+      })
 
       if (state.option.content) {
-        editorRef.current!.setValue(JSON.stringify(JSON.parse(state.option.content), null, 4));
+        editorRef.current!.setValue(JSON.stringify(JSON.parse(state.option.content), null, 4))
       }
     }
 
     return () => {
       if (editorRef.current) {
-        editorRef.current.destroy();
+        editorRef.current.destroy()
       }
-    };
-  }, [state.visible]);
+    }
+  }, [state.visible])
 
   const open = (newOption: Record<string, any>) => {
-    setState(prevState => ({
+    setState((prevState) => ({
       ...prevState,
       option: newOption,
-      visible: true,
-    }));
-  };
+      visible: true
+    }))
+  }
 
   const close = () => {
-    setState(prevState => ({
+    setState((prevState) => ({
       ...prevState,
-      visible: false,
-    }));
-  };
+      visible: false
+    }))
+  }
 
   const handleConfirm = () => {
-    const { confirm } = state.option;
-    confirm && confirm(editorRef.current?.getValue());
-  };
+    const { confirm } = state.option
+    confirm && confirm(editorRef.current?.getValue())
+  }
 
   const handleExport = () => {
-    if (!editorRef.current) return;
+    if (!editorRef.current) return
 
-    const link = document.createElement('a');
-    const filename = dayjs().format('YYYY-MM-DD') + '-es-drager.json';
-    link.download = filename;
+    const link = document.createElement('a')
+    const filename = dayjs().format('YYYY-MM-DD') + '-es-drager.json'
+    link.download = filename
 
-    const blob = new Blob([editorRef.current.getValue()]);
-    const href = URL.createObjectURL(blob);
-    link.href = href;
-    link.click();
-    URL.revokeObjectURL(href);
-  };
+    const blob = new Blob([editorRef.current.getValue()])
+    const href = URL.createObjectURL(blob)
+    link.href = href
+    link.click()
+    URL.revokeObjectURL(href)
+  }
 
-  return (
-    <ElDialog
-      v-model={state.visible}
-      {...state.option}
-      draggable
-    >
-      <div id="esEditor" ref={editorContainerRef} />
-      {/* <template #footer> */}
-        <ElButton @click={close}>取消</ElButton>
-        <ElButton type="primary" @click={handleConfirm}>保存编辑</ElButton>
-        <ElButton type="primary" @click={handleExport}>导出JSON</ElButton>
-      // </template>
-    </ElDialog>
-  );
-};
+  return <div></div>
+}
 
 export default EditorDialog
