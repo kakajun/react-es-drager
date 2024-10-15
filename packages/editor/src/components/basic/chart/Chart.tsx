@@ -1,20 +1,20 @@
-import React, { useRef, useEffect, useLayoutEffect } from 'react';
-import * as echarts from 'echarts';
-import { t } from '@es-drager/common/i18n';
-import { ComponentType } from '@es-drager/editor';
+import React, { useRef, useEffect, useLayoutEffect } from 'react'
+import * as echarts from 'echarts'
+import { useTranslation } from 'react-i18next'
+import { ComponentType } from '@es-drager/editor'
 
 interface Props {
-  element: ComponentType;
-  option: any;
+  element: ComponentType
+  option: any
 }
 
 const ChartComponent: React.FC<Props> = ({ element, option }) => {
-  const chartRef = useRef<HTMLDivElement>(null);
-  let chart: echarts.ECharts | null = null;
-
+  const chartRef = useRef<HTMLDivElement>(null)
+  let chart: echarts.ECharts | null = null
+  const { t } = useTranslation()
   useEffect(() => {
     if (chartInstance && chartRef.current) {
-      chart = echarts.init(chartRef.current);
+      chart = echarts.init(chartRef.current)
       chart.setOption({
         title: {
           text: t('examples.chartTitle')
@@ -31,29 +31,27 @@ const ChartComponent: React.FC<Props> = ({ element, option }) => {
             data: [5, 20, 36, 10, 10, 20]
           }
         ]
-      });
+      })
     }
-  }, []);
+  }, [])
 
   useLayoutEffect(() => {
     if (chartInstance) {
-      chart?.resize();
+      chart?.resize()
     }
-  }, [element.width, element.height]);
+  }, [element.width, element.height])
 
   useEffect(() => {
     if (chartInstance) {
-      chart?.setOption(option);
+      chart?.setOption(option)
     }
-  }, [option]);
+  }, [option])
 
   const resize = () => {
-    chart?.resize();
-  };
+    chart?.resize()
+  }
 
-  return (
-    <div ref={chartRef} style={{ width: '100%', height: '100%' }} />
-  );
-};
+  return <div ref={chartRef} style={{ width: '100%', height: '100%' }} />
+}
 
-export default ChartComponent;
+export default ChartComponent
