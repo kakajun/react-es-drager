@@ -1,4 +1,4 @@
-import Drager from 'es-drager'
+import Drager from 'react-es-drager'
 import imgUrl from '../assets/demo.png'
 
 function App() {

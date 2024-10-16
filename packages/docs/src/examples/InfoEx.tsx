@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Drager, { type DragData } from 'react-es-drager'
+import { Input } from 'antd'
 import './info.less'
 
 function DragerComponent() {
@@ -15,52 +16,40 @@ function DragerComponent() {
     setInfo(dragData)
   }
 
+  const handleInputChange = (key: keyof DragData) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+
+    const parsedValue = value ? parseInt(value) : 0 // 处理空字符串和非数字输入
+    console.log(parsedValue, 'vvvvv')
+    setInfo({ ...info, [key]: parsedValue })
+  }
+
   return (
     <>
-      {/* <Drager {...info} rotatable onChange={onChange} /> */}
+      <Drager {...info} rotatable onChange={onChange} />
 
-      {/* <div className="es-info">
+      <div className="es-info">
         <div className="es-info-item">
           <span>width</span>
-          <input
-            type="number"
-            value={info.width}
-            onChange={(e) => setInfo({ ...info, width: parseInt(e.target.value) })}
-          />
+          <Input value={info.width} onChange={handleInputChange('width')} />
         </div>
         <div className="es-info-item">
           <span className="es-info-item-label">height</span>
-          <input
-            type="number"
-            value={info.height}
-            onChange={(e) => setInfo({ ...info, height: parseInt(e.target.value) })}
-          />
+          <Input value={info.height} onChange={handleInputChange('height')} />
         </div>
         <div className="es-info-item">
           <span className="es-info-item-label">left</span>
-          <input
-            type="number"
-            value={info.left}
-            onChange={(e) => setInfo({ ...info, left: parseInt(e.target.value) })}
-          />
+          <Input value={info.left} onChange={handleInputChange('left')} />
         </div>
         <div className="es-info-item">
           <span className="es-info-item-label">top</span>
-          <input
-            type="number"
-            value={info.top}
-            onChange={(e) => setInfo({ ...info, top: parseInt(e.target.value) })}
-          />
+          <Input value={info.top} onChange={handleInputChange('top')} />
         </div>
         <div className="es-info-item">
           <span className="es-info-item-label">angle</span>
-          <input
-            type="number"
-            value={info.angle}
-            onChange={(e) => setInfo({ ...info, angle: parseInt(e.target.value) })}
-          />
+          <Input value={info.angle} onChange={handleInputChange('angle')} />
         </div>
-      </div> */}
+      </div>
     </>
   )
 }

@@ -2,7 +2,9 @@ import React, { useState, useRef, useEffect } from 'react'
 import Drager, { DragData } from 'react-es-drager'
 import { ComponentType, EditorDataType, GridRect, Area, useArea } from '@es-drager/editor'
 import { useId, makeGroup, cancelGroup } from '@es-drager/editor/src/utils'
-import { t } from '@es-drager/common/i18n'
+import { useTranslation } from 'react-i18next'
+import { Button } from 'antd'
+import './Group.less'
 
 const MyComponent = () => {
   const [data, setData] = useState<EditorDataType>({
@@ -35,7 +37,7 @@ const MyComponent = () => {
       }
     ]
   })
-
+  const { t } = useTranslation()
   const editorRef = useRef<HTMLElement | null>(null)
   const [currentIndex, setCurrentIndex] = useState(-1)
   const areaRef = useRef(null)
@@ -102,12 +104,12 @@ const MyComponent = () => {
   return (
     <div className="es-container">
       <div className="es-tools">
-        <button type="primary" onClick={handleMakeGroup}>
+        <Button type="primary" onClick={handleMakeGroup}>
           {t('examples.group')}
-        </button>
-        <button type="primary" onClick={handleCancelGroup}>
+        </Button>
+        <Button type="primary" onClick={handleCancelGroup}>
           {t('examples.unGroup')}
-        </button>
+        </Button>
       </div>
       <div
         ref={editorRef}
