@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import { registerConfig as config } from '../../utils/editor-config'
 import { ComponentType } from '../../types'
 import Icon from '../common/svgIcon/Icon'
+import './Aside.less'
 
 const EsLayoutAside: React.FC = () => {
   const [activeNames, setActiveNames] = useState(['1', '2', '3'])

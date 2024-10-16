@@ -1,13 +1,5 @@
 import React from 'react';
-
-type ComponentType = {
-  id: string;
-  component: React.ComponentType<any>;
-  props: any;
-  groupStyle?: React.CSSProperties;
-  text?: string;
-};
-
+import { ComponentType } from '../../types'
 const EsGroup: React.FC<{ elements: ComponentType[] }> = ({ elements }) => {
   return (
     <div className="es-group">

@@ -1,31 +1,29 @@
-import React, { useState, useEffect } from 'react';
-import { Row, Col, Switch, Slider, Input } from 'antd';
-import ColorPicker from './ColorPicker'; // 假设 ColorPicker 是一个自定义组件
+import React, { useState, useEffect } from 'react'
+import { Row, Col, Switch, Slider, Input } from 'antd'
+import ColorPicker from './ColorPicker' // 假设 ColorPicker 是一个自定义组件
+import { useEditorStore } from '@es-drager/editor/src/store'
 
-interface Props {
-  store: any; // 假设 store 包含 current.style 属性
-}
+const ShadowSettings = () => {
+  const store = useEditorStore()
+  const [shadow, setShadow] = useState(false)
+  const [shadowX, setShadowX] = useState(3)
+  const [shadowY, setShadowY] = useState(3)
+  const [shadowBlur, setShadowBlur] = useState(1)
+  const [shadowColor, setShadowColor] = useState('#808080')
 
-const ShadowSettings: React.FC<Props> = ({ store }) => {
-  const [shadow, setShadow] = useState(false);
-  const [shadowX, setShadowX] = useState(3);
-  const [shadowY, setShadowY] = useState(3);
-  const [shadowBlur, setShadowBlur] = useState(1);
-  const [shadowColor, setShadowColor] = useState('#808080');
-
-  const boxShadow = `${shadowX}px ${shadowY}px ${shadowBlur}px ${shadowColor}`;
+  const boxShadow = `${shadowX}px ${shadowY}px ${shadowBlur}px ${shadowColor}`
 
   useEffect(() => {
     if (shadow) {
-      store.current.style.boxShadow = boxShadow;
+      store.current.style.boxShadow = boxShadow
     } else {
-      store.current.style.boxShadow = undefined;
+      store.current.style.boxShadow = undefined
     }
-  }, [shadow, shadowX, shadowY, shadowBlur, shadowColor]);
+  }, [shadow, shadowX, shadowY, shadowBlur, shadowColor])
 
   const onChange = () => {
-    store.current.style.boxShadow = boxShadow;
-  };
+    store.current.style.boxShadow = boxShadow
+  }
 
   return (
     <div>
@@ -96,7 +94,7 @@ const ShadowSettings: React.FC<Props> = ({ store }) => {
         </>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default ShadowSettings;
+export default ShadowSettings

@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import ColorPicker from './ColorPicker'
 import { Slider } from 'antd'
+import color from 'color'
 
-const GradientSettings = ({ modelValue }) => {
+interface BackgroundProps {
+  modelValue: string
+}
+const GradientSettings: React.FC<BackgroundProps> = ({ modelValue }) => {
   const [type, setType] = useState(1)
   const [value, setValue] = useState(modelValue)
   const [gradientType, setGradientType] = useState('linear')
@@ -10,6 +14,11 @@ const GradientSettings = ({ modelValue }) => {
   const [endColor, setEndColor] = useState('rgba(255, 255, 255, 1)')
   const [gradientRotate, setGradientRotate] = useState(90)
 
+  const defaultValueMap: any = {
+    startColor: 'rgba(255, 255, 255, 1)',
+    endColor: 'rgba(255, 255, 255, 1)',
+    gradientRotate: 90
+  }
   const typeList = [
     { label: '纯色背景', value: 1 },
     { label: '渐变背景', value: 2 }
@@ -36,7 +45,11 @@ const GradientSettings = ({ modelValue }) => {
     setType(e.target.value)
   }
 
-  const handleGradientColorChange = (rotate, startColor, endColor) => {
+  const handleGradientColorChange = (
+    rotate: string | number,
+    startColor: string | number,
+    endColor: string | number
+  ) => {
     let val = `linear-gradient(${rotate}deg, ${startColor}, ${endColor})`
     if (gradientType === 'radial') {
       val = `radial-gradient(${startColor}, ${endColor})`
@@ -45,12 +58,12 @@ const GradientSettings = ({ modelValue }) => {
     setValue(val)
   }
 
-  const getGradientValue = (type) => {
+  const getGradientValue = (type: string) => {
     const gradientString = value || 'rgba(255, 255, 255, 1)'
     const isGradient = gradientString.includes('gradient')
 
     if (!isGradient) {
-      return type === 'startColor' ? startColor : gradientRotate
+      return type === 'startColor' ? color(gradientString).rgb().string() : defaultValueMap[type]
     }
 
     let gradientRegex = /gradient\((\d+deg),\s*(rgba?\([^)]+\)),\s*(rgba?\([^)]+\))\)/
@@ -60,19 +73,20 @@ const GradientSettings = ({ modelValue }) => {
     }
 
     const match = gradientString.match(gradientRegex)
+    const defaultValue = defaultValueMap[type]
     if (!match) {
-      return type === 'startColor' ? startColor : gradientRotate
+      return defaultValue
     }
 
     if (type === 'startColor') {
-      return match[2]
+      return match[2] || defaultValue
     } else if (type === 'endColor') {
-      return match[3]
+      return match[3] || defaultValue
     } else if (type === 'gradientRotate') {
-      return parseInt(match[1])
+      return parseInt(match[1] || defaultValue)
     }
 
-    return gradientRotate
+    return defaultValue
   }
 
   return (

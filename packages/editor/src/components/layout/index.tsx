@@ -14,6 +14,7 @@ import {
   PictureOutlined,
   EyeOutlined
 } from '@ant-design/icons'
+import './index.less'
 
 const App = ({ data, theme }) => {
   const [store, setStore] = useState(() => useEditorStore())

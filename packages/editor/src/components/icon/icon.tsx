@@ -1,7 +1,8 @@
 import React from 'react'
+import { ComponentType } from '../../types'
 import './icon.less'
 type Props = {
-  element: any
+  element: ComponentType
   icon: string
 }
 

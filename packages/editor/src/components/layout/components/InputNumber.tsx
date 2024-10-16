@@ -1,5 +1,6 @@
 import React, { forwardRef, useImperativeHandle } from 'react'
 import { InputNumber } from 'antd'
+import './InputNumber.less'
 
 interface Props {
   prefix?: string

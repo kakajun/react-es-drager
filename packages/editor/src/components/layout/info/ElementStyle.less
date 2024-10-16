@@ -1,0 +1,29 @@
+.color-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  .color-item {
+    width: 22%;
+    height: 28px;
+    margin-top: 10px;
+  }
+}
+.es-col {
+  display: flex;
+  align-items: center;
+}
+.text-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+  height: 100%;
+  border-radius: 4px;
+  cursor: pointer;
+  &:hover {
+    background-color: var(--el-fill-color-light);
+  }
+  :deep(.es-icon) {
+    margin-right: 4px;
+  }
+}

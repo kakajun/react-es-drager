@@ -1,16 +1,9 @@
 import React, { useMemo } from 'react'
-import { getIcon } from './svg-icon'
+import { IconProps, getIcon } from './svg-icon'
 import './SvgIcon.less'
-
-interface IconProps {
-  name: string
-  size?: string | number
-  color?: string
-}
-
 const EsIcon: React.FC<IconProps> = ({ name, size, color }) => {
   const icon = useMemo(() => getIcon(name), [name])
-  const style = useMemo<CSSProperties>(() => {
+  const style = useMemo<React.CSSProperties>(() => {
     if (!size && !color) return {}
 
     return {

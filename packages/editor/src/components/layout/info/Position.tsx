@@ -3,6 +3,7 @@ import { Form, Row, Col, InputNumber, Tooltip, Button, Divider, Checkbox, Flex }
 import { useEditorStore } from '@es-drager/editor/src/store'
 import InputNumberComponent from '../components/InputNumber'
 import SvgIcon from '../components/svgIcon/SvgIcon'
+import './Position.less'
 
 const PositionForm = () => {
   const store = useEditorStore()

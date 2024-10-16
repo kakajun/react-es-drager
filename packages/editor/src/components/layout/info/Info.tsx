@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { useEditorStore } from '@es-drager/editor/src/store'
 import EditorStyle from './EditorStyle'
-// import ElementStyle from './ElementStyle'
+import ElementStyle from './ElementStyle'
 import Position from './Position'
 import Animation from './Animation'
-
+import './info.less'
 const InfoLayout = () => {
   const store = useEditorStore()
   const [activeName, setActiveName] = useState('画布属性')
 
   const componentMap = {
-    // 样式: ElementStyle,
+    样式: ElementStyle,
     位置: Position,
     动画: Animation,
     画布属性: EditorStyle

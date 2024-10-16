@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import gsap from 'gsap'
 import { useEditorStore } from '@es-drager/editor/src/store'
-
+import './Animation.less'
 const AnimationContainer = () => {
   const [selectedAnimation, setSelectedAnimation] = useState(null)
   const [animationDuration, setAnimationDuration] = useState(2)

@@ -4,7 +4,7 @@ import ColorPicker from '../components/ColorPicker'
 import InputNumberComponent from '../components/InputNumber'
 import SvgIcon from '../components/svgIcon/SvgIcon'
 import { useEditorStore } from '@es-drager/editor/src/store'
-
+import './TextStyle.less'
 const FontStyleSettings = () => {
   const store = useEditorStore()
 

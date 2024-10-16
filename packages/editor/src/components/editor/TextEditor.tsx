@@ -3,6 +3,7 @@ import './TextEditor.less'
 type Props = {
   editable: boolean
   text?: string
+  children: React.ReactNode
 }
 
 const EsText: React.FC<Props> = ({ editable, text, children }) => {
@@ -10,7 +11,6 @@ const EsText: React.FC<Props> = ({ editable, text, children }) => {
 
   const selectText = () => {
     if (!textRef.current) return
-
     const range = document.createRange()
     range.selectNode(textRef.current)
     window.getSelection()?.removeAllRanges()
@@ -29,7 +29,7 @@ const EsText: React.FC<Props> = ({ editable, text, children }) => {
       className={['es-text', { editable: editable }].join(' ')}
       contentEditable={editable}
     >
-      {text || children}
+      {children || text}
     </div>
   )
 }

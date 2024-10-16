@@ -15,10 +15,8 @@ const EsEditor: React.FC<{
 }> = ({ modelValue, commands }) => {
   const editorRef = useRef<HTMLElement | null>(null)
   const areaRef = useRef(null)
-  const store = useEditorStore()
-
   const [data, setData] = useState(modelValue)
-  const [extraDragData, setExtraDragData] = useState({
+  const extraDragData = useRef({
     startX: 0,
     startY: 0,
     disX: 0,
@@ -57,7 +55,7 @@ const EsEditor: React.FC<{
   const { editorRect, onContextmenu, onEditorContextMenu } = useActions(data, editorRef)
 
   const onDragstart = (element: ComponentType) => {
-    setCurrent(element)
+    updateCurrent(element)
     if (!areaSelected) {
       const selectedItems = data.elements.filter((item) => item.selected)
       if (selectedItems.length === 1) {
@@ -65,11 +63,8 @@ const EsEditor: React.FC<{
       }
     }
     updateCurrent({ selected: true })
-    setExtraDragData({
-      startX: current?.left!,
-      startY: current?.top!
-    })
-
+    extraDragData.current.startX = current.left!
+    extraDragData.current.startY = current.top!
     events.emit('dragstart')
   }
 
@@ -78,8 +73,8 @@ const EsEditor: React.FC<{
   }
 
   const onDrag = (dragData: DragData) => {
-    const disX = dragData.left - extraDragData.startX
-    const disY = dragData.top - extraDragData.startY
+    const disX = dragData.left - extraDragData.current.startX
+    const disY = dragData.top - extraDragData.current.startY
 
     data.elements.forEach((item: ComponentType) => {
       if (item.selected && current?.id !== item.id) {
@@ -87,11 +82,9 @@ const EsEditor: React.FC<{
         item.top! += disY
       }
     })
-
-    setExtraDragData({
-      startX: dragData.left,
-      startY: dragData.top
-    })
+    extraDragData.current.startX= dragData.left,
+    extraDragData.current.startY= dragData.top
+    }
   }
 
   const onChange = (dragData: DragData, item: ComponentType) => {
@@ -103,11 +96,12 @@ const EsEditor: React.FC<{
   const globalEventMap = {
     dblclick: () => {
       if (!current || !current.selected) return
-      current.editable = true
+      updateCurrent({editable:true})
+
     },
     click: () => {
       if (!current) return
-      current.editable = false
+      updateCurrent({editable:false})
     }
   }
 
