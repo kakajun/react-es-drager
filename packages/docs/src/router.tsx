@@ -81,10 +81,10 @@ export const router = createHashRouter([
     path: '/',
     element: <HomeLayout />,
     children: [
-      // {
-      //   path: '/',
-      //   element: <Navigate to="/basic" replace />
-      // },
+      {
+        path: '/',
+        element: <Navigate to="/basic" replace />
+      },
       ...menuRoutes
     ]
   }

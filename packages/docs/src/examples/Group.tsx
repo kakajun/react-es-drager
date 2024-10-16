@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef } from 'react'
 import Drager, { DragData } from 'react-es-drager'
 import { ComponentType, EditorDataType, GridRect, Area, useArea } from '@es-drager/editor'
 import { useId, makeGroup, cancelGroup } from '@es-drager/editor/src/utils'

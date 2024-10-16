@@ -1,8 +1,8 @@
 import { ComponentType, EditorDataType } from '../types'
-import Area from '../components/editor/Area'
+
 import React, { useState, useEffect, useRef } from 'react'
 
-export function useArea(data: EditorDataType, areaRef: React.RefObject<Area>) {
+export function useArea(data: EditorDataType, areaRef: any) {
   const [areaSelected, setAreaSelected] = useState(false)
 
   function onEditorMouseDown(e: React.MouseEvent) {
@@ -15,7 +15,7 @@ export function useArea(data: EditorDataType, areaRef: React.RefObject<Area>) {
     })
 
     if (!flag) {
-      areaRef.current?.onMouseDown(e)
+      areaRef.current?.handleMouseDown(e)
     }
   }
 

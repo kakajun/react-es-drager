@@ -1,6 +1,6 @@
 import { ComponentType, EditorDataType } from '@es-drager/editor'
 import { calcLines } from '@es-drager/editor/src/utils'
-import { DragData } from 'react-es-drager'
+import { type DragData } from 'react-es-drager'
 import React, { useState, useEffect, useRef } from 'react'
 
 export function useMarkline(data: EditorDataType, current: ComponentType | null) {

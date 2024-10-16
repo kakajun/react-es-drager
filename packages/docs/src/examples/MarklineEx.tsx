@@ -3,6 +3,7 @@ import { GridRect } from '@es-drager/editor'
 import Drager, { DragData, MarklineData } from 'react-es-drager'
 import { useTranslation } from 'react-i18next'
 import { Button } from 'antd'
+import './markline.less'
 
 type ComponentType = {
   id?: string
@@ -45,7 +46,7 @@ function App() {
       }
     ]
   })
-
+  console.log('执行多次')
   const command = useCommand(setData, data)
 
   function onDragend() {
@@ -73,7 +74,8 @@ function App() {
     }
 
     const undo = () => {
-      if (current >= 0) {
+      if (current > 0) {
+        // 修改为大于 0
         current--
         if (queue[current]) {
           setData({ ...data, componentList: deepCopy(queue[current]) })
@@ -83,11 +85,14 @@ function App() {
 
     const record = () => {
       queue[++current] = deepCopy(data.componentList)
+      console.log(current, queue, 'qqqqqqq')
+
+      // setData({ ...data }) // 更新 data 的值
     }
 
-    record()
+    // record()
 
-    const onKeydown = (e: KeyboardEvent) => {
+    const handleKeydown = (e: KeyboardEvent) => {
       const { ctrlKey, key } = e
       if (ctrlKey) {
         if (key === 'z') undo()
@@ -96,11 +101,11 @@ function App() {
     }
 
     useEffect(() => {
-      window.addEventListener('keydown', onKeydown)
+      window.addEventListener('keydown', handleKeydown)
       return () => {
-        window.removeEventListener('keydown', onKeydown)
+        window.removeEventListener('keydown', handleKeydown)
       }
-    }, [])
+    }, [undo, redo])
 
     return {
       redo,
@@ -120,7 +125,7 @@ function App() {
   return (
     <div className="es-container">
       <div className="es-tools">
-        <Button type="primary" onClick={() => command.undo()}>
+        <Button style={{ marginRight: '10px' }} type="primary" onClick={() => command.undo()}>
           {t('examples.undo')}
         </Button>
         <Button type="primary" onClick={() => command.redo()}>
