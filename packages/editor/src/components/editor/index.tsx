@@ -82,9 +82,7 @@ const EsEditor: React.FC<{
         item.top! += disY
       }
     })
-    extraDragData.current.startX= dragData.left,
-    extraDragData.current.startY= dragData.top
-    }
+    ;(extraDragData.current.startX = dragData.left), (extraDragData.current.startY = dragData.top)
   }
 
   const onChange = (dragData: DragData, item: ComponentType) => {
@@ -96,12 +94,11 @@ const EsEditor: React.FC<{
   const globalEventMap = {
     dblclick: () => {
       if (!current || !current.selected) return
-      updateCurrent({editable:true})
-
+      updateCurrent({ editable: true })
     },
     click: () => {
       if (!current) return
-      updateCurrent({editable:false})
+      updateCurrent({ editable: false })
     }
   }
 
@@ -182,5 +179,4 @@ const EsEditor: React.FC<{
     </div>
   )
 }
-
 export default EsEditor

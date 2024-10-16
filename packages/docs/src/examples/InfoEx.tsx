@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import Drager, { type DragData } from 'es-drager';
+import { useState } from 'react'
+import Drager, { type DragData } from 'react-es-drager'
+import './info.less'
 
 function DragerComponent() {
   const [info, setInfo] = useState<DragData>({
@@ -8,17 +9,17 @@ function DragerComponent() {
     left: 100,
     top: 100,
     angle: 20
-  });
+  })
 
   const onChange = (dragData: DragData) => {
-    setInfo(dragData);
-  };
+    setInfo(dragData)
+  }
 
   return (
     <>
-      <Drager {...info} rotatable onChange={onChange} />
+      {/* <Drager {...info} rotatable onChange={onChange} /> */}
 
-      <div className="es-info">
+      {/* <div className="es-info">
         <div className="es-info-item">
           <span>width</span>
           <input
@@ -59,9 +60,9 @@ function DragerComponent() {
             onChange={(e) => setInfo({ ...info, angle: parseInt(e.target.value) })}
           />
         </div>
-      </div>
+      </div> */}
     </>
-  );
+  )
 }
 
-export default DragerComponent;
+export default DragerComponent

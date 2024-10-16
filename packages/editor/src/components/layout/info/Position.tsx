@@ -91,25 +91,25 @@ const PositionForm = () => {
     >
       <Row gutter={10}>
         <Col span={12}>
-          <InputNumber vModel={store.current.left} prefix="X" />
+          <InputNumber value={store.current.left} prefix="X" />
         </Col>
         <Col span={12}>
-          <InputNumber vModel={store.current.top} prefix="Y" />
-        </Col>
-      </Row>
-
-      <Row gutter={10}>
-        <Col span={12}>
-          <InputNumber vModel={store.current.width} prefix="W" />
-        </Col>
-        <Col span={12}>
-          <InputNumber vModel={store.current.height} prefix="H" />
+          <InputNumber value={store.current.top} prefix="Y" />
         </Col>
       </Row>
 
       <Row gutter={10}>
         <Col span={12}>
-          <InputNumber vModel={store.current.angle} prefix="旋转" />
+          <InputNumber value={store.current.width} prefix="W" />
+        </Col>
+        <Col span={12}>
+          <InputNumber value={store.current.height} prefix="H" />
+        </Col>
+      </Row>
+
+      <Row gutter={10}>
+        <Col span={12}>
+          <InputNumber value={store.current.angle} prefix="旋转" />
         </Col>
         <Col span={12} className="es-col">
           <div className="text-btn" onClick={() => handleUpdateAngle(-45)}>
@@ -150,10 +150,10 @@ const PositionForm = () => {
       <Divider />
 
       <Row>
-        <Checkbox.Group vModel={options1Value} size="small" onChange={handleOptions1Change}>
+        <Checkbox.Group value={options1Value} size="small" onChange={handleOptions1Change}>
           {options1.map((item) => (
             <Tooltip placement="top" showAfter={300} content={item.label}>
-              <Checkbox style={{ flex: 1 }} value={item.value} value={item.value}>
+              <Checkbox style={{ flex: 1 }} value={item.value}>
                 <SvgIcon name={item.value} size={20} />
               </Checkbox>
             </Tooltip>

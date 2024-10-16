@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Drager from 'react-es-drager'
 import { GridRect } from '@es-drager/editor'
+import './Grid.less'
 
 const MyComponent = () => {
   const [snapToGrid, setSnapToGrid] = useState(true)
@@ -16,7 +17,7 @@ const MyComponent = () => {
   }
 
   return (
-    <div>
+    <>
       <div className="es-grid-info">
         <div className="es-info-item">
           <span>snapToGrid</span>
@@ -53,7 +54,7 @@ const MyComponent = () => {
         />
         <GridRect showSmall={false} grid={gridSize / 5} />
       </div>
-    </div>
+    </>
   )
 }
 

@@ -5,6 +5,7 @@ import Basic from './examples/Basic'
 import Event from './examples/Event'
 // import Group from './examples/Group'
 import Grid from './examples/Grid'
+import Info from './examples/InfoEx'
 export const menuRoutes = [
   {
     path: '/basic',
@@ -26,14 +27,14 @@ export const menuRoutes = [
     meta: {
       title: 'grid'
     }
-  }
+  },
   // {
   //   path: 'info',
-  //   component: () => import('@/examples/info.vue'),
+  //   element: <Info></Info>,
   //   meta: {
   //     title: 'info'
   //   }
-  // },
+  // }
   // {
   //   path: 'slot',
   //   component: () => import('@/examples/slot.vue'),

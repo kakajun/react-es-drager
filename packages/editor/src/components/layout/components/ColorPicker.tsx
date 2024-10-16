@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { ColorPicker } from 'antd'
-import 'antd/dist/antd.css' // 如果没有全局引入，可以在这里单独引入样式
+
 
 const ColorPickerComponent = () => {
   const [popperClassName, setPopperClassName] = useState('')

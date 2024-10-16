@@ -1,8 +1,9 @@
-import React, { useState, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import MColor from 'color'
 import { useId } from '../../utils/index'
 import { useEditorStore } from '../../store'
 import './GridRect.less'
+
 interface GridRectProps {
   grid?: number
   gridCount?: number
@@ -13,11 +14,7 @@ interface GridRectProps {
 }
 const GridRect: React.FC<GridRectProps> = (props) => {
   const { grid = 10, gridCount = 5, showSmall = true, borderColor } = props
-
-  const { theme } = useEditorStore((state) => ({
-    theme: state.theme
-  }))
-
+  const { theme } = useEditorStore()
   const smallGridId = useMemo(() => props.smallGridId || useId('smallGrid'), [props.smallGridId])
   const gridId = useMemo(() => props.gridId || useId('grid'), [props.gridId])
 
@@ -44,14 +41,16 @@ const GridRect: React.FC<GridRectProps> = (props) => {
     <div className="grid-rect" style={rectStyle}>
       <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <pattern id={smallGridId} width={grid} height={grid} patternUnits="userSpaceOnUse">
-            <path
-              d={`M ${grid} 0 L 0 0 0 ${grid}`}
-              fill="none"
-              stroke={color.grid}
-              strokeWidth="0.5"
-            />
-          </pattern>
+          {showSmall && (
+            <pattern id={smallGridId} width={grid} height={grid} patternUnits="userSpaceOnUse">
+              <path
+                d={`M ${grid} 0 L 0 0 0 ${grid}`}
+                fill="none"
+                stroke={color.grid}
+                strokeWidth="0.5"
+              />
+            </pattern>
+          )}
           <pattern id={gridId} width={bigGrid} height={bigGrid} patternUnits="userSpaceOnUse">
             {showSmall && <rect width={bigGrid} height={bigGrid} fill={`url(#${smallGridId})`} />}
             <path
