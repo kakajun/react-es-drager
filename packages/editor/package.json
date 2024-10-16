@@ -11,6 +11,7 @@
     "mitt": "^3.0.1",
     "color": "^4.2.3",
     "dayjs": "^1.11.13",
-    "@types/color": "^3.0.3"
+    "@types/color": "^3.0.3",
+    "@floating-ui/react": "^0.26.25"
   }
 }

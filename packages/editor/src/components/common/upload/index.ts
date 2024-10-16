@@ -1,27 +1,24 @@
-import { useEditorContainer } from '../../../hooks'
-import { VNode, createVNode, render } from 'vue'
-import Upload from './Upload'
-type ResultType = 'text' | 'json' | 'image' | 'custom'
+import React, { useRef, useEffect } from 'react';
+import Upload from './Upload'; // 假设Upload组件已经适配了React
+
+type ResultType = 'text' | 'json' | 'image' | 'custom';
 export type UploadOption = {
-  resultType: ResultType
-  accept?: string
-  onChange?: (e: any) => void
-}
-let vm: VNode | null = null
-export function $upload(option: UploadOption) {
-  if (!vm) {
-    // 手动挂载组件
-    const { container: globalContainer } = useEditorContainer()
-    const container = document.createElement('div')
-    vm = createVNode(Upload, { option })
+  resultType: ResultType;
+  accept?: string;
+  onChange?: (e: any) => void;
+};
 
-    // 将组件渲染成真实节点
-    render(vm, container)
+const uploadRef = useRef<React.ReactInstance>(null);
 
-    globalContainer.appendChild(container.firstElementChild!)
+export const $upload = (option: UploadOption) => {
+  if (!uploadRef.current) {
+    const container = document.createElement('div');
+    document.body.appendChild(container); // 假设这里使用body作为容器，实际使用时应根据具体情况调整
+
+    uploadRef.current = React.createElement(Upload, { option });
+
+    ReactDOM.render(uploadRef.current, container);
   } else {
-    // 第一次组件挂载会打开，后面调用open打开文件选择框
-    const { open } = vm.component!.exposed!
-    open(option)
+    (uploadRef.current as any).props.open(option);
   }
-}
+};

@@ -1,6 +1,5 @@
-import { useEditorContainer } from '../../../hooks'
-import { VNode, createVNode, render } from 'vue'
-import Menu from './Menu'
+import React, { useRef, useEffect } from 'react'
+import Menu from './Menu' // 假设Menu组件已经适配了React
 
 export type ActionType =
   | 'remove'
@@ -29,19 +28,17 @@ export type MenuOption = {
   onClick?: (item: MenuItem) => void
 }
 
-let vm: VNode | null = null
-export function $contextmenu(option: MenuOption) {
-  if (!vm) {
-    const { container: globalContainer } = useEditorContainer()
+const menuRef = useRef<React.ReactInstance>(null)
+
+export const $contextmenu = (option: MenuOption) => {
+  if (!menuRef.current) {
     const container = document.createElement('div')
-    vm = createVNode(Menu, { option })
+    document.body.appendChild(container) // 假设这里使用body作为容器，实际使用时应根据具体情况调整
 
-    // 将组件渲染成真实节点
-    render(vm, container)
+    menuRef.current = React.createElement(Menu, { option })
 
-    globalContainer.appendChild(container.firstElementChild!)
+    ReactDOM.render(menuRef.current, container)
+  } else {
+    ;(menuRef.current as any).props.open(option)
   }
-
-  const { open } = vm.component!.exposed!
-  open(option)
 }
