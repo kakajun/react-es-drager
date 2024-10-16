@@ -6,37 +6,44 @@ import Preview from '../common/Preview'
 import { useEditorStore } from '../../store'
 import { useCommand } from '../../hooks/useCommand'
 import { useId } from '../../utils/common'
-import { RefreshLeft, RefreshRight, Upload, Download, Picture, View } from '@element-plus/icons-vue'
+import {
+  RedoOutlined,
+  UndoOutlined,
+  UploadOutlined,
+  DownloadOutlined,
+  PictureOutlined,
+  EyeOutlined
+} from '@ant-design/icons'
 
 const App = ({ data, theme }) => {
   const [store, setStore] = useState(() => useEditorStore())
   const mainRef = useRef(null)
   const { commands } = useCommand(store)
   const tools = [
-    { label: '撤销', icon: RefreshLeft, handler: commands.undo },
-    { label: '重做', icon: RefreshRight, handler: commands.redo },
+    { label: '撤销', icon: <RedoOutlined />, handler: commands.undo },
+    { label: '重做', icon: <UndoOutlined />, handler: commands.redo },
     {
       label: '导出',
-      icon: Download,
+      icon: <UploadOutlined />,
       handler: () => {
         alert(JSON.stringify(store.data)) // 示例替换为实际导出逻辑
       }
     },
     {
       label: '导入',
-      icon: Upload,
+      icon: <UploadOutlined />,
       handler: () => {
         // 示例替换为实际导入逻辑
       }
     },
     {
       label: '插入图片',
-      icon: Picture,
+      icon: <PictureOutlined />,
       handler: () => {
         // 示例替换为实际图片上传逻辑
       }
     },
-    { label: '预览', icon: View, handler: () => setStore({ ...store, preview: true }) }
+    { label: '预览', icon: <EyeOutlined />, handler: () => setStore({ ...store, preview: true }) }
   ]
 
   const editorContainerStyle = {

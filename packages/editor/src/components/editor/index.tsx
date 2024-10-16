@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useMemo } from 'react'
 import ESDrager, { DragData } from 'react-es-drager'
-import 'es-drager/lib/style.css'
+import 'react-es-drager/lib/style.css'
 import { omit, events, pickStyle } from '../../utils'
 import { EditorDataType, ComponentType } from '../../types'
 import GridRect from './GridRect'
@@ -24,7 +24,19 @@ const EsEditor: React.FC<{
     disX: 0,
     disY: 0
   })
-  const [current, setCurrent] = useState<ComponentType | null>(null)
+  // const [current, setCurrent] = useState<ComponentType | null>(null)
+  const { current, updateCurrent } = useEditorStore()
+
+  // // 更新 store 中的状态
+  // const updateData = (newData: EditorDataType) => {
+  //   useEditorStore.setState((prev) => ({
+  //     ...prev,
+  //     current: {
+  //       ...prev.data,
+  //       ...newData
+  //     }
+  //   }))
+  // }
 
   const gridSize = data.container?.gridSize || 10
   const scaleRatio = data.container?.scaleRatio || 1
@@ -52,8 +64,7 @@ const EsEditor: React.FC<{
         data.elements.forEach((item) => (item.selected = false))
       }
     }
-
-    current?.selected = true
+    updateCurrent({ selected: true })
     setExtraDragData({
       startX: current?.left!,
       startY: current?.top!
