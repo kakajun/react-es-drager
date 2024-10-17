@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { GridRect } from '@es-drager/editor'
-import Drager, { DragData, MarklineData } from 'react-es-drager'
+import Drager, { type DragData, MarklineData } from 'react-es-drager'
 import { useTranslation } from 'react-i18next'
 import { Button } from 'antd'
 import './markline.less'
@@ -46,74 +46,65 @@ function App() {
       }
     ]
   })
-  const queue = useRef<ComponentType[]>([])
-  let currentNum = useRef(-1)
-
-  const command = useCommand(setData, data)
+  const [history, setHistory] = React.useState<EditorState | never[]>([])
+  const [redoStack, setRedoStack] = React.useState<EditorState | never[]>([])
 
   function onDragend() {
-    command.record()
+    const copyData = deepCopy(data)
+    setData(copyData)
+    setHistory([...history, copyData])
+    if (history.length > 20) {
+      history.shift()
+    }
   }
 
-  function onChange(dragData: DragData, item: ComponentType) {
+  const undoAction = () => {
+    if (history.length > 0) {
+      const previousContent = history.pop()
+      setData(previousContent)
+      setRedoStack([...redoStack, data])
+    }
+  }
+
+  const redoAction = () => {
+    if (redoStack.length > 0) {
+      const nextContent = redoStack.pop()
+      setData(nextContent)
+      setHistory([...history, data])
+    }
+  }
+
+  const canUndo = history.length > 0
+  const canRedo = redoStack.length > 0
+
+  const onChange = (dragData: DragData, item: ComponentType) => {
+    // 创建 item 的深拷贝
+    const newItem = JSON.parse(JSON.stringify(item));
+    // 更新深拷贝的数据
     Object.keys(dragData).forEach((key) => {
-      ;(item as any)[key] = dragData[key as keyof DragData]
-    })
-  }
+      ;(newItem as any)[key] = dragData[key as keyof DragData];
+    });
+    // 更新状态，使用新的数据替换旧的数据
+    const newData = data.componentList.map((comp) =>
+      comp.id === item.id ? newItem : comp
+    );
+    setData({ ...data, componentList: newData });
+  };
 
-  function useCommand(
-    setData: React.Dispatch<React.SetStateAction<EditorState>>,
-    data: EditorState
-  ) {
-    const redo = () => {
-      if (currentNum.current < queue.current.length - 1) {
-        currentNum.current++
-        setData({ ...data, componentList: deepCopy(queue.current[currentNum.current]) })
-      }
-    }
-
-    const undo = () => {
-      if (currentNum.current > 0) {
-        debugger
-
-        if (queue.current[currentNum.current]) {
-          setData({ ...data, componentList: deepCopy(queue.current[currentNum.current]) })
-        }
-        // 修改为大于 0
-        currentNum.current--
-      }
-    }
-
-    const record = () => {
-      queue.current[++currentNum.current] = deepCopy(data.componentList)
-      console.log(currentNum.current, queue.current, 'qqqqqqq')
-
-      // setData({ ...data }) // 更新 data 的值
-    }
-
-    // record()
-
-    const handleKeydown = (e: KeyboardEvent) => {
-      const { ctrlKey, key } = e
-      if (ctrlKey) {
-        if (key === 'z') undo()
-        else if (key === 'y') redo()
-      }
-    }
-
-    useEffect(() => {
-      window.addEventListener('keydown', handleKeydown)
-      return () => {
-        window.removeEventListener('keydown', handleKeydown)
-      }
-    }, [undo, redo])
-
-    return {
-      redo,
-      undo,
-      record
+  const handleKeydown = (e: KeyboardEvent) => {
+    const { ctrlKey, key } = e
+    if (ctrlKey) {
+      if (key === 'z') undoAction()
+      else if (key === 'y') redoAction()
     }
   }
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeydown)
+    return () => {
+      window.removeEventListener('keydown', handleKeydown)
+    }
+  }, [undoAction, redoAction])
 
   function deepCopy(obj: any) {
     return JSON.parse(JSON.stringify(obj))
@@ -126,10 +117,15 @@ function App() {
   return (
     <div className="es-container">
       <div className="es-tools">
-        <Button style={{ marginRight: '10px' }} type="primary" onClick={() => command.undo()}>
+        <Button
+          style={{ marginRight: '10px' }}
+          type="primary"
+          onClick={undoAction}
+          disabled={!canUndo}
+        >
           {t('examples.undo')}
         </Button>
-        <Button type="primary" onClick={() => command.redo()}>
+        <Button type="primary" onClick={redoAction} disabled={!canRedo}>
           {t('examples.redo')}
         </Button>
       </div>
@@ -141,7 +137,7 @@ function App() {
             snap
             snapThreshold={10}
             markline
-            onChange={(e) => onChange(e, item)}
+            onChange={(e: DragData) => onChange(e, item)}
             onDragEnd={() => onDragend()}
           >
             <div>{item.text}</div>
