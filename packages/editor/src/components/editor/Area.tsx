@@ -58,8 +58,6 @@ const EsEditorArea: React.ForwardRefRenderFunction<HTMLDivElement, EsEditorAreaP
       }
 
       setAreaData({ width, height, left, top })
-
-      // 模拟 emit('move')
       console.log({ width, height, left, top })
     }
 

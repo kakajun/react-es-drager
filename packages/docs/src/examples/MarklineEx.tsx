@@ -46,7 +46,9 @@ function App() {
       }
     ]
   })
-  console.log('执行多次')
+  const queue = useRef<ComponentType[]>([])
+  let currentNum = useRef(-1)
+
   const command = useCommand(setData, data)
 
   function onDragend() {
@@ -63,29 +65,28 @@ function App() {
     setData: React.Dispatch<React.SetStateAction<EditorState>>,
     data: EditorState
   ) {
-    const queue: ComponentType[] = []
-    let current = -1
-
     const redo = () => {
-      if (current < queue.length - 1) {
-        current++
-        setData({ ...data, componentList: deepCopy(queue[current]) })
+      if (currentNum.current < queue.current.length - 1) {
+        currentNum.current++
+        setData({ ...data, componentList: deepCopy(queue.current[currentNum.current]) })
       }
     }
 
     const undo = () => {
-      if (current > 0) {
-        // 修改为大于 0
-        current--
-        if (queue[current]) {
-          setData({ ...data, componentList: deepCopy(queue[current]) })
+      if (currentNum.current > 0) {
+        debugger
+
+        if (queue.current[currentNum.current]) {
+          setData({ ...data, componentList: deepCopy(queue.current[currentNum.current]) })
         }
+        // 修改为大于 0
+        currentNum.current--
       }
     }
 
     const record = () => {
-      queue[++current] = deepCopy(data.componentList)
-      console.log(current, queue, 'qqqqqqq')
+      queue.current[++currentNum.current] = deepCopy(data.componentList)
+      console.log(currentNum.current, queue.current, 'qqqqqqq')
 
       // setData({ ...data }) // 更新 data 的值
     }

@@ -239,7 +239,7 @@ const Drager: React.FC<DragerProps> = (props) => {
 
   useEffect(() => {
     onChange && onChange(dragData)
-  }, [dragData])
+  }, [dragData.width, dragData.height, dragData.left, dragData.top, dragData.angle])
 
   const dragStyle = useMemo(() => {
     const { width, height, left, top, angle } = dragData
@@ -282,7 +282,6 @@ const Drager: React.FC<DragerProps> = (props) => {
     setDragData({ ...dragData, angle: rotate })
     onRotate && onRotate({ ...dragData, angle: rotate })
   }
-
 
   return (
     <div
