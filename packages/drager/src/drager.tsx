@@ -21,6 +21,7 @@ type Slot = React.ReactNode | null
 type ChildrenSlots = [Slot, Slot, Slot]
 
 const Drager: React.FC<DragerProps> = (props) => {
+  // console.log('子组件重新渲染')
   const {
     // tag,
     // className,
@@ -33,14 +34,14 @@ const Drager: React.FC<DragerProps> = (props) => {
     color = '#3a7afe',
     width = 100,
     scaleRatio = 1,
-    // height,
-    // left,
-    // top,
+    // height = 100,
+    // left = 0,
+    // top = 0,
     // angle,
     resizeList,
     minWidth = 1,
     minHeight = 1,
-    aspectRatio = 1,
+    aspectRatio,
     equalProportion,
     maxWidth = 99999,
     maxHeight = 9999,
@@ -239,7 +240,7 @@ const Drager: React.FC<DragerProps> = (props) => {
 
   useEffect(() => {
     onChange && onChange(dragData)
-  }, [dragData.width, dragData.height, dragData.left, dragData.top, dragData.angle])
+  }, [dragData])
 
   const dragStyle = useMemo(() => {
     const { width, height, left, top, angle } = dragData
@@ -258,7 +259,7 @@ const Drager: React.FC<DragerProps> = (props) => {
       transform: `rotate(${angle}deg)`,
       '--es-drager-color': color
     }
-  }, [dragData, zIndex, color]) // 依赖项列表
+  }, [dragData]) // 依赖项列表
 
   const [defaultSlot, resizeSlot, rotateSlot] = React.Children.toArray(children).reduce(
     (acc: ChildrenSlots, child: React.ReactNode) => {

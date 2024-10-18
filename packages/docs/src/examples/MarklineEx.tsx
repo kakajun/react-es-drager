@@ -78,18 +78,10 @@ function App() {
   const canRedo = redoStack.length > 0
 
   const onChange = (dragData: DragData, item: ComponentType) => {
-    // 创建 item 的深拷贝
-    const newItem = JSON.parse(JSON.stringify(item));
-    // 更新深拷贝的数据
     Object.keys(dragData).forEach((key) => {
-      ;(newItem as any)[key] = dragData[key as keyof DragData];
-    });
-    // 更新状态，使用新的数据替换旧的数据
-    const newData = data.componentList.map((comp) =>
-      comp.id === item.id ? newItem : comp
-    );
-    setData({ ...data, componentList: newData });
-  };
+      ;(item as any)[key] = dragData[key as keyof DragData]
+    })
+  }
 
   const handleKeydown = (e: KeyboardEvent) => {
     const { ctrlKey, key } = e
