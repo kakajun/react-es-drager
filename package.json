@@ -1,6 +1,6 @@
 {
   "name": "root",
-  "version": "1.2.4",
+  "version": "1.0.0",
   "author": "kakajun <253495832@qq.com>",
   "license": "MIT",
   "private": true,
@@ -11,7 +11,7 @@
     "format": "prettier --write  \"packages/**/src/**/*.{js,ts,json,tsx,less,vue,html,md}\"",
     "lint": "esprint check --workers=4 --fix",
     "changelog": "pnpm --filter ./packages/drager changelog",
-    "release": "pnpm --filter ./packages/drager release"
+    "release": "pnpm build && node ./scripts/release.js"
   },
   "devDependencies": {
     "react-es-drager": "workspace:*",
@@ -48,7 +48,11 @@
     "antd": "^5.21.2",
     "globals": "^15.9.0",
     "@ant-design/icons": "^5.5.1",
-    "antd-style": "^3.7.0"
+    "antd-style": "^3.7.0",
+    "chalk": "4.1.0",
+    "semver": "^7.5.4",
+    "enquirer": "^2.4.1",
+    "minimist": "^1.2.8"
   },
   "keywords": [
     "react",
