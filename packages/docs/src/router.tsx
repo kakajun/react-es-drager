@@ -5,9 +5,9 @@ import Basic from './examples/Basic'
 import Event from './examples/Event'
 import Group from './examples/Group'
 import Grid from './examples/Grid'
-import InfoEx from './examples/InfoEx'
-import MarklineEx from './examples/MarklineEx'
-import SlotEx from './examples/SlotEx'
+import Info from './examples/Info'
+import Markline from './examples/Markline'
+import Slot from './examples/Slot'
 import Chart from './examples/Chart'
 
 export const menuRoutes = [
@@ -33,15 +33,15 @@ export const menuRoutes = [
     }
   },
   {
-    path: 'InfoEx',
-    element: <InfoEx></InfoEx>,
+    path: 'info',
+    element: <Info></Info>,
     meta: {
       title: 'info'
     }
   },
   {
-    path: 'SlotEx',
-    element: <SlotEx></SlotEx>,
+    path: 'slot',
+    element: <Slot></Slot>,
     meta: {
       title: 'slot'
     }
@@ -54,8 +54,8 @@ export const menuRoutes = [
     }
   },
   {
-    path: 'MarklineEx',
-    element: <MarklineEx></MarklineEx>,
+    path: 'markline',
+    element: <Markline></Markline>,
     meta: {
       title: 'markline'
     }

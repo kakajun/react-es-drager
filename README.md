@@ -1,9 +1,9 @@
-# ES Drager 拖拽组件
+# Rect ES Drager 拖拽组件
 
 - [中文](https://github.com/kakajun/react-es-drager)
 - [English](https://github.com/kakajun/react-es-drager/blob/main/README_en.md)
 
-<p align="middle" ><img width="100" src="https://github.com/kakajun/react-es-drager/logo/logo.png"/></p>
+<p align="middle" ><img width="100" src="https://kakajun.github.io/react-es-drager/logo/logo.png"/></p>
 
 <table width="100%" align="center">
 <tr>

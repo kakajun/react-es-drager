@@ -1,5 +1,6 @@
 import Drager from 'react-es-drager'
 import imgUrl from '../assets/demo.png'
+import './slot.less'
 
 function App() {
   return (
@@ -9,7 +10,8 @@ function App() {
       </Drager>
 
       <Drager width={100} height={100} left={100} top={300} rotatable>
-        resize handle
+        <div> resize handle</div>
+
         <div slot="resize" className="custom-resize" />
       </Drager>
 
