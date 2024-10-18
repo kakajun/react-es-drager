@@ -9,6 +9,7 @@ import Info from './examples/Info'
 import Markline from './examples/Markline'
 import Slot from './examples/Slot'
 import Chart from './examples/Chart'
+// import Menu from './examples/Menu'
 
 export const menuRoutes = [
   {
@@ -19,49 +20,49 @@ export const menuRoutes = [
     }
   },
   {
-    path: 'event',
+    path: '/event',
     element: <Event></Event>,
     meta: {
       title: 'event'
     }
   },
   {
-    path: 'grid',
+    path: '/grid',
     element: <Grid></Grid>,
     meta: {
       title: 'grid'
     }
   },
   {
-    path: 'info',
+    path: '/info',
     element: <Info></Info>,
     meta: {
       title: 'info'
     }
   },
   {
-    path: 'slot',
+    path: '/slot',
     element: <Slot></Slot>,
     meta: {
       title: 'slot'
     }
   },
   {
-    path: 'chart',
+    path: '/chart',
     element: <Chart></Chart>,
     meta: {
       title: 'chart'
     }
   },
   {
-    path: 'markline',
+    path: '/markline',
     element: <Markline></Markline>,
     meta: {
       title: 'markline'
     }
   },
   {
-    path: 'group',
+    path: '/group',
     element: <Group></Group>,
     meta: {
       title: 'group'
@@ -69,7 +70,7 @@ export const menuRoutes = [
   }
   // {
   //   path: 'menu',
-  //   component: () => import('@/examples/menu.vue'),
+  //   element: <Menu></Menu>,
   //   meta: {
   //     title: 'menu'
   //   }

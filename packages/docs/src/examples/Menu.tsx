@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import React, { useState, useEffect, useRef } from 'react'
 import Drager, { DragData } from 'react-es-drager'
 import { ComponentType, EditorDataType, ToolType, GridRect, useActions } from '@es-drager/editor'
 import { useId } from '@es-drager/editor/src/utils'
@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 
 function App() {
   const { t } = useTranslation()
-  const data = ref<EditorDataType>({
+  const data = useRef<EditorDataType>({
     container: {
       gridSize: 10,
       markline: {},
@@ -38,7 +38,7 @@ function App() {
     ]
   })
 
-  const editorRef = ref<HTMLElement | null>(null)
+  const editorRef = useRef<HTMLElement | null>(null)
 
   const { onEditorContextMenu, onContextmenu } = useActions(data, editorRef)
 
@@ -48,9 +48,9 @@ function App() {
       handler: () => {
         $dialog({
           title: t('examples.export'),
-          content: JSON.stringify(data.value),
+          content: JSON.stringify(data.current),
           confirm(text: string) {
-            data.value = JSON.parse(text)
+            data.current = JSON.parse(text)
           }
         })
       }
@@ -61,7 +61,7 @@ function App() {
         $upload({
           resultType: 'json',
           onChange(text: string) {
-            data.value = JSON.parse(text)
+            data.current = JSON.parse(text)
           }
         })
       }
@@ -80,7 +80,7 @@ function App() {
                 width: 160,
                 onLoad(e: Event) {
                   const { naturalHeight, naturalWidth } = e.target as any
-                  const cur = data.value.elements.find((item) => item.id === newElement.id)!
+                  const cur = data.current.elements.find((item) => item.id === newElement.id)!
 
                   cur.width = naturalWidth
                   cur.height = naturalHeight
@@ -88,7 +88,7 @@ function App() {
               }
             }
 
-            data.value.elements.push(newElement)
+            data.current.elements.push(newElement)
           }
         })
       }
@@ -96,7 +96,7 @@ function App() {
   ]
 
   function onDragstart(item: ComponentType) {
-    data.value.elements.forEach((item: ComponentType) => (item.selected = false))
+    data.current.elements.forEach((item: ComponentType) => (item.selected = false))
     const current = item
     current.selected = true
   }
@@ -117,7 +117,7 @@ function App() {
         ))}
       </div>
       <div ref={editorRef} class="es-editor" onContextMenu={(e) => onEditorContextMenu(e)}>
-        {data.value.elements.map((item) => (
+        {data.current.elements.map((item) => (
           <Drager
             {...item}
             rotatable

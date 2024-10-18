@@ -28,6 +28,8 @@ const HomeLayout: React.FC = () => {
   const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   const location = useLocation()
+  console.log(location.pathname, 'location.pathname')
+
   const [currentPath, setCurrent] = useState(location.pathname)
   const [showCode, setShowCode] = useState(false)
   const [codeHtml, setCodeHtml] = useState('')
