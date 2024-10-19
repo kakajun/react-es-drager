@@ -51,7 +51,7 @@ function App() {
 
   function onDragend() {
     const copyData = deepCopy(data)
-    setData(copyData)
+    // setData(copyData)
     setHistory([...history, copyData])
     if (history.length > 20) {
       history.shift()
@@ -82,6 +82,31 @@ function App() {
       ;(item as any)[key] = dragData[key as keyof DragData]
     })
   }
+
+  // const onChange = (dragData: DragData, item: ComponentType) => {
+  //   // const newComponentList = data.componentList.map((comp) => {
+  //   //   if (comp.id === item.id) {
+  //   //     return { ...comp, ...dragData }
+  //   //   }
+  //   //   return comp
+  //   // })
+  //   // let newArr = [...newComponentList]
+  //   // if (
+  //   //   JSON.parse(JSON.stringify(newComponentList)) != JSON.parse(JSON.stringify(data.componentList))
+  //   // ) {
+  //   //   console.log(newArr, 'newArr')
+  //   //   console.log(data.componentList, 'data.componentList')
+  //   //   // setData((prevData) => {
+  //   //   //   const newComponentList = prevData.componentList.map((comp) => {
+  //   //   //     if (comp.id === item.id) {
+  //   //   //       return { ...comp, ...dragData }
+  //   //   //     }
+  //   //   //     return comp
+  //   //   //   })
+  //   //   //   return { ...prevData, componentList: newComponentList }
+  //   //   // })
+  //   // }
+  // }
 
   const handleKeydown = (e: KeyboardEvent) => {
     const { ctrlKey, key } = e
