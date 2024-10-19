@@ -18,9 +18,7 @@ function DragerComponent() {
 
   const handleInputChange = (key: keyof DragData) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
-
     const parsedValue = value ? parseInt(value) : 0 // 处理空字符串和非数字输入
-    console.log(parsedValue, 'vvvvv')
     setInfo({ ...info, [key]: parsedValue })
   }
 

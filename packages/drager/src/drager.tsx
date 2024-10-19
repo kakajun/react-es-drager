@@ -77,16 +77,21 @@ const Drager: React.FC<DragerProps> = (props) => {
     checkDragerCollision
   } = useDrager(dragRef, props)
 
-  // useEffect(() => {
-  //   setDragData({
-  //     width: props.width || 100,
-  //     height: props.height || 100,
-  //     left: props.left || 0,
-  //     top: props.top || 0,
-  //     angle: props.angle || 0
-  //   })
-  //   console.log('props变化了')
-  // }, [props])
+  useEffect(() => {
+    const obj = {
+      width: props.width || 100,
+      height: props.height || 100,
+      left: props.left || 0,
+      top: props.top || 0,
+      angle: props.angle || 0
+    }
+    if (JSON.stringify(obj) !== JSON.stringify(dragData)) {
+      setDragData(obj)
+    }
+  }, [props])
+  useEffect(() => {
+    onChange && onChange(dragData)
+  }, [dragData])
 
   const [dotList, setDotList] = useState(getDotList(0, resizeList))
 
@@ -179,7 +184,7 @@ const Drager: React.FC<DragerProps> = (props) => {
         d = fixResizeBoundary(d, boundaryInfo, ratio)
       }
       setDragData(d)
-      onChange && onChange(d)
+
       onResize && onResize(d)
     }
 
