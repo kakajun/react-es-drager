@@ -77,6 +77,17 @@ const Drager: React.FC<DragerProps> = (props) => {
     checkDragerCollision
   } = useDrager(dragRef, props)
 
+  // useEffect(() => {
+  //   setDragData({
+  //     width: props.width || 100,
+  //     height: props.height || 100,
+  //     left: props.left || 0,
+  //     top: props.top || 0,
+  //     angle: props.angle || 0
+  //   })
+  //   console.log('props变化了')
+  // }, [props])
+
   const [dotList, setDotList] = useState(getDotList(0, resizeList))
 
   const handleRotateEnd = (angle: number) => {
@@ -168,6 +179,7 @@ const Drager: React.FC<DragerProps> = (props) => {
         d = fixResizeBoundary(d, boundaryInfo, ratio)
       }
       setDragData(d)
+      onChange && onChange(d)
       onResize && onResize(d)
     }
 
@@ -175,14 +187,12 @@ const Drager: React.FC<DragerProps> = (props) => {
       if (checkCollision && checkDragerCollision()) {
         setDragData({ ...dragData, width, height, left, top })
       }
-      // emitFn('resize-end', dragData)
       d && onResizeEnd && onResizeEnd(d)
     })
   }
 
   const fixResizeBoundary = (d: DragData, boundaryInfo: number[], ratio: number | undefined) => {
-    const [minX, maxX, minY, maxY, parentWidth, parentHeight] = boundaryInfo
-
+    const [minX, minY, parentWidth, parentHeight] = boundaryInfo
     const isMinLeft = d.left < minX
     const isMaxLeft = d.left + d.width > parentWidth
     const isMinTop = d.top < minY
@@ -237,10 +247,6 @@ const Drager: React.FC<DragerProps> = (props) => {
   useEffect(() => {
     setSelected(propsSelected)
   }, [propsSelected])
-
-  useEffect(() => {
-    onChange && onChange(dragData)
-  }, [dragData])
 
   const dragStyle = useMemo(() => {
     const { width, height, left, top, angle } = dragData

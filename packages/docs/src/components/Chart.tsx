@@ -1,17 +1,20 @@
-import { useRef, useEffect } from 'react';
-import * as echarts from 'echarts';
+import React, { useRef, useEffect, useImperativeHandle } from 'react'
+import * as echarts from 'echarts'
 
 import { useTranslation } from 'react-i18next'
-function ChartComponent() {
-  const chartRef = useRef(null);
-  let chart: echarts.ECharts | null = null;
+interface ChartMethods {
+  resize: () => void
+}
+const ChartComponent = React.forwardRef<ChartMethods, {}>((_, ref) => {
+  const chartRef = useRef(null)
+  let chart: echarts.ECharts | null = null
   const { t } = useTranslation()
   useEffect(() => {
-    init();
-  }, []);
+    init()
+  }, [])
 
   const init = () => {
-    chart = echarts.init(chartRef.current);
+    chart = echarts.init(chartRef.current)
     chart.setOption({
       title: {
         text: t('examples.chartTitle')
@@ -28,16 +31,17 @@ function ChartComponent() {
           data: [5, 20, 36, 10, 10, 20]
         }
       ]
-    });
-  };
-
+    })
+  }
   const resize = () => {
-    chart?.resize();
-  };
+    chart?.resize()
+  }
+  // 使用 useImperativeHandle 来暴露这些方法
+  useImperativeHandle(ref, () => ({
+    resize
+  }))
 
-  return (
-    <div ref={chartRef} style={{ width: '100%', height: '100%' }} />
-  );
-}
+  return <div ref={chartRef} style={{ width: '100%', height: '100%' }} />
+})
 
-export default ChartComponent;
+export default ChartComponent

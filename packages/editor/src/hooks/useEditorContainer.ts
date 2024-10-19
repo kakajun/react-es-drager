@@ -1,21 +1,33 @@
-let cachedContainer: HTMLElement
-const selector = `es-editor-container-1996`
+import React, { useState, useEffect } from 'react';
+
+const selector = `es-editor-container-1996`;
 
 type EditorContainerType = {
-  container: HTMLElement
-  selector: string
-}
+  container: HTMLElement;
+  selector: string;
+};
 
 export const useEditorContainer = (): EditorContainerType => {
-  if (!cachedContainer && !document.querySelector(`#${selector}`)) {
-    const container = document.createElement('div')
-    container.id = selector
-    cachedContainer = container
-    document.body.appendChild(container)
-  }
+  const [container, setContainer] = useState<HTMLElement | null>(null);
+
+  useEffect(() => {
+    if (!container && !document.querySelector(`#${selector}`)) {
+      const newContainer = document.createElement('div');
+      newContainer.id = selector;
+      setContainer(newContainer);
+      document.body.appendChild(newContainer);
+
+      // 清理函数，防止内存泄漏
+      return () => {
+        if (newContainer.parentNode) {
+          newContainer.parentNode.removeChild(newContainer);
+        }
+      };
+    }
+  }, [container, selector]);
 
   return {
-    container: cachedContainer,
+    container: container!,
     selector
-  }
-}
+  };
+};

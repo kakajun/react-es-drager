@@ -36,15 +36,7 @@ export function useDrager(
     angle: props.angle || 0
   })
 
-  useEffect(() => {
-    setDragData({
-      width: props.width || 100,
-      height: props.height || 100,
-      left: props.left || 0,
-      top: props.top || 0,
-      angle: props.angle || 0
-    })
-  }, [props.width, props.height, props.left, props.top, props.angle])
+
 
   const { marklineEmit } = useMarkline(targetRef, props)
   // 限制多个鼠标键按下的情况
