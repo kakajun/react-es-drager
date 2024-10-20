@@ -2,7 +2,8 @@ name: gh-pages
 
 on:
   push:
-    branches: [main]
+    # branches: [main]
+    branches: [master]
   pull_request:
     branches: [main]
 
@@ -36,8 +37,8 @@ jobs:
         run: |
           pnpm i --no-frozen-lockfile
           pnpm build
-          
-      - name:  Build doc
+
+      - name: Build doc
         run: |
           pnpm build:demo
 

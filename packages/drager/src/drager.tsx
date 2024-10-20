@@ -52,14 +52,9 @@ const Drager: React.FC<DragerProps> = (props) => {
     children,
     checkCollision,
     onChange,
-    // onDrag,
     onResize,
     onResizeStart,
     onResizeEnd,
-    // onDragStart,
-    // onDragEnd,
-    // onFocus,
-    // onBlur,
     onRotate,
     onRotateStart,
     onRotateEnd
@@ -102,14 +97,11 @@ const Drager: React.FC<DragerProps> = (props) => {
 
   const onDotMousedown = (dotInfo: any, e: MouseTouchEvent) => {
     if (disabled) return
-
     e.stopPropagation()
-
     const { clientX, clientY } = getXY(e)
     const downX = clientX
     const downY = clientY
     const { width, height, left, top } = dragData
-
     const centerX = left + width / 2
     const centerY = top + height / 2
 

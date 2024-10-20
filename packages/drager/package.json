@@ -1,6 +1,6 @@
 {
   "name": "react-es-drager",
-  "version": "1.0.0-rc1",
+  "version": "1.0.0",
   "description": "A draggable, resizable, rotatable component based on react",
   "type": "module",
   "keywords": [
@@ -21,14 +21,15 @@
   "files": [
     "lib"
   ],
-  "main": "lib/index.js",
-  "main1": "./index.tsx",
+  "main1": "lib/index.js",
+  "main": "./index.tsx",
   "repository": {
     "type": "git",
     "url": "https://github.com/kakajun/react-es-drager.git"
   },
   "scripts": {
-    "build": "vite build ."
+    "build": "vite build .",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0"
   },
   "typings": "lib/index.d.ts",
   "publishConfig": {
