@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { GridRect } from '@es-drager/editor'
 import Drager, { type DragData, MarklineData } from 'react-es-drager'
 import { useTranslation } from 'react-i18next'
@@ -46,12 +46,18 @@ function App() {
       }
     ]
   })
-  const [history, setHistory] = React.useState<EditorState | never[]>([])
-  const [redoStack, setRedoStack] = React.useState<EditorState | never[]>([])
+  const [history, setHistory] = React.useState<EditorState[]>([])
+  const [redoStack, setRedoStack] = React.useState<EditorState[]>([])
 
-  function onDragend() {
+  function onDragend(index: number, dragData: DragData) {
     const copyData = deepCopy(data)
-    // setData(copyData)
+    const updatedList = data.componentList.map((item, i) => {
+      if (i === index) {
+        return { ...item, ...dragData }
+      }
+      return item
+    })
+    setData({ componentList: updatedList })
     setHistory([...history, copyData])
     if (history.length > 20) {
       history.shift()
@@ -61,7 +67,7 @@ function App() {
   const undoAction = () => {
     if (history.length > 0) {
       const previousContent = history.pop()
-      setData(previousContent)
+      setData(previousContent!)
       setRedoStack([...redoStack, data])
     }
   }
@@ -69,44 +75,13 @@ function App() {
   const redoAction = () => {
     if (redoStack.length > 0) {
       const nextContent = redoStack.pop()
-      setData(nextContent)
+      setData(nextContent!)
       setHistory([...history, data])
     }
   }
 
   const canUndo = history.length > 0
   const canRedo = redoStack.length > 0
-
-  const onChange = (dragData: DragData, item: ComponentType) => {
-    Object.keys(dragData).forEach((key) => {
-      ;(item as any)[key] = dragData[key as keyof DragData]
-    })
-  }
-
-  // const onChange = (dragData: DragData, item: ComponentType) => {
-  //   // const newComponentList = data.componentList.map((comp) => {
-  //   //   if (comp.id === item.id) {
-  //   //     return { ...comp, ...dragData }
-  //   //   }
-  //   //   return comp
-  //   // })
-  //   // let newArr = [...newComponentList]
-  //   // if (
-  //   //   JSON.parse(JSON.stringify(newComponentList)) != JSON.parse(JSON.stringify(data.componentList))
-  //   // ) {
-  //   //   console.log(newArr, 'newArr')
-  //   //   console.log(data.componentList, 'data.componentList')
-  //   //   // setData((prevData) => {
-  //   //   //   const newComponentList = prevData.componentList.map((comp) => {
-  //   //   //     if (comp.id === item.id) {
-  //   //   //       return { ...comp, ...dragData }
-  //   //   //     }
-  //   //   //     return comp
-  //   //   //   })
-  //   //   //   return { ...prevData, componentList: newComponentList }
-  //   //   // })
-  //   // }
-  // }
 
   const handleKeydown = (e: KeyboardEvent) => {
     const { ctrlKey, key } = e
@@ -147,15 +122,14 @@ function App() {
         </Button>
       </div>
       <div className="es-editor">
-        {data.componentList.map((item) => (
+        {data.componentList.map((item, index) => (
           <Drager
             key={item.id}
             {...item}
             snap
             snapThreshold={10}
             markline
-            onChange={(e: DragData) => onChange(e, item)}
-            onDragEnd={() => onDragend()}
+            onDragEnd={(e: DragData) => onDragend(index, e)}
           >
             <div>{item.text}</div>
           </Drager>

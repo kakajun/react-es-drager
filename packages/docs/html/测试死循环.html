@@ -56,28 +56,45 @@
       }
 
       function MyApp() {
-        const [content, setContent] = React.useState({ msg: 'init' })
+        const [contentList, setContentList] = React.useState([{ msg: 'init' }, { msg: 'init2' }])
 
-        const handleInputChange = (e) => {
+        const handleInputChange = (index, e) => {
           const newContent = e.target.value
-          setContent({ msg: newContent })
+          const updatedList = contentList.map((item, i) => {
+            if (i === index) {
+              return { ...item, msg: newContent }
+            }
+            return item
+          })
+          setContentList(updatedList)
         }
 
-        const onChange = (data) => {
+        const onChange = (index, data) => {
           console.log(data, 'onChangefu')
-          setContent(data)
+          const updatedList = contentList.map((item, i) => {
+            if (i === index) {
+              return data
+            }
+            return item
+          })
+          setContentList(updatedList)
         }
+
         return (
-          <div>
-            <div>father Content {content.msg}</div>
-            <Input.TextArea
-              value={content.msg}
-              onChange={handleInputChange}
-              placeholder="Type something..."
-              rows={4}
-            />
-            <Son onChange={onChange} content={content}></Son>
-          </div>
+          <>
+            {contentList.map((content, index) => (
+              <div key={index}>
+                <div>father Content {content.msg}</div>
+                <Input.TextArea
+                  value={content.msg}
+                  onChange={(e) => handleInputChange(index, e)}
+                  placeholder="Type something..."
+                  rows={4}
+                />
+                <Son onChange={(data) => onChange(index, data)} content={content}></Son>
+              </div>
+            ))}
+          </>
         )
       }
 
