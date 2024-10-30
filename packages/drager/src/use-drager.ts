@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import { DragerProps, DragData } from './drager'
 import {
   setupMove,
@@ -28,15 +28,22 @@ export function useDrager(
   const scaleRatio = props.scaleRatio || 1
   const [isMousedown, setIsMousedown] = useState(false)
   const [selected, setSelected] = useState(false)
-  const [dragData, setDragData] = useState<DragData>({
-    width: props.width || 100,
-    height: props.height || 100,
-    left: props.left || 0,
-    top: props.top || 0,
-    angle: props.angle || 0
-  })
+  const initialDragData = useMemo(
+    () => ({
+      width: props.width || 100,
+      height: props.height || 100,
+      left: props.left || 0,
+      top: props.top || 0,
+      angle: props.angle || 0
+    }),
+    [props.width, props.height, props.left, props.top, props.angle]
+  )
 
+  const [dragData, setDragData] = useState<DragData>(initialDragData)
 
+  useEffect(() => {
+    setDragData(initialDragData)
+  }, [initialDragData])
 
   const { marklineEmit } = useMarkline(targetRef, props)
   // 限制多个鼠标键按下的情况

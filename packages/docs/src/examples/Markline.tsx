@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { GridRect } from '@es-drager/editor'
 import Drager, { type DragData, MarklineData } from 'react-es-drager'
 import { useTranslation } from 'react-i18next'
@@ -49,25 +49,35 @@ function App() {
   const [history, setHistory] = React.useState<EditorState[]>([])
   const [redoStack, setRedoStack] = React.useState<EditorState[]>([])
 
-  function onDragend(index: number, dragData: DragData) {
-    const copyData = deepCopy(data)
-    const updatedList = data.componentList.map((item, i) => {
-      if (i === index) {
-        return { ...item, ...dragData }
+  const onDragend = useCallback(
+    (index: number, dragData: DragData) => {
+      console.log(JSON.stringify(data), 'data')
+
+      const updatedList = data.componentList.map((item, i) => {
+        if (i === index) {
+          return { ...item, ...dragData }
+        }
+        return item
+      })
+
+      console.log(JSON.stringify(updatedList), 'updatedList')
+
+      setData({ componentList: updatedList })
+      setHistory([...history, data])
+      if (history.length > 20) {
+        history.shift()
       }
-      return item
-    })
-    setData({ componentList: updatedList })
-    setHistory([...history, copyData])
-    if (history.length > 20) {
-      history.shift()
-    }
-  }
+    },
+    [data.componentList]
+  )
+  useEffect(() => {
+    console.log(JSON.stringify(data), 'data111111111')
+  }, [data.componentList])
 
   const undoAction = () => {
     if (history.length > 0) {
       const previousContent = history.pop()
-      setData(previousContent!)
+      // setData(previousContent!)
       setRedoStack([...redoStack, data])
     }
   }
@@ -75,7 +85,7 @@ function App() {
   const redoAction = () => {
     if (redoStack.length > 0) {
       const nextContent = redoStack.pop()
-      setData(nextContent!)
+      // setData(nextContent!)
       setHistory([...history, data])
     }
   }

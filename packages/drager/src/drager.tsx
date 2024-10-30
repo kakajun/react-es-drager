@@ -72,18 +72,7 @@ const Drager: React.FC<DragerProps> = (props) => {
     checkDragerCollision
   } = useDrager(dragRef, props)
 
-  useEffect(() => {
-    const obj = {
-      width: props.width || 100,
-      height: props.height || 100,
-      left: props.left || 0,
-      top: props.top || 0,
-      angle: props.angle || 0
-    }
-    if (JSON.stringify(obj) !== JSON.stringify(dragData)) {
-      setDragData(obj)
-    }
-  }, [props])
+
   useEffect(() => {
     onChange && onChange(dragData)
   }, [dragData])
