@@ -58,6 +58,8 @@ export function useDrager(
 
     let { clientX: downX, clientY: downY } = getXY(e)
     const { left, top } = dragData
+    console.log(left, top, 'left, top')
+
     let minX = 0,
       maxX = 0,
       minY = 0,
@@ -88,7 +90,7 @@ export function useDrager(
         ;[moveX, moveY] = fixBoundary(moveX, moveY, minX, maxX, minY, maxY)
       }
       newDragData = { ...dragData, left: moveX, top: moveY }
-      setDragData((prev) => ({ ...prev, left: moveX, top: moveY }))
+      setDragData(newDragData)
       onDrag && onDrag(newDragData)
     }
 
@@ -97,12 +99,19 @@ export function useDrager(
         const isCollision = checkDragerCollision()
         if (isCollision) {
           setDragData((prev) => ({ ...prev, top, left }))
+          onDragEnd && onDragEnd(dragData)
         }
+      } else {
+        console.log(
+          newDragData,
+          'newDragDatanewDragDatanewDragDatanewDragDatanewDragDatanewDragDatanewDragDatanewDragDatanewDragData'
+        )
+
+        onDragEnd && onDragEnd(newDragData)
       }
       mouseSet.clear()
       setIsMousedown(false)
       marklineEmit('drag-end')
-      onDragEnd && onDragEnd(newDragData)
     })
   }
 
@@ -191,15 +200,13 @@ export function useDrager(
         height: height || 100
       }))
     }
-
     targetRef.current.addEventListener('mousedown', onMousedown)
     targetRef.current.addEventListener('touchstart', onMousedown, { passive: true })
-
     return () => {
       targetRef.current?.removeEventListener('mousedown', onMousedown)
       targetRef.current?.removeEventListener('touchstart', onMousedown)
     }
-  }, [dragData])
+  }, [])
 
   useEffect(() => {
     if (selected) {
@@ -210,18 +217,19 @@ export function useDrager(
         document.addEventListener('keydown', handleKeyDown)
         document.addEventListener('keyup', handleKeyUp)
       }
-    } else {
+    }
+
+    return () => {
+      console.log(
+        selected,
+        'selectedselectedselectedselectedselectedselectedselectedselectedselectedselectedselectedselectedselected'
+      )
+
       onBlur && onBlur(selected)
       if (!props.disabledKeyEvent) {
         document.removeEventListener('keydown', handleKeyDown)
         document.removeEventListener('keyup', handleKeyUp)
       }
-    }
-
-    return () => {
-      document.removeEventListener('click', clickOutsize)
-      document.removeEventListener('keydown', handleKeyDown)
-      document.removeEventListener('keyup', handleKeyUp)
     }
   }, [selected])
 

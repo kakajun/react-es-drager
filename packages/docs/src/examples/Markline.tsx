@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { GridRect } from '@es-drager/editor'
 import Drager, { type DragData, MarklineData } from 'react-es-drager'
 import { useTranslation } from 'react-i18next'
@@ -48,28 +48,29 @@ function App() {
   })
   const [history, setHistory] = React.useState<EditorState[]>([])
   const [redoStack, setRedoStack] = React.useState<EditorState[]>([])
+  const check = useRef()
+  const onDragend = (index: number, dragData: DragData) => {
+    console.log(JSON.stringify(data), 'data')
 
-  const onDragend = useCallback(
-    (index: number, dragData: DragData) => {
-      console.log(JSON.stringify(data), 'data')
+    const updatedList = data.componentList.map((item, i) => {
+      if (i === index) {
+        console.log({ ...dragData, ...item }, ' {...dragData, ...item }')
 
-      const updatedList = data.componentList.map((item, i) => {
-        if (i === index) {
-          return { ...item, ...dragData }
-        }
-        return item
-      })
-
-      console.log(JSON.stringify(updatedList), 'updatedList')
-
-      setData({ componentList: updatedList })
-      setHistory([...history, data])
-      if (history.length > 20) {
-        history.shift()
+        return { ...item, ...dragData }
       }
-    },
-    [data.componentList]
-  )
+      console.log(item, ' itemitemitem')
+      return item
+    })
+
+    console.log(JSON.stringify(updatedList), 'updatedList')
+
+    setData({ componentList: updatedList })
+    setHistory([...history, data])
+    if (history.length > 20) {
+      history.shift()
+    }
+  }
+
   useEffect(() => {
     console.log(JSON.stringify(data), 'data111111111')
   }, [data.componentList])

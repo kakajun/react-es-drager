@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react'
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import {
   formatData,
   withUnit,
@@ -72,10 +72,9 @@ const Drager: React.FC<DragerProps> = (props) => {
     checkDragerCollision
   } = useDrager(dragRef, props)
 
-
   useEffect(() => {
-    onChange && onChange(dragData)
-  }, [dragData])
+    onChange && onChange({ ...dragData })
+  }, [props.width, props.height, props.left, props.top, props.angle])
 
   const [dotList, setDotList] = useState(getDotList(0, resizeList))
 
@@ -84,98 +83,101 @@ const Drager: React.FC<DragerProps> = (props) => {
     onRotateEnd && onRotateEnd({ ...dragData, angle })
   }
 
-  const onDotMousedown = (dotInfo: any, e: MouseTouchEvent) => {
-    if (disabled) return
-    e.stopPropagation()
-    const { clientX, clientY } = getXY(e)
-    const downX = clientX
-    const downY = clientY
-    const { width, height, left, top } = dragData
-    const centerX = left + width / 2
-    const centerY = top + height / 2
-
-    const rect = {
-      width,
-      height,
-      centerX,
-      centerY,
-      rotateAngle: dragData.angle
-    }
-    const type = dotInfo.side
-    onResizeStart && onResizeStart(dragData)
-    let boundaryInfo: number[] = []
-    if (boundary) {
-      boundaryInfo = getBoundary()
-    }
-    let d: DragData | null = null
-    const onMousemove = (e: MouseTouchEvent) => {
+  const onDotMousedown = useCallback(
+    (dotInfo: any, e: MouseTouchEvent) => {
+      if (disabled) return
+      e.stopPropagation()
       const { clientX, clientY } = getXY(e)
-      let deltaX = (clientX - downX) / scaleRatio
-      let deltaY = (clientY - downY) / scaleRatio
+      const downX = clientX
+      const downY = clientY
+      const { width, height, left, top } = dragData
+      const centerX = left + width / 2
+      const centerY = top + height / 2
 
-      if (snapToGrid) {
-        deltaX = calcGrid(deltaX, gridX)
-        deltaY = calcGrid(deltaY, gridY)
-      }
-
-      const alpha = Math.atan2(deltaY, deltaX)
-      const deltaL = getLength(deltaX, deltaY)
-      const isShiftKey = e.shiftKey
-
-      const beta = alpha - degToRadian(rect.rotateAngle)
-      const deltaW = deltaL * Math.cos(beta)
-      const deltaH = deltaL * Math.sin(beta)
-      const ratio =
-        (equalProportion || isShiftKey) && !aspectRatio ? rect.width / rect.height : aspectRatio
-
-      const {
-        position: { centerX, centerY },
-        size: { width, height }
-      } = getNewStyle(
-        type,
-        { ...rect, rotateAngle: rect.rotateAngle },
-        deltaW,
-        deltaH,
-        ratio,
-        minWidth,
-        minHeight
-      )
-
-      const pData = centerToTL({
-        centerX,
-        centerY,
+      const rect = {
         width,
         height,
-        angle: dragData.angle
-      })
-
-      d = {
-        ...dragData,
-        ...formatData(pData, centerX, centerY)
+        centerX,
+        centerY,
+        rotateAngle: dragData.angle
       }
-
-      if (maxWidth > 0) {
-        d.width = Math.min(d.width, maxWidth)
-      }
-      if (maxHeight > 0) {
-        d.height = Math.min(d.height, maxHeight)
-      }
-
+      const type = dotInfo.side
+      onResizeStart && onResizeStart(dragData)
+      let boundaryInfo: number[] = []
       if (boundary) {
-        d = fixResizeBoundary(d, boundaryInfo, ratio)
+        boundaryInfo = getBoundary()
       }
-      setDragData(d)
+      let d: DragData | null = null
+      const onMousemove = (e: MouseTouchEvent) => {
+        const { clientX, clientY } = getXY(e)
+        let deltaX = (clientX - downX) / scaleRatio
+        let deltaY = (clientY - downY) / scaleRatio
 
-      onResize && onResize(d)
-    }
+        if (snapToGrid) {
+          deltaX = calcGrid(deltaX, gridX)
+          deltaY = calcGrid(deltaY, gridY)
+        }
 
-    setupMove(onMousemove, () => {
-      if (checkCollision && checkDragerCollision()) {
-        setDragData({ ...dragData, width, height, left, top })
+        const alpha = Math.atan2(deltaY, deltaX)
+        const deltaL = getLength(deltaX, deltaY)
+        const isShiftKey = e.shiftKey
+
+        const beta = alpha - degToRadian(rect.rotateAngle)
+        const deltaW = deltaL * Math.cos(beta)
+        const deltaH = deltaL * Math.sin(beta)
+        const ratio =
+          (equalProportion || isShiftKey) && !aspectRatio ? rect.width / rect.height : aspectRatio
+
+        const {
+          position: { centerX, centerY },
+          size: { width, height }
+        } = getNewStyle(
+          type,
+          { ...rect, rotateAngle: rect.rotateAngle },
+          deltaW,
+          deltaH,
+          ratio,
+          minWidth,
+          minHeight
+        )
+
+        const pData = centerToTL({
+          centerX,
+          centerY,
+          width,
+          height,
+          angle: dragData.angle
+        })
+
+        d = {
+          ...dragData,
+          ...formatData(pData, centerX, centerY)
+        }
+
+        if (maxWidth > 0) {
+          d.width = Math.min(d.width, maxWidth)
+        }
+        if (maxHeight > 0) {
+          d.height = Math.min(d.height, maxHeight)
+        }
+
+        if (boundary) {
+          d = fixResizeBoundary(d, boundaryInfo, ratio)
+        }
+        setDragData(d)
+
+        onResize && onResize(d)
       }
-      d && onResizeEnd && onResizeEnd(d)
-    })
-  }
+
+      setupMove(onMousemove, () => {
+        if (checkCollision && checkDragerCollision()) {
+          setDragData({ ...dragData, width, height, left, top })
+        }
+        d && onResizeEnd && onResizeEnd(d)
+      })
+    },
+    [dragData]
+  )
 
   const fixResizeBoundary = (d: DragData, boundaryInfo: number[], ratio: number | undefined) => {
     const [minX, minY, parentWidth, parentHeight] = boundaryInfo
@@ -231,7 +233,7 @@ const Drager: React.FC<DragerProps> = (props) => {
   const showResize = useMemo(() => resizable && !disabled, [resizable, disabled])
 
   useEffect(() => {
-    setSelected(propsSelected)
+    // setSelected(propsSelected)
   }, [propsSelected])
 
   const dragStyle = useMemo(() => {
