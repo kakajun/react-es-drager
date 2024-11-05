@@ -28,12 +28,6 @@
           setContent(obj)
         }, [obj])
 
-        const onClick = (obj) => {
-          const newObj = { obj: { ...obj, msg: '我是新的' } }
-          setContent({ ...obj, msg: '我是新的' })
-          clickEnd && clickEnd(newObj)
-        }
-
         const onMousedown = (e) => {
           const newObj = { obj: { ...obj, msg: '我是新的' } }
           setContent({ ...obj, msg: '我是新的' })
@@ -49,12 +43,7 @@
 
         return (
           <div>
-            <div
-              ref={dragRef}
-              //  onClick={() => onClick(content)}
-            >
-              {content.msg + content.aa}
-            </div>
+            <div ref={dragRef}>{content.msg + content.aa}</div>
           </div>
         )
       }
