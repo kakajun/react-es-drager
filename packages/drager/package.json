@@ -1,6 +1,6 @@
 {
   "name": "react-es-drager",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A draggable, resizable, rotatable component based on react",
   "type": "module",
   "keywords": [
@@ -21,8 +21,8 @@
   "files": [
     "lib"
   ],
-  "main1": "lib/index.js",
-  "main": "./index.tsx",
+  "main": "lib/index.js",
+  "main1": "./index.tsx",
   "repository": {
     "type": "git",
     "url": "https://github.com/kakajun/react-es-drager.git"

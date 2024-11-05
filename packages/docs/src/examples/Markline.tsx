@@ -4,7 +4,7 @@ import Drager, { type DragData, MarklineData } from 'react-es-drager'
 import { useTranslation } from 'react-i18next'
 import { Button } from 'antd'
 import './markline.less'
-
+import { useMemoizedFn } from 'ahooks'
 type ComponentType = {
   id?: string
   component: string
@@ -24,7 +24,7 @@ interface EditorState {
 function App() {
   const [markLineData, setMarkLineData] = useState<MarklineData>({ left: null, top: null })
   const { t } = useTranslation()
-  const [data, setData] = useState<EditorState>({
+  const [comDatas, setComDatas] = useState<EditorState>({
     componentList: [
       {
         id: 'div1',
@@ -46,48 +46,40 @@ function App() {
       }
     ]
   })
+
   const [history, setHistory] = React.useState<EditorState[]>([])
   const [redoStack, setRedoStack] = React.useState<EditorState[]>([])
   const check = useRef()
-  const onDragend = (index: number, dragData: DragData) => {
-    console.log(JSON.stringify(data), 'data')
-
-    const updatedList = data.componentList.map((item, i) => {
+  const onDragend = useMemoizedFn((index: number, dragData: DragData) => {
+    console.log(JSON.stringify(comDatas), '目前的')
+    const updatedList = comDatas.componentList.map((item, i) => {
       if (i === index) {
         console.log({ ...dragData, ...item }, ' {...dragData, ...item }')
-
         return { ...item, ...dragData }
       }
       console.log(item, ' itemitemitem')
       return item
     })
-
-    console.log(JSON.stringify(updatedList), 'updatedList')
-
-    setData({ componentList: updatedList })
-    setHistory([...history, data])
+    setComDatas({ componentList: updatedList })
+    setHistory([...history, comDatas])
     if (history.length > 20) {
       history.shift()
     }
-  }
-
-  useEffect(() => {
-    console.log(JSON.stringify(data), 'data111111111')
-  }, [data.componentList])
+  })
 
   const undoAction = () => {
     if (history.length > 0) {
       const previousContent = history.pop()
-      // setData(previousContent!)
-      setRedoStack([...redoStack, data])
+      setComDatas(previousContent!)
+      setRedoStack([...redoStack, comDatas])
     }
   }
 
   const redoAction = () => {
     if (redoStack.length > 0) {
       const nextContent = redoStack.pop()
-      // setData(nextContent!)
-      setHistory([...history, data])
+      setComDatas(nextContent!)
+      setHistory([...history, comDatas])
     }
   }
 
@@ -133,7 +125,7 @@ function App() {
         </Button>
       </div>
       <div className="es-editor">
-        {data.componentList.map((item, index) => (
+        {comDatas.componentList.map((item, index) => (
           <Drager
             key={item.id}
             {...item}
@@ -156,7 +148,7 @@ function App() {
         {markLineData.top !== null && (
           <div className="es-editor-markline-top" style={{ top: `${markLineData.top}px` }}></div>
         )}
-        <GridRect className="grid-rect" />
+        <GridRect />
       </div>
     </div>
   )

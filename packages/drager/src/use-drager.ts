@@ -191,7 +191,6 @@ export function useDrager(
 
   useEffect(() => {
     if (!targetRef.current) return
-
     if (!dragData.width && !dragData.height) {
       const { width, height } = getBoundingClientRectByScale(targetRef.current, scaleRatio || 1)
       setDragData((prev) => ({
