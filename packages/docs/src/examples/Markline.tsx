@@ -49,18 +49,15 @@ function App() {
 
   const [history, setHistory] = React.useState<EditorState[]>([])
   const [redoStack, setRedoStack] = React.useState<EditorState[]>([])
-  const check = useRef()
+
   const onDragend = useMemoizedFn((index: number, dragData: DragData) => {
-    console.log(JSON.stringify(comDatas), '目前的')
-    const updatedList = comDatas.componentList.map((item, i) => {
-      if (i === index) {
-        console.log({ ...dragData, ...item }, ' {...dragData, ...item }')
-        return { ...item, ...dragData }
-      }
-      console.log(item, ' itemitemitem')
-      return item
-    })
-    setComDatas({ componentList: updatedList })
+    setComDatas((prevState) => ({
+      ...prevState,
+      componentList: prevState.componentList.map((item, i) =>
+        i === index ? { ...item, ...dragData } : item
+      )
+    }))
+
     setHistory([...history, comDatas])
     if (history.length > 20) {
       history.shift()
