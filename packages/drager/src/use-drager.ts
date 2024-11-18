@@ -219,11 +219,6 @@ export function useDrager(
     }
 
     return () => {
-      console.log(
-        selected,
-        'selectedselectedselectedselectedselectedselectedselectedselectedselectedselectedselectedselectedselected'
-      )
-
       onBlur && onBlur(selected)
       if (!props.disabledKeyEvent) {
         document.removeEventListener('keydown', handleKeyDown)
