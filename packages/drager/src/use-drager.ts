@@ -19,31 +19,36 @@ interface UseDragerResult {
   checkDragerCollision: () => boolean
   dragData: DragData
 }
-
+// 默认尺寸
+const DEFAULT_SIZE = {
+  width: 100,
+  height: 100,
+  left: 0,
+  top: 0,
+  angle: 0
+}
 export function useDrager(
   targetRef: React.MutableRefObject<HTMLDivElement | null>,
   props: DragerProps
 ): UseDragerResult {
   const { onDragStart, onDrag, onDragEnd, onFocus, onBlur } = props
+
+  // 获取组件的尺寸属性
+  const propsSize = props.size || props.defaultSize || DEFAULT_SIZE
+
   const scaleRatio = props.scaleRatio || 1
   const [isMousedown, setIsMousedown] = useState(false)
   const [selected, setSelected] = useState(false)
-  const initialDragData = useMemo(
-    () => ({
-      width: props.width || 100,
-      height: props.height || 100,
-      left: props.left || 0,
-      top: props.top || 0,
-      angle: props.angle || 0
-    }),
-    [props.width, props.height, props.left, props.top, props.angle]
-  )
 
-  const [dragData, setDragData] = useState<DragData>(initialDragData)
+  const [dragData, setDragData] = useState<DragData>({
+    width: propsSize.width,
+    height: propsSize.height,
+    left: propsSize.left,
+    top: propsSize.top,
+    angle: propsSize.angle
+  })
 
-  useEffect(() => {
-    setDragData(initialDragData)
-  }, [initialDragData])
+
 
   const { marklineEmit } = useMarkline(targetRef, props)
   // 限制多个鼠标键按下的情况

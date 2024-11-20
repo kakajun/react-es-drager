@@ -1,4 +1,3 @@
-
 export type IDotSide =
   | 'top'
   | 'bottom'
@@ -22,16 +21,25 @@ export interface MarklineData {
 }
 
 export interface DragerProps {
+  size?: {
+    width: number
+    height: number
+    left: number
+    top: number
+    angle: number
+  }
+  defaultSize?: {
+    width: number
+    height: number
+    left: number
+    top: number
+    angle: number
+  }
   resizable?: boolean
   rotatable?: boolean
   boundary?: boolean
   disabled?: boolean
-  width?: number
-  height?: number
-  left?: number
-  top?: number
   zIndex?: number
-  angle?: number
   color?: string
   minWidth?: number
   minHeight?: number

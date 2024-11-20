@@ -21,10 +21,7 @@ type Slot = React.ReactNode | null
 type ChildrenSlots = [Slot, Slot, Slot]
 
 const Drager: React.FC<DragerProps> = (props) => {
-  // console.log('子组件重新渲染')
   const {
-    // tag,
-    // className,
     selected: propsSelected = false,
     disabled,
     border = true,
@@ -32,12 +29,7 @@ const Drager: React.FC<DragerProps> = (props) => {
     rotatable,
     zIndex = 1,
     color = '#3a7afe',
-    width = 100,
     scaleRatio = 1,
-    // height = 100,
-    // left = 0,
-    // top = 0,
-    // angle,
     resizeList,
     minWidth = 1,
     minHeight = 1,
@@ -72,9 +64,9 @@ const Drager: React.FC<DragerProps> = (props) => {
     checkDragerCollision
   } = useDrager(dragRef, props)
 
-  useEffect(() => {
-    onChange && onChange({ ...dragData })
-  }, [props.width, props.height, props.left, props.top, props.angle])
+  // useEffect(() => {
+  //   onChange && onChange({ ...dragData })
+  // }, [])
 
   const [dotList, setDotList] = useState(getDotList(0, resizeList))
 
@@ -239,21 +231,19 @@ const Drager: React.FC<DragerProps> = (props) => {
   const dragStyle = useMemo(() => {
     const { width, height, left, top, angle } = dragData
     const style: any = {}
-    if (width) {
-      style.width = withUnit(width)
-    }
-    if (height) {
-      style.height = withUnit(height)
-    }
+    // 优先考虑props.size
+    style.width = props.size?.width ?? withUnit(width)
+    style.height = props.size?.height ?? withUnit(height)
+
     return {
       ...style,
-      left: withUnit(left),
-      top: withUnit(top),
+      left: props.size?.left ?? withUnit(left),
+      top: props.size?.top ?? withUnit(top),
       zIndex: zIndex,
-      transform: `rotate(${angle}deg)`,
+      transform: `rotate(${props.size?.top ?? angle}deg)`,
       '--es-drager-color': color
     }
-  }, [dragData]) // 依赖项列表
+  }, [dragData, props.size])
 
   const [defaultSlot, resizeSlot, rotateSlot] = React.Children.toArray(children).reduce(
     (acc: ChildrenSlots, child: React.ReactNode) => {
