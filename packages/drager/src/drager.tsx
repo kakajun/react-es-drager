@@ -50,7 +50,7 @@ const Drager: React.FC<DragerProps> = (props) => {
     selected,
     setDragData,
     triggerEvent,
-    dragData,
+    currentDragData,
     isMousedown,
     getBoundary,
     checkDragerCollision
@@ -60,7 +60,7 @@ const Drager: React.FC<DragerProps> = (props) => {
 
   const handleRotateEnd = (angle: number) => {
     setDotList(getDotList(angle, resizeList))
-    triggerEvent('rotateEnd', { ...dragData, angle })
+    triggerEvent('rotateEnd', { ...currentDragData, angle })
   }
 
   const onDotMousedown = useCallback(
@@ -70,7 +70,7 @@ const Drager: React.FC<DragerProps> = (props) => {
       const { clientX, clientY } = getXY(e)
       const downX = clientX
       const downY = clientY
-      const { width, height, left, top } = dragData
+      const { width, height, left, top } = currentDragData
       const centerX = left + width / 2
       const centerY = top + height / 2
 
@@ -79,10 +79,10 @@ const Drager: React.FC<DragerProps> = (props) => {
         height,
         centerX,
         centerY,
-        rotateAngle: dragData.angle
+        rotateAngle: currentDragData.angle
       }
       const type = dotInfo.side
-      triggerEvent('resizeStart', dragData)
+      triggerEvent('resizeStart', currentDragData)
 
       let boundaryInfo: number[] = []
       if (boundary) {
@@ -127,11 +127,11 @@ const Drager: React.FC<DragerProps> = (props) => {
           centerY,
           width,
           height,
-          angle: dragData.angle
+          angle: currentDragData.angle
         })
 
         d = {
-          ...dragData,
+          ...currentDragData,
           ...formatData(pData, centerX, centerY)
         }
 
@@ -151,13 +151,13 @@ const Drager: React.FC<DragerProps> = (props) => {
 
       setupMove(onMousemove, () => {
         if (checkCollision && checkDragerCollision()) {
-          !props.size && setDragData({ ...dragData, width, height, left, top })
+          !props.size && setDragData({ ...currentDragData, width, height, left, top })
         }
 
         d && triggerEvent('resizeEnd', d)
       })
     },
-    [dragData]
+    [currentDragData]
   )
 
   const fixResizeBoundary = (d: DragData, boundaryInfo: number[], ratio: number | undefined) => {
@@ -169,21 +169,21 @@ const Drager: React.FC<DragerProps> = (props) => {
 
     if (isMinLeft) {
       d.left = minX
-      d.width = dragData.width
+      d.width = currentDragData.width
     }
 
     if (isMinTop) {
       d.top = minY
-      d.height = dragData.height
+      d.height = currentDragData.height
     }
 
     if (isMaxLeft || isMaxTop) {
       if (isMaxLeft) {
-        d.left = dragData.left
+        d.left = currentDragData.left
       }
 
       if (isMaxTop) {
-        d.top = dragData.top
+        d.top = currentDragData.top
       }
 
       if (!isMaxTop) {
@@ -196,13 +196,13 @@ const Drager: React.FC<DragerProps> = (props) => {
     }
 
     if ((isMaxTop || isMinTop) && ratio) {
-      d.width = dragData.width
-      d.left = dragData.left
+      d.width = currentDragData.width
+      d.left = currentDragData.left
     }
 
     if ((isMaxLeft || isMinLeft) && ratio) {
-      d.height = dragData.height
-      d.top = dragData.top
+      d.height = currentDragData.height
+      d.top = currentDragData.top
     }
 
     return d
@@ -214,7 +214,7 @@ const Drager: React.FC<DragerProps> = (props) => {
   const showResize = useMemo(() => resizable && !disabled, [resizable, disabled])
 
   const dragStyle = useMemo(() => {
-    const { width, height, left, top, angle } = dragData
+    const { width, height, left, top, angle } = currentDragData
     const style: any = {}
     // 优先考虑props.size
     style.width = props.size?.width ?? withUnit(width)
@@ -225,10 +225,10 @@ const Drager: React.FC<DragerProps> = (props) => {
       left: props.size?.left ?? withUnit(left),
       top: props.size?.top ?? withUnit(top),
       zIndex: zIndex,
-      transform: `rotate(${props.size?.top ?? angle}deg)`,
+      transform: `rotate(${props.size?.angle ?? angle}deg)`,
       '--es-drager-color': color
     }
-  }, [dragData, props.size])
+  }, [currentDragData, props.size])
 
   const [defaultSlot, resizeSlot, rotateSlot] = React.Children.toArray(children).reduce(
     (acc: ChildrenSlots, child: React.ReactNode) => {
@@ -249,8 +249,8 @@ const Drager: React.FC<DragerProps> = (props) => {
     [null, null, null]
   )
   const setRotate = (rotate: number) => {
-    !props.size && setDragData({ ...dragData, angle: rotate })
-    triggerEvent('rotate', { ...dragData, angle: rotate })
+    !props.size && setDragData({ ...currentDragData, angle: rotate })
+    triggerEvent('rotate', { ...currentDragData, angle: rotate })
   }
 
   return (
@@ -286,7 +286,7 @@ const Drager: React.FC<DragerProps> = (props) => {
 
       {showRotate && (
         <Rotate
-          dragData={dragData}
+          dragData={currentDragData}
           element={dragRef.current}
           onRotate={setRotate}
           onRotateStart={(data) => triggerEvent('rotateStart', data)}

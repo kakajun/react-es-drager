@@ -18,7 +18,7 @@ interface UseDragerResult {
   setDragData: React.Dispatch<React.SetStateAction<DragData>>
   getBoundary: () => number[]
   checkDragerCollision: () => boolean
-  dragData: DragData
+  currentDragData: DragData
 }
 // 默认尺寸
 const DEFAULT_SIZE = {
@@ -75,6 +75,8 @@ export function useDrager(
     angle: propsSize.angle
   })
 
+  const currentDragData = props.size || dragData
+
   const { marklineEmit } = useMarkline(targetRef, props)
   // 限制多个鼠标键按下的情况
   const mouseSet = new Set()
@@ -87,7 +89,7 @@ export function useDrager(
     setSelected(true)
 
     let { clientX: downX, clientY: downY } = getXY(e)
-    const { left, top } = dragData
+    const { left, top } = currentDragData
     console.log(left, top, 'left, top')
 
     let minX = 0,
@@ -99,9 +101,9 @@ export function useDrager(
       ;[minX, maxX, minY, maxY] = getBoundary()
     }
     marklineEmit('drag-start')
-    triggerEvent('dragStart', dragData)
+    triggerEvent('dragStart', currentDragData)
 
-    let newDragData = dragData
+    let newDragData = currentDragData
     const onMousemove = (e: MouseTouchEvent) => {
       if (mouseSet.size > 1) return
       const { clientX, clientY } = getXY(e)
@@ -109,7 +111,7 @@ export function useDrager(
       let moveY = (clientY - downY) / scaleRatio + top
 
       if (props.snapToGrid) {
-        const { left: curX, top: curY } = dragData
+        const { left: curX, top: curY } = currentDragData
         const diffX = moveX - curX
         const diffY = moveY - curY
 
@@ -120,7 +122,7 @@ export function useDrager(
       if (props.boundary) {
         ;[moveX, moveY] = fixBoundary(moveX, moveY, minX, maxX, minY, maxY)
       }
-      newDragData = { ...dragData, left: moveX, top: moveY }
+      newDragData = { ...currentDragData, left: moveX, top: moveY }
       !props.size && setDragData(newDragData)
       triggerEvent('drag', newDragData)
     }
@@ -130,7 +132,7 @@ export function useDrager(
         const isCollision = checkDragerCollision()
         if (isCollision) {
           !props.size && setDragData((prev) => ({ ...prev, top, left }))
-          triggerEvent('dragEnd', dragData)
+          triggerEvent('dragEnd', currentDragData)
         }
       } else {
         triggerEvent('dragEnd', newDragData)
@@ -148,23 +150,26 @@ export function useDrager(
       if (props.snap && markLine) {
         if (markLine.diffX) {
           !props.size &&
-            setDragData((prev) => ({ ...prev, left: dragData.left + (markLine?.diffX || 0) }))
+            setDragData((prev) => ({
+              ...prev,
+              left: currentDragData.left + (markLine?.diffX || 0)
+            }))
         }
 
         if (markLine.diffY) {
           !props.size &&
-            setDragData((prev) => ({ ...prev, top: dragData.top + (markLine?.diffY || 0) }))
+            setDragData((prev) => ({ ...prev, top: currentDragData.top + (markLine?.diffY || 0) }))
         }
       }
     }
 
     handleDrag()
-  }, [props.size, dragData])
+  }, [props.size, currentDragData])
 
   const getBoundary = () => {
     let minX = 0,
       minY = 0
-    const { left, top, height, width, angle } = dragData
+    const { left, top, height, width, angle } = currentDragData
     const parentEl = targetRef.current?.offsetParent || document.body
     const parentElRect = getBoundingClientRectByScale(parentEl!, scaleRatio)
 
@@ -211,16 +216,22 @@ export function useDrager(
     setSelected(false)
   }
 
-  const { handleKeyDown, handleKeyUp } = useKeyEvent(props, dragData, setDragData, triggerEvent, {
-    getBoundary,
-    fixBoundary,
-    checkDragerCollision
-  })
+  const { handleKeyDown, handleKeyUp } = useKeyEvent(
+    props,
+    currentDragData,
+    setDragData,
+    triggerEvent,
+    {
+      getBoundary,
+      fixBoundary,
+      checkDragerCollision
+    }
+  )
 
   useEffect(() => {
     if (!targetRef.current) return
     // TODO 下面是干啥的？
-    if (!dragData.width && !dragData.height) {
+    if (!currentDragData.width && !currentDragData.height) {
       const { width, height } = getBoundingClientRectByScale(targetRef.current, scaleRatio || 1)
       !props.size &&
         setDragData((prev) => ({
@@ -235,7 +246,7 @@ export function useDrager(
       targetRef.current?.removeEventListener('mousedown', onMousedown)
       targetRef.current?.removeEventListener('touchstart', onMousedown)
     }
-  }, [dragData])
+  }, [dragData, props.size])
 
   useEffect(() => {
     if (selected) {
@@ -263,7 +274,7 @@ export function useDrager(
     selected,
     setSelected,
     setDragData,
-    dragData,
+    currentDragData,
     getBoundary,
     checkDragerCollision
   }
