@@ -31,21 +31,17 @@ export interface MarklineData {
   diffY?: number
 }
 
+interface PropSize {
+  width: number
+  height: number
+  left: number
+  top: number
+  angle?: number
+}
+
 export interface DragerProps {
-  size?: {
-    width: number
-    height: number
-    left: number
-    top: number
-    angle: number
-  }
-  defaultSize?: {
-    width: number
-    height: number
-    left: number
-    top: number
-    angle: number
-  }
+  size?: PropSize
+  defaultSize?: PropSize
   resizable?: boolean
   rotatable?: boolean
   boundary?: boolean

@@ -12,7 +12,7 @@ interface Props {
   children: React.ReactNode
 }
 
-const EsHeader: React.FC<Props> = ({ title = 'react-sketch-ruler', children }) => {
+const EsHeader: React.FC<Props> = ({ title = 'react-es-drager', children }) => {
   const [isLight, setIsLight] = useState(localStorage.getItem('theme') === 'light')
 
   useEffect(() => {
@@ -35,7 +35,7 @@ const EsHeader: React.FC<Props> = ({ title = 'react-sketch-ruler', children }) =
   return (
     <div className="es-header">
       <h1 className="es-logo">
-        <img className="es-logo-img" src={logo} alt="react-sketch-ruler" />
+        <img className="es-logo-img" src={logo} alt="react-es-drager" />
         <Link to="/">
           <span>{title}</span>
         </Link>

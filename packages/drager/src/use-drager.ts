@@ -72,10 +72,13 @@ export function useDrager(
     height: propsSize.height,
     left: propsSize.left,
     top: propsSize.top,
-    angle: propsSize.angle
+    angle: propsSize.angle || 0
   })
 
-  const currentDragData = props.size || dragData
+  const currentDragData = {
+    ...(props.size || dragData),
+    angle: props.size?.angle ?? dragData.angle // 确保 angle 始终存在
+  }
 
   const { marklineEmit } = useMarkline(targetRef, props)
   // 限制多个鼠标键按下的情况
@@ -123,7 +126,7 @@ export function useDrager(
         ;[moveX, moveY] = fixBoundary(moveX, moveY, minX, maxX, minY, maxY)
       }
       newDragData = { ...currentDragData, left: moveX, top: moveY }
-      !props.size && setDragData(newDragData)
+      !props.size && setDragData(newDragData as DragData)
       triggerEvent('drag', newDragData)
     }
 

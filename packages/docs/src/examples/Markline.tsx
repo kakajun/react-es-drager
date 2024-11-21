@@ -4,7 +4,7 @@ import Drager, { type DragData, MarklineData } from 'react-es-drager'
 import { useTranslation } from 'react-i18next'
 import { Button } from 'antd'
 import './markline.less'
-import { useMemoizedFn } from 'ahooks'
+
 type ComponentType = {
   id?: string
   component: string
@@ -50,9 +50,8 @@ function App() {
   const [history, setHistory] = React.useState<EditorState[]>([])
   const [redoStack, setRedoStack] = React.useState<EditorState[]>([])
 
-  const onDragend = useMemoizedFn((index: number, dragData: DragData) => {
+  const onChange = (index: number, dragData: DragData) => {
     setComDatas((prevState) => ({
-      ...prevState,
       componentList: prevState.componentList.map((item, i) =>
         i === index ? { ...item, ...dragData } : item
       )
@@ -62,7 +61,7 @@ function App() {
     if (history.length > 20) {
       history.shift()
     }
-  })
+  }
 
   const undoAction = () => {
     if (history.length > 0) {
@@ -98,10 +97,6 @@ function App() {
     }
   }, [undoAction, redoAction])
 
-  function deepCopy(obj: any) {
-    return JSON.parse(JSON.stringify(obj))
-  }
-
   function onMarkline(data: MarklineData) {
     setMarkLineData(data)
   }
@@ -129,13 +124,12 @@ function App() {
               width: item.width,
               height: item.height,
               left: item.left,
-              top: item.top,
-              angle: item.angle
+              top: item.top
             }}
             snap
             snapThreshold={10}
             markline
-            onDragEnd={(e: DragData) => onDragend(index, e)}
+            onChange={(e: DragData) => onChange(index, e)}
           >
             <div>{item.text}</div>
           </Drager>
@@ -146,8 +140,7 @@ function App() {
             width: 100,
             height: 100,
             left: 200,
-            top: 200,
-            angle: 0
+            top: 200
           }}
           snap
           markline={onMarkline}
