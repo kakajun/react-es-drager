@@ -125,7 +125,13 @@ function App() {
         {comDatas.componentList.map((item, index) => (
           <Drager
             key={item.id}
-            {...item}
+            size={{
+              width: item.width,
+              height: item.height,
+              left: item.left,
+              top: item.top,
+              angle: item.angle
+            }}
             snap
             snapThreshold={10}
             markline
@@ -135,7 +141,17 @@ function App() {
           </Drager>
         ))}
 
-        <Drager width={100} height={100} left={200} top={200} snap markline={onMarkline}>
+        <Drager
+          defaultSize={{
+            width: 100,
+            height: 100,
+            left: 200,
+            top: 200,
+            angle: 0
+          }}
+          snap
+          markline={onMarkline}
+        >
           custom markline
         </Drager>
 

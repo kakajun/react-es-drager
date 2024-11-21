@@ -120,7 +120,13 @@ const MyComponent = () => {
         {data.elements.map((item, index) => (
           <Drager
             key={item.id}
-            {...item}
+            size={{
+              width: item.width,
+              height: item.height,
+              left: item.left,
+              top: item.top,
+              angle: item.angle
+            }}
             rotatable
             onDragStart={() => onDragstart(index)}
             onDrag={onDrag}

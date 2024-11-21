@@ -42,10 +42,13 @@ const MyComponent = () => {
       </div>
       <div className="es-grid-box" style={boxStyle}>
         <Drager
-          width={100}
-          height={100}
-          top={100}
-          left={100}
+          defaultSize={{
+            width: 100,
+            height: 100,
+            left: 100,
+            top: 100,
+            angle: 0
+          }}
           gridX={gridSize}
           gridY={gridSize}
           snapToGrid={snapToGrid}

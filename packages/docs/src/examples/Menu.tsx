@@ -119,7 +119,13 @@ function App() {
       <div ref={editorRef} class="es-editor" onContextMenu={(e) => onEditorContextMenu(e)}>
         {data.current.elements.map((item) => (
           <Drager
-            {...item}
+            size={{
+              width: item.width,
+              height: item.height,
+              left: item.left,
+              top: item.top,
+              angle: item.angle
+            }}
             rotatable
             onDragStart={() => onDragstart(item)}
             onChange={(e) => onChange(e, item)}

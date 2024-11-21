@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import Drager, { type DragData } from 'react-es-drager'
 import { Input } from 'antd'
 import './info.less'
@@ -24,7 +24,17 @@ function DragerComponent() {
 
   return (
     <>
-      <Drager {...info} rotatable onChange={onChange} />
+      <Drager
+        size={{
+          width: info.width,
+          height: info.height,
+          left: info.left,
+          top: info.top,
+          angle: info.angle
+        }}
+        rotatable
+        onChange={onChange}
+      />
 
       <div className="es-info">
         <div className="es-info-item">

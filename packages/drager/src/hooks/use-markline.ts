@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { DragerProps, MarklineData } from '../drager'
 import { getBoundingClientRectByScale } from '../utils'
 
@@ -18,7 +18,7 @@ export function useMarkline(
 
   useEffect(() => {
     if (targetRef.current) {
-      parentRef.current = targetRef.current.offsetParent || document.body
+      parentRef.current = (targetRef.current.offsetParent as HTMLDivElement) || document.body
 
       parentRectRef.current = getBoundingClientRectByScale(parentRef.current, scaleRatio)
     }
@@ -60,7 +60,7 @@ export function useMarkline(
     } else {
       if (lineX.current) {
         lineX.current.style.left = `${marklineData.left}px`
-        lineX.current.style.backgroundColor = props.color
+        lineX.current.style.backgroundColor = props.color || ''
         lineX.current.style.display = 'block'
       }
     }
@@ -70,7 +70,7 @@ export function useMarkline(
     } else {
       if (lineY.current) {
         lineY.current.style.top = `${marklineData.top}px`
-        lineY.current.style.backgroundColor = props.color
+        lineY.current.style.backgroundColor = props.color || ''
         lineY.current.style.display = 'block'
       }
     }

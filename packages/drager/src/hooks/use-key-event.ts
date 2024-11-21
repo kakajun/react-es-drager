@@ -1,4 +1,4 @@
-import { DragerProps, DragData } from '../drager'
+import { DragerProps, DragData, TriggerEvent } from '../drager'
 
 type UtilFN = {
   getBoundary: () => number[]
@@ -16,7 +16,8 @@ type UtilFN = {
 export function useKeyEvent(
   props: DragerProps,
   dragData: DragData,
-  selected: boolean,
+  setDragData: React.Dispatch<React.SetStateAction<DragData>>,
+  triggerEvent: (event: TriggerEvent, data: DragData) => void,
   { getBoundary, fixBoundary, checkDragerCollision }: UtilFN
 ) {
   let oldLeft = 0
@@ -58,16 +59,26 @@ export function useKeyEvent(
     }
 
     // 更新拖拽数据
-    dragData.left = moveX
-    dragData.top = moveY
+    !props.size &&
+      setDragData((prevData) => ({
+        ...prevData,
+        left: moveX,
+        top: moveY
+      }))
+    triggerEvent('drag', { ...dragData, left: moveX, top: moveY })
   }
 
   const handleKeyUp = (e: KeyboardEvent) => {
     if (['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
       // 检测碰撞
       if (props.checkCollision && checkDragerCollision()) {
-        dragData.left = oldLeft
-        dragData.top = oldTop
+        !props.size &&
+          setDragData((prevData) => ({
+            ...prevData,
+            left: oldLeft,
+            top: oldTop
+          }))
+        triggerEvent('dragEnd', { ...dragData, left: oldLeft, top: oldTop })
       }
     }
     oldLeft = 0

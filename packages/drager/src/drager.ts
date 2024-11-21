@@ -13,6 +13,17 @@ export type IDot = {
   cursor?: string
 }
 
+export type TriggerEvent =
+  | 'drag'
+  | 'dragStart'
+  | 'dragEnd'
+  | 'resize'
+  | 'resizeStart'
+  | 'resizeEnd'
+  | 'rotate'
+  | 'rotateStart'
+  | 'rotateEnd'
+
 export interface MarklineData {
   top?: null | number
   left?: null | number

@@ -22,13 +22,16 @@ const Rotate: React.FC<RotateProps> = ({
 }) => {
   const rotateRef = useRef<HTMLDivElement>(null)
 
-  const onRotateMousedown = (e: MouseTouchEvent) => {
+  const onRotateMousedown = (
+    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
+  ) => {
+    const event = e.nativeEvent as MouseEvent | TouchEvent
     if (!element) {
       console.warn('[es-drager] rotate component needs drag element property')
       return
     }
 
-    e.stopPropagation()
+    event.stopPropagation()
     const { width, height, left, top } = element.getBoundingClientRect()
     const centerX = left + width / 2
     const centerY = top + height / 2
