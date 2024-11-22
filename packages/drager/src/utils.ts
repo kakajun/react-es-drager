@@ -28,16 +28,16 @@ export function setupMove(
   document.addEventListener('touchend', onMouseup)
 }
 
-export function getXY(e: MouseTouchEvent) {
+export function getXY(e: React.MouseEvent | React.TouchEvent) {
   let clientX = 0,
     clientY = 0
   if (isTouchEvent(e)) {
     const touch = e.targetTouches[0]
     clientX = touch.pageX
     clientY = touch.pageY
-  } else {
-    clientX = e.clientX
-    clientY = e.clientY
+  } else if (e.nativeEvent instanceof MouseEvent) {
+    clientX = e.nativeEvent.clientX
+    clientY = e.nativeEvent.clientY
   }
 
   return { clientX, clientY }
@@ -125,6 +125,7 @@ export const degToRadian = (deg: number) => (deg * Math.PI) / 180
 export const getLength = (x: number, y: number) => Math.sqrt(x * x + y * y)
 const cos = (deg: number) => Math.cos(degToRadian(deg))
 const sin = (deg: number) => Math.sin(degToRadian(deg))
+
 export const getNewStyle = (
   type: string,
   rect: any,
@@ -139,6 +140,37 @@ export const getNewStyle = (
   const heightFlag = height < 0 ? -1 : 1
   width = Math.abs(width)
   height = Math.abs(height)
+
+  if (['top-left', 'top-right', 'bottom-left', 'bottom-right'].includes(type)) {
+    if (type === 'top-right') {
+      deltaH = -deltaH
+    } else if (type === 'bottom-left') {
+      deltaW = -deltaW
+    } else if (type === 'top-left') {
+      deltaW = -deltaW
+      deltaH = -deltaH
+    }
+
+    const widthAndDeltaW = setWidthAndDeltaW(width, deltaW, minWidth)
+    width = widthAndDeltaW.width
+    deltaW = widthAndDeltaW.deltaW
+    const heightAndDeltaH = setHeightAndDeltaH(height, deltaH, minHeight)
+    height = heightAndDeltaH.height
+    deltaH = heightAndDeltaH.deltaH
+
+    if (ratio) {
+      // if (Math.abs(deltaH) > Math.abs(deltaW)) {
+      //   deltaW = deltaH * ratio
+      //   width = height * ratio
+      // } else {
+      //   deltaH = deltaW / ratio
+      //   height = width / ratio
+      // }
+      deltaH = deltaW / ratio
+      height = width / ratio
+    }
+  }
+
   switch (type) {
     case 'right': {
       const widthAndDeltaW = setWidthAndDeltaW(width, deltaW, minWidth)
@@ -148,10 +180,8 @@ export const getNewStyle = (
         deltaH = deltaW / ratio
         height = width / ratio
         // 左上角固定
-        centerX +=
-          (deltaW / 2) * cos(rotateAngle) - (deltaH / 2) * sin(rotateAngle)
-        centerY +=
-          (deltaW / 2) * sin(rotateAngle) + (deltaH / 2) * cos(rotateAngle)
+        centerX += (deltaW / 2) * cos(rotateAngle) - (deltaH / 2) * sin(rotateAngle)
+        centerY += (deltaW / 2) * sin(rotateAngle) + (deltaH / 2) * cos(rotateAngle)
       } else {
         // 左边固定
         centerX += (deltaW / 2) * cos(rotateAngle)
@@ -160,38 +190,13 @@ export const getNewStyle = (
       break
     }
     case 'top-right': {
-      deltaH = -deltaH
-      const widthAndDeltaW = setWidthAndDeltaW(width, deltaW, minWidth)
-      width = widthAndDeltaW.width
-      deltaW = widthAndDeltaW.deltaW
-      const heightAndDeltaH = setHeightAndDeltaH(height, deltaH, minHeight)
-      height = heightAndDeltaH.height
-      deltaH = heightAndDeltaH.deltaH
-      if (ratio) {
-        deltaW = deltaH * ratio
-        width = height * ratio
-      }
-      centerX +=
-        (deltaW / 2) * cos(rotateAngle) + (deltaH / 2) * sin(rotateAngle)
-      centerY +=
-        (deltaW / 2) * sin(rotateAngle) - (deltaH / 2) * cos(rotateAngle)
+      centerX += (deltaW / 2) * cos(rotateAngle) + (deltaH / 2) * sin(rotateAngle)
+      centerY += (deltaW / 2) * sin(rotateAngle) - (deltaH / 2) * cos(rotateAngle)
       break
     }
     case 'bottom-right': {
-      const widthAndDeltaW = setWidthAndDeltaW(width, deltaW, minWidth)
-      width = widthAndDeltaW.width
-      deltaW = widthAndDeltaW.deltaW
-      const heightAndDeltaH = setHeightAndDeltaH(height, deltaH, minHeight)
-      height = heightAndDeltaH.height
-      deltaH = heightAndDeltaH.deltaH
-      if (ratio) {
-        deltaW = deltaH * ratio
-        width = height * ratio
-      }
-      centerX +=
-        (deltaW / 2) * cos(rotateAngle) - (deltaH / 2) * sin(rotateAngle)
-      centerY +=
-        (deltaW / 2) * sin(rotateAngle) + (deltaH / 2) * cos(rotateAngle)
+      centerX += (deltaW / 2) * cos(rotateAngle) - (deltaH / 2) * sin(rotateAngle)
+      centerY += (deltaW / 2) * sin(rotateAngle) + (deltaH / 2) * cos(rotateAngle)
       break
     }
     case 'bottom': {
@@ -202,10 +207,8 @@ export const getNewStyle = (
         deltaW = deltaH * ratio
         width = height * ratio
         // 左上角固定
-        centerX +=
-          (deltaW / 2) * cos(rotateAngle) - (deltaH / 2) * sin(rotateAngle)
-        centerY +=
-          (deltaW / 2) * sin(rotateAngle) + (deltaH / 2) * cos(rotateAngle)
+        centerX += (deltaW / 2) * cos(rotateAngle) - (deltaH / 2) * sin(rotateAngle)
+        centerY += (deltaW / 2) * sin(rotateAngle) + (deltaH / 2) * cos(rotateAngle)
       } else {
         // 上边固定
         centerX -= (deltaH / 2) * sin(rotateAngle)
@@ -214,21 +217,8 @@ export const getNewStyle = (
       break
     }
     case 'bottom-left': {
-      deltaW = -deltaW
-      const widthAndDeltaW = setWidthAndDeltaW(width, deltaW, minWidth)
-      width = widthAndDeltaW.width
-      deltaW = widthAndDeltaW.deltaW
-      const heightAndDeltaH = setHeightAndDeltaH(height, deltaH, minHeight)
-      height = heightAndDeltaH.height
-      deltaH = heightAndDeltaH.deltaH
-      if (ratio) {
-        height = width / ratio
-        deltaH = deltaW / ratio
-      }
-      centerX -=
-        (deltaW / 2) * cos(rotateAngle) + (deltaH / 2) * sin(rotateAngle)
-      centerY -=
-        (deltaW / 2) * sin(rotateAngle) - (deltaH / 2) * cos(rotateAngle)
+      centerX -= (deltaW / 2) * cos(rotateAngle) + (deltaH / 2) * sin(rotateAngle)
+      centerY -= (deltaW / 2) * sin(rotateAngle) - (deltaH / 2) * cos(rotateAngle)
       break
     }
     case 'left': {
@@ -240,10 +230,8 @@ export const getNewStyle = (
         height = width / ratio
         deltaH = deltaW / ratio
         // 右上角固定
-        centerX -=
-          (deltaW / 2) * cos(rotateAngle) + (deltaH / 2) * sin(rotateAngle)
-        centerY -=
-          (deltaW / 2) * sin(rotateAngle) - (deltaH / 2) * cos(rotateAngle)
+        centerX -= (deltaW / 2) * cos(rotateAngle) + (deltaH / 2) * sin(rotateAngle)
+        centerY -= (deltaW / 2) * sin(rotateAngle) - (deltaH / 2) * cos(rotateAngle)
       } else {
         // 右边固定
         centerX -= (deltaW / 2) * cos(rotateAngle)
@@ -252,22 +240,8 @@ export const getNewStyle = (
       break
     }
     case 'top-left': {
-      deltaW = -deltaW
-      deltaH = -deltaH
-      const widthAndDeltaW = setWidthAndDeltaW(width, deltaW, minWidth)
-      width = widthAndDeltaW.width
-      deltaW = widthAndDeltaW.deltaW
-      const heightAndDeltaH = setHeightAndDeltaH(height, deltaH, minHeight)
-      height = heightAndDeltaH.height
-      deltaH = heightAndDeltaH.deltaH
-      if (ratio) {
-        width = height * ratio
-        deltaW = deltaH * ratio
-      }
-      centerX -=
-        (deltaW / 2) * cos(rotateAngle) - (deltaH / 2) * sin(rotateAngle)
-      centerY -=
-        (deltaW / 2) * sin(rotateAngle) + (deltaH / 2) * cos(rotateAngle)
+      centerX -= (deltaW / 2) * cos(rotateAngle) - (deltaH / 2) * sin(rotateAngle)
+      centerY -= (deltaW / 2) * sin(rotateAngle) + (deltaH / 2) * cos(rotateAngle)
       break
     }
     case 'top': {
@@ -279,10 +253,8 @@ export const getNewStyle = (
         width = height * ratio
         deltaW = deltaH * ratio
         // 左下角固定
-        centerX +=
-          (deltaW / 2) * cos(rotateAngle) + (deltaH / 2) * sin(rotateAngle)
-        centerY +=
-          (deltaW / 2) * sin(rotateAngle) - (deltaH / 2) * cos(rotateAngle)
+        centerX += (deltaW / 2) * cos(rotateAngle) + (deltaH / 2) * sin(rotateAngle)
+        centerY += (deltaW / 2) * sin(rotateAngle) - (deltaH / 2) * cos(rotateAngle)
       } else {
         centerX += (deltaH / 2) * sin(rotateAngle)
         centerY -= (deltaH / 2) * cos(rotateAngle)
@@ -303,11 +275,7 @@ export const getNewStyle = (
   }
 }
 
-const setHeightAndDeltaH = (
-  height: number,
-  deltaH: number,
-  minHeight: number
-) => {
+const setHeightAndDeltaH = (height: number, deltaH: number, minHeight: number) => {
   const expectedHeight = height + deltaH
   if (expectedHeight > minHeight) {
     height = expectedHeight
@@ -329,13 +297,7 @@ const setWidthAndDeltaW = (width: number, deltaW: number, minWidth: number) => {
   return { width, deltaW }
 }
 
-export const centerToTL = ({
-  centerX,
-  centerY,
-  width,
-  height,
-  angle
-}: any): DragData => ({
+export const centerToTL = ({ centerX, centerY, width, height, angle }: any): DragData => ({
   top: centerY - height / 2,
   left: centerX - width / 2,
   width,
@@ -343,11 +305,7 @@ export const centerToTL = ({
   angle
 })
 
-export const formatData = (
-  data: DragData,
-  centerX: number,
-  centerY: number
-) => {
+export const formatData = (data: DragData, centerX: number, centerY: number) => {
   const { width, height } = data
   return {
     width: Math.abs(width),
@@ -384,10 +342,10 @@ export function calcGrid(diff: number, grid: number) {
  * @param element2 碰撞对象
  * @returns
  */
-export function checkCollision(element1: Element, element2: Element,scaleRatio : number) {
+export function checkCollision(element1: Element, element2: Element, scaleRatio: number) {
   if (!element1 || !element2) return false
-  const rect1 = getBoundingClientRectByScale(element1,scaleRatio)
-  const rect2 = getBoundingClientRectByScale(element2,scaleRatio)
+  const rect1 = getBoundingClientRectByScale(element1, scaleRatio)
+  const rect2 = getBoundingClientRectByScale(element2, scaleRatio)
 
   if (
     rect1.left < rect2.left + rect2.width &&
@@ -404,14 +362,14 @@ export function checkCollision(element1: Element, element2: Element,scaleRatio :
 /**
  * 获取缩放后得Rect
  */
-export const getBoundingClientRectByScale = (el : HTMLElement | Element,scaleRatio : number)=>{
+export const getBoundingClientRectByScale = (el: HTMLElement | Element, scaleRatio: number) => {
   var curRect = el.getBoundingClientRect()
   return {
     ...curRect,
-    left : curRect.left / scaleRatio,
-    top : curRect.top / scaleRatio,
-    right : curRect.right / scaleRatio,
-    bottom : curRect.bottom / scaleRatio,
+    left: curRect.left / scaleRatio,
+    top: curRect.top / scaleRatio,
+    right: curRect.right / scaleRatio,
+    bottom: curRect.bottom / scaleRatio,
     width: curRect.width / scaleRatio,
     height: curRect.height / scaleRatio
   } as DOMRect

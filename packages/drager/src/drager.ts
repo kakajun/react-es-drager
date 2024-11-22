@@ -8,21 +8,22 @@ export type IDotSide =
   | 'bottom-left'
   | 'bottom-right'
 
+export type EventType =
+  | 'change'
+  | 'drag'
+  | 'drag-start'
+  | 'drag-end'
+  | 'resize'
+  | 'resize-start'
+  | 'resize-end'
+  | 'rotate'
+  | 'rotate-start'
+  | 'rotate-end'
+
 export type IDot = {
   side: IDotSide
   cursor?: string
 }
-
-export type TriggerEvent =
-  | 'drag'
-  | 'dragStart'
-  | 'dragEnd'
-  | 'resize'
-  | 'resizeStart'
-  | 'resizeEnd'
-  | 'rotate'
-  | 'rotateStart'
-  | 'rotateEnd'
 
 export interface MarklineData {
   top?: null | number
@@ -40,6 +41,7 @@ interface PropSize {
 }
 
 export interface DragerProps {
+  type?: 'rect' | 'text' | 'image'
   tag?: React.ComponentType<any>
   size?: PropSize
   defaultSize?: PropSize

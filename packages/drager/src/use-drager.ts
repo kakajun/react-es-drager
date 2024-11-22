@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react'
-import type { DragerProps, DragData, TriggerEvent } from './drager'
+import type { DragerProps, DragData, EventType } from './drager'
 import {
   setupMove,
   MouseTouchEvent,
@@ -11,7 +11,7 @@ import {
 import { useMarkline, useKeyEvent } from './hooks'
 
 interface UseDragerResult {
-  triggerEvent: (event: TriggerEvent, data: DragData) => void
+  triggerEvent: (event: EventType, data: DragData) => void
   isMousedown: boolean
   selected: boolean
   setSelected: (selected: boolean) => void
@@ -48,24 +48,24 @@ export function useDrager(
     onBlur
   } = props
 
-  const triggerEvent = (event: TriggerEvent, data: DragData) => {
+  const triggerEvent = (event: EventType, data: DragData) => {
     onChange?.(data)
     event === 'drag' && onDrag?.(data)
-    event === 'dragStart' && onDragStart?.(data)
-    event === 'dragEnd' && onDragEnd?.(data)
+    event === 'drag-start' && onDragStart?.(data)
+    event === 'drag-end' && onDragEnd?.(data)
     event === 'resize' && onResize?.(data)
     event === 'rotate' && onRotate?.(data)
-    event === 'resizeStart' && onResizeStart?.(data)
-    event === 'resizeEnd' && onResizeEnd?.(data)
-    event === 'rotateStart' && onRotateStart?.(data)
-    event === 'rotateEnd' && onRotateEnd?.(data)
+    event === 'resize-start' && onResizeStart?.(data)
+    event === 'resize-end' && onResizeEnd?.(data)
+    event === 'rotate-start' && onRotateStart?.(data)
+    event === 'rotate-end' && onRotateEnd?.(data)
   }
   // 获取组件的尺寸属性
   const propsSize = props.size || props.defaultSize || DEFAULT_SIZE
 
   const scaleRatio = props.scaleRatio || 1
   const [isMousedown, setIsMousedown] = useState(false)
-  const [selected, setSelected] = useState(false)
+  const [selected, setSelected] = useState(props.selected || false)
 
   const [dragData, setDragData] = useState<DragData>({
     width: propsSize.width,
@@ -104,7 +104,7 @@ export function useDrager(
       ;[minX, maxX, minY, maxY] = getBoundary()
     }
     marklineEmit('drag-start')
-    triggerEvent('dragStart', currentDragData)
+    triggerEvent('drag-start', currentDragData)
 
     let newDragData = currentDragData
     const onMousemove = (e: MouseTouchEvent) => {
@@ -135,10 +135,10 @@ export function useDrager(
         const isCollision = checkDragerCollision()
         if (isCollision) {
           !props.size && setDragData((prev) => ({ ...prev, top, left }))
-          triggerEvent('dragEnd', currentDragData)
+          triggerEvent('drag-end', currentDragData)
         }
       } else {
-        triggerEvent('dragEnd', newDragData)
+        triggerEvent('drag-end', newDragData)
       }
       mouseSet.clear()
       setIsMousedown(false)

@@ -1,4 +1,4 @@
-import { DragerProps, DragData, TriggerEvent } from '../drager'
+import { DragerProps, DragData, EventType } from '../drager'
 
 type UtilFN = {
   getBoundary: () => number[]
@@ -17,7 +17,7 @@ export function useKeyEvent(
   props: DragerProps,
   dragData: DragData,
   setDragData: React.Dispatch<React.SetStateAction<DragData>>,
-  triggerEvent: (event: TriggerEvent, data: DragData) => void,
+  triggerEvent: (event: EventType, data: DragData) => void,
   { getBoundary, fixBoundary, checkDragerCollision }: UtilFN
 ) {
   let oldLeft = 0
