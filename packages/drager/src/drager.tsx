@@ -252,9 +252,9 @@ const Drager: React.FC<DragerProps> = (props) => {
     !props.size && setDragData({ ...currentDragData, angle: rotate })
     triggerEvent('rotate', { ...currentDragData, angle: rotate })
   }
-
+  const Wrapper: React.ElementType = props.tag || 'div'
   return (
-    <div
+    <Wrapper
       ref={dragRef}
       className={[
         'es-drager',
@@ -295,7 +295,7 @@ const Drager: React.FC<DragerProps> = (props) => {
           {rotateSlot}
         </Rotate>
       )}
-    </div>
+    </Wrapper>
   )
 }
 

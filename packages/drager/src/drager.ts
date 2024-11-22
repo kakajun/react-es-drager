@@ -40,6 +40,7 @@ interface PropSize {
 }
 
 export interface DragerProps {
+  tag?: React.ComponentType<any>
   size?: PropSize
   defaultSize?: PropSize
   resizable?: boolean

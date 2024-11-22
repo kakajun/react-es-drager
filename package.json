@@ -1,6 +1,6 @@
 {
   "name": "root",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": "kakajun <253495832@qq.com>",
   "license": "MIT",
   "private": true,
@@ -58,5 +58,8 @@
     "ruler",
     "drager",
     "react-drager"
-  ]
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  }
 }
