@@ -99,7 +99,7 @@ registerConfig.registerOther({
 
 // 注册icons
 const icons = ['Plus', 'Minus', 'CirclePlus', 'Search', 'Female', 'Male']
-icons.forEach(icon => {
+icons.forEach((icon) => {
   registerConfig.registerIcon({
     component: 'es-icon',
     props: { icon }

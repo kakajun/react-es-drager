@@ -1,9 +1,7 @@
 {
   "paths": [
-    "**/*.jsx",
     "**/*.ts",
-    "**/*.tsx",
-    "**/*.vue"
+    "**/*.tsx"
   ],
   "ignored": [
     "**/node_modules/**/*"

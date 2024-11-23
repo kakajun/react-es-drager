@@ -14,14 +14,9 @@ export function deepCopy(obj: any) {
 export function calcLines(list: ComponentType[], current: ComponentType) {
   const lines: any = { x: [], y: [] }
   const { width = 0, height = 0 } = current
-  list.forEach(block => {
+  list.forEach((block) => {
     if (current.id === block.id) return
-    const {
-      top: ATop,
-      left: ALeft,
-      width: AWidth,
-      height: AHeight
-    } = block as any
+    const { top: ATop, left: ALeft, width: AWidth, height: AHeight } = block as any
     lines.y.push({ showTop: ATop, top: ATop }) // 顶对顶
     lines.y.push({ showTop: ATop, top: ATop - height }) // 顶对底
 
@@ -55,7 +50,7 @@ export function calcLines(list: ComponentType[], current: ComponentType) {
  * @returns 组合后的列表
  */
 export function makeGroup(elements: ComponentType[], editorRect: DOMRect) {
-  const selectedItems = elements.filter(item => item.selected)
+  const selectedItems = elements.filter((item) => item.selected)
 
   if (!selectedItems.length) return elements
 
@@ -64,8 +59,8 @@ export function makeGroup(elements: ComponentType[], editorRect: DOMRect) {
     maxLeft = -Infinity,
     maxTop = -Infinity
 
-  Math.max(...selectedItems.map(item => item.left!))
-  selectedItems.forEach(item => {
+  Math.max(...selectedItems.map((item) => item.left!))
+  selectedItems.forEach((item) => {
     // 获取拖拽元素的位置信息，使用rect只是为了处理旋转后位置的边界
     const itemRect = document.getElementById(item.id!)!.getBoundingClientRect()
     // 最小left
@@ -87,7 +82,7 @@ export function makeGroup(elements: ComponentType[], editorRect: DOMRect) {
   }
   let hasRotate = false
   // 子元素相对父元素的位置
-  selectedItems.forEach(item => {
+  selectedItems.forEach((item) => {
     item.left = item.left! - minLeft
     item.top = item.top! - minTop
     item.groupStyle = {
@@ -119,7 +114,7 @@ export function makeGroup(elements: ComponentType[], editorRect: DOMRect) {
     }
   }
 
-  const newElements = elements.filter(item => !item.selected)
+  const newElements = elements.filter((item) => !item.selected)
 
   return [...newElements, groupElement]
 }
@@ -132,9 +127,7 @@ export function makeGroup(elements: ComponentType[], editorRect: DOMRect) {
  */
 export function cancelGroup(elements: ComponentType[], editorRect: DOMRect) {
   // 得到当前选中元素
-  const current = elements.find(
-    item => item.selected
-  ) as Required<ComponentType>
+  const current = elements.find((item) => item.selected) as Required<ComponentType>
   // 如果没有选中的元素或者不是组合元素直接返回
   if (!current || current.component !== 'es-group') {
     return elements
@@ -142,11 +135,9 @@ export function cancelGroup(elements: ComponentType[], editorRect: DOMRect) {
 
   // 获取组合元素的子元素列表
   const items = current.props.elements as ComponentType[]
-  const newElements = items.map(item => {
+  const newElements = items.map((item) => {
     // 子组件相对于浏览器视口位置大小
-    const componentRect = document
-      .getElementById(item.id!)!
-      .getBoundingClientRect()
+    const componentRect = document.getElementById(item.id!)!.getBoundingClientRect()
     // 获取元素的中心点坐标
     const center = {
       x: componentRect.left - editorRect.left + componentRect.width / 2,
@@ -173,7 +164,7 @@ export function cancelGroup(elements: ComponentType[], editorRect: DOMRect) {
     }
   })
 
-  const list = elements.filter(item => item !== current)
+  const list = elements.filter((item) => item !== current)
   return [...list, ...newElements]
 }
 

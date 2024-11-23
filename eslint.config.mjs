@@ -19,8 +19,7 @@ export default [
   ...compat.extends(
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
-    'plugin:react-hooks/recommended',
-    'prettier'
+    'plugin:react-hooks/recommended'
   ),
   {
     plugins: ['react-refresh'],
