@@ -33,6 +33,40 @@ const dragList = [
     }
   ]
 ]
+
+const nested = {
+  boundary: true,
+  snap: true,
+  markline: true,
+  defaultSize: {
+    width: 550,
+    height: 100,
+    left: 30,
+    top: 3 * 150 + 30
+  },
+
+  children: [
+    {
+      text: 'Child1',
+      defaultSize: {
+        width: 100,
+        height: 100
+      },
+      boundary: true,
+      zIndex: 1
+    },
+    {
+      text: 'Child2',
+      defaultSize: {
+        width: 100,
+        height: 100,
+        left: 110
+      },
+      boundary: true,
+      zIndex: 1
+    }
+  ]
+}
 const BasicComponent = () => {
   const { t } = useTranslation()
   return (
@@ -55,6 +89,14 @@ const BasicComponent = () => {
           </Drager>
         ))
       )}
+
+      <Drager {...nested}>
+        {nested.children.map((item, index) => (
+          <Drager key={index} {...item}>
+            {item.text}
+          </Drager>
+        ))}
+      </Drager>
     </>
   )
 }

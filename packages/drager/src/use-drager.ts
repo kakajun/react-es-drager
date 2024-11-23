@@ -61,7 +61,7 @@ export function useDrager(
     event === 'rotate-end' && onRotateEnd?.(data)
   }
   // 获取组件的尺寸属性
-  const propsSize = props.size || props.defaultSize || DEFAULT_SIZE
+  const propsSize = props.size || Object.assign(DEFAULT_SIZE, props.defaultSize)
 
   const scaleRatio = props.scaleRatio || 1
   const [isMousedown, setIsMousedown] = useState(false)
@@ -87,7 +87,6 @@ export function useDrager(
   function onMousedown(e: MouseTouchEvent) {
     mouseSet.add((e as MouseEvent).button)
     if (props.disabled) return
-
     setIsMousedown(true)
     setSelected(true)
 
@@ -113,11 +112,15 @@ export function useDrager(
       let moveX = (clientX - downX) / scaleRatio + left
       let moveY = (clientY - downY) / scaleRatio + top
 
+      // 是否开启网格对齐
       if (props.snapToGrid) {
+        // 当前位置
         const { left: curX, top: curY } = currentDragData
+        // 移动距离
         const diffX = moveX - curX
         const diffY = moveY - curY
 
+        // 计算网格移动距离
         moveX = curX + calcGrid(diffX, props.gridX || 50)
         moveY = curY + calcGrid(diffY, props.gridY || 50)
       }
@@ -137,12 +140,11 @@ export function useDrager(
           !props.size && setDragData((prev) => ({ ...prev, top, left }))
           triggerEvent('drag-end', currentDragData)
         }
-      } else {
-        triggerEvent('drag-end', newDragData)
       }
       mouseSet.clear()
       setIsMousedown(false)
       marklineEmit('drag-end')
+      triggerEvent('drag-end', newDragData)
     })
   }
 

@@ -16,7 +16,19 @@ function App() {
         }}
         rotatable
       >
+        <span className="absolute">图片类型</span>
         <img className="img" style={{ width: '100%', height: '100%' }} src={imgUrl} />
+      </Drager>
+
+      <Drager
+        className="drager-text"
+        type="text"
+        defaultSize={{
+          left: 350,
+          top: 100
+        }}
+      >
+        <div contentEditable="true">文本类型</div>
       </Drager>
 
       <Drager
@@ -24,13 +36,11 @@ function App() {
           width: 100,
           height: 100,
           left: 100,
-          top: 300,
-          angle: 0
+          top: 300
         }}
         rotatable
       >
         <div> resize handle</div>
-
         <div slot="resize" className="custom-resize" />
       </Drager>
 
@@ -39,8 +49,7 @@ function App() {
           width: 100,
           height: 100,
           left: 300,
-          top: 300,
-          angle: 0
+          top: 300
         }}
         selected
         resizeList={['top', 'bottom', 'left', 'right']}
@@ -53,8 +62,7 @@ function App() {
           width: 100,
           height: 100,
           left: 500,
-          top: 300,
-          angle: 0
+          top: 300
         }}
         selected
         resizeList={['top-left', 'top-right', 'bottom-left', 'bottom-right']}
@@ -66,9 +74,21 @@ function App() {
         defaultSize={{
           width: 100,
           height: 100,
+          left: 500,
+          top: 300
+        }}
+        selected="true"
+        resizeList="['top-left', 'top-right', 'bottom-left', 'bottom-right']"
+      >
+        control handle display
+      </Drager>
+
+      <Drager
+        defaultSize={{
+          width: 100,
+          height: 100,
           left: 100,
-          top: 450,
-          angle: 0
+          top: 450
         }}
         rotatable
       >

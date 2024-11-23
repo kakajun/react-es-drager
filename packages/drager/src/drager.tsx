@@ -22,7 +22,7 @@ type ChildrenSlots = [Slot, Slot, Slot]
 
 const Drager: React.FC<DragerProps> = (props) => {
   const {
-    type = 'rect',
+    type: propsType = 'rect',
     disabled,
     border = true,
     resizable = true,
@@ -33,7 +33,6 @@ const Drager: React.FC<DragerProps> = (props) => {
     resizeList,
     minWidth = 1,
     minHeight = 1,
-    aspectRatio,
     equalProportion,
     maxWidth = 99999,
     maxHeight = 9999,
@@ -127,12 +126,22 @@ const Drager: React.FC<DragerProps> = (props) => {
       if (boundary) {
         boundaryInfo = getBoundary()
       }
+
+      let aspectRatio = props.aspectRatio
+      if (['text', 'image'].includes(propsType) && type.includes('-')) {
+        aspectRatio = rect.width / rect.height
+      }
+
       let d: DragData | null = null
-      const onMousemove = (e: MouseTouchEvent) => {
+      const onMousemove = (
+        e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
+      ) => {
         const { clientX, clientY } = getXY(e)
+        // 距离
         let deltaX = (clientX - downX) / scaleRatio
         let deltaY = (clientY - downY) / scaleRatio
 
+        // 开启网格缩放
         if (snapToGrid) {
           deltaX = calcGrid(deltaX, gridX)
           deltaY = calcGrid(deltaY, gridY)
@@ -174,6 +183,7 @@ const Drager: React.FC<DragerProps> = (props) => {
           ...formatData(pData, centerX, centerY)
         }
 
+        // 最大宽高限制
         if (maxWidth > 0) {
           d.width = Math.min(d.width, maxWidth)
         }
@@ -181,6 +191,7 @@ const Drager: React.FC<DragerProps> = (props) => {
           d.height = Math.min(d.height, maxHeight)
         }
 
+        // 如果开启了边界，则调用 fixResizeBoundary 函数处理
         if (boundary) {
           d = fixResizeBoundary(d, boundaryInfo, ratio)
         }
@@ -226,10 +237,12 @@ const Drager: React.FC<DragerProps> = (props) => {
       }
 
       if (!isMaxTop) {
+        // 宽度变为parentWidth减去left，这样元素的left+width的和刚好等于parentWidth
         d.width = parentWidth - d.left
       }
 
       if (!isMaxLeft) {
+        // 宽度变为parentHeight减去top，这样元素的top+height的和刚好等于parentHeight
         d.height = parentHeight - d.top
       }
     }

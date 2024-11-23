@@ -40,11 +40,19 @@ interface PropSize {
   angle?: number
 }
 
+interface PropDefaultSize {
+  width?: number
+  height?: number
+  left?: number
+  top?: number
+  angle?: number
+}
+
 export interface DragerProps {
   type?: 'rect' | 'text' | 'image'
   tag?: React.ComponentType<any>
   size?: PropSize
-  defaultSize?: PropSize
+  defaultSize?: PropDefaultSize
   resizable?: boolean
   rotatable?: boolean
   boundary?: boolean

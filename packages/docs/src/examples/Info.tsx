@@ -24,18 +24,7 @@ function DragerComponent() {
 
   return (
     <>
-      <Drager
-        size={{
-          width: info.width,
-          height: info.height,
-          left: info.left,
-          top: info.top,
-          angle: info.angle
-        }}
-        rotatable
-        onChange={onChange}
-      />
-
+      <Drager size={info} rotatable onChange={onChange} />
       <div className="es-info">
         <div className="es-info-item">
           <span>width</span>
