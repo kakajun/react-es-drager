@@ -288,7 +288,7 @@ const Drager: React.FC<DragerProps> = (props) => {
       ref={dragRef}
       className={[
         'es-drager',
-        `es-drager-${type}`,
+        `es-drager-${propsType}`,
         border ? 'border' : '',
         selected ? 'selected' : '',
         disabled ? 'disabled' : '',
@@ -301,7 +301,7 @@ const Drager: React.FC<DragerProps> = (props) => {
       {defaultSlot}
       {showResize && (
         <>
-          {dotList.map((item, index) => (
+          {dots.map((item, index) => (
             <div
               key={index}
               className="es-drager-dot"
