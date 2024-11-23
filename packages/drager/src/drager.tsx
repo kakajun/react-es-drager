@@ -84,10 +84,11 @@ const Drager: React.FC<DragerProps> = (props) => {
       }
     }
     let transform: string[] = [
-      `translateX(${props.size?.left ?? withUnit(left)})`,
-      `translateY(${props.size?.top ?? withUnit(top)})`,
+      `translateX(${withUnit(props.size?.left ?? left)})`,
+      `translateY(${withUnit(props.size?.top ?? top)})`,
       `rotate(${props.size?.angle ?? angle}deg)`
     ]
+
     return {
       ...style,
       zIndex: zIndex,
