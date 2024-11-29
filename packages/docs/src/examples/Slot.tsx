@@ -2,8 +2,18 @@ import React from 'react'
 import Drager from 'react-es-drager'
 import imgUrl from '../assets/demo.png'
 import './slot.less'
+import ContentEditable from 'react-contenteditable'
 
 function App() {
+  const text = React.useRef('文本类型')
+  const handleChange = (evt: { target: { value: string } }) => {
+    text.current = evt.target.value
+  }
+
+  const handleBlur = () => {
+    console.log(text.current)
+  }
+
   return (
     <>
       <Drager
@@ -14,6 +24,7 @@ function App() {
           top: 100,
           angle: 0
         }}
+        type="image"
         rotatable
       >
         <span className="absolute">图片类型</span>
@@ -25,10 +36,12 @@ function App() {
         type="text"
         defaultSize={{
           left: 350,
-          top: 100
+          top: 100,
+          width: 400,
+          height: 100
         }}
       >
-        <div contentEditable="true">文本类型</div>
+        <ContentEditable html={text.current} onBlur={handleBlur} onChange={handleChange} />
       </Drager>
 
       <Drager
@@ -77,8 +90,8 @@ function App() {
           left: 500,
           top: 300
         }}
-        selected="true"
-        resizeList="['top-left', 'top-right', 'bottom-left', 'bottom-right']"
+        selected={true}
+        resizeList={['top-left', 'top-right', 'bottom-left', 'bottom-right']}
       >
         control handle display
       </Drager>

@@ -49,6 +49,8 @@ interface PropDefaultSize {
 }
 
 export interface DragerProps {
+  className?: string
+  style?: React.CSSProperties
   type?: 'rect' | 'text' | 'image'
   tag?: React.ComponentType<any>
   size?: PropSize
@@ -77,7 +79,7 @@ export interface DragerProps {
   snap?: boolean
   snapThreshold?: number
   markline?: boolean | ((data: MarklineData) => void)
-  children: React.ReactNode
+  children?: React.ReactNode
   onChange?: (data: DragData) => void
   onDrag?: (data: DragData) => void
   onDragStart?: (data: DragData) => void

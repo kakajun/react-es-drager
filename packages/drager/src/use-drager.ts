@@ -61,17 +61,17 @@ export function useDrager(
     event === 'rotate-end' && onRotateEnd?.(data)
   }
   // 获取组件的尺寸属性
-  const propsSize = props.size || Object.assign(DEFAULT_SIZE, props.defaultSize)
+  const propsSize = props.size || props.defaultSize || DEFAULT_SIZE
 
   const scaleRatio = props.scaleRatio || 1
   const [isMousedown, setIsMousedown] = useState(false)
   const [selected, setSelected] = useState(props.selected || false)
 
   const [dragData, setDragData] = useState<DragData>({
-    width: propsSize.width,
-    height: propsSize.height,
-    left: propsSize.left,
-    top: propsSize.top,
+    width: propsSize.width || 0,
+    height: propsSize.height || 0,
+    left: propsSize.left || 0,
+    top: propsSize.top || 0,
     angle: propsSize.angle || 0
   })
 

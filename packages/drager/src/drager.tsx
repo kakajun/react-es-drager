@@ -72,7 +72,7 @@ const Drager: React.FC<DragerProps> = (props) => {
 
   const dragStyle = useMemo(() => {
     const { width, height, left, top, angle } = currentDragData
-    const style: React.CSSProperties = {}
+    const style: React.CSSProperties = { ...(props.style || {}) }
     // 优先考虑props.size
     style.width = props.size?.width ?? withUnit(width)
     const curentHeight = props.size?.height ?? height
@@ -103,7 +103,7 @@ const Drager: React.FC<DragerProps> = (props) => {
   }
 
   const onDotMousedown = useCallback(
-    (dotInfo: any, e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+    (dotInfo: any, e: MouseTouchEvent) => {
       if (disabled) return
       e.stopPropagation()
       const { clientX, clientY } = getXY(e)
@@ -134,9 +134,7 @@ const Drager: React.FC<DragerProps> = (props) => {
       }
 
       let d: DragData | null = null
-      const onMousemove = (
-        e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
-      ) => {
+      const onMousemove = (e: MouseTouchEvent) => {
         const { clientX, clientY } = getXY(e)
         // 距离
         let deltaX = (clientX - downX) / scaleRatio
@@ -288,6 +286,7 @@ const Drager: React.FC<DragerProps> = (props) => {
     <Wrapper
       ref={dragRef}
       className={[
+        props.className,
         'es-drager',
         `es-drager-${propsType}`,
         border ? 'border' : '',
