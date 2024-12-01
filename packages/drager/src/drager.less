@@ -12,8 +12,8 @@
   }
   &.selected {
     transition: none;
-    user-select: none;
-    &::after {
+    &:not(.es-drager-text)::after {
+      user-select: none;
       display: block;
       outline: 1px dashed var(--es-drager-color);
     }
@@ -37,6 +37,31 @@
     z-index: 1;
     transform: translate(-50%, -50%);
     cursor: se-resize;
+    &-handle {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: var(--es-drager-color);
+    }
+
+    &[data-side='left'],
+    &[data-side='right'] {
+      .es-drager-dot-handle {
+        width: 8px;
+        height: 16px;
+        border-radius: 8px;
+      }
+    }
+
+    &[data-side='top'],
+    &[data-side='bottom'] {
+      .es-drager-dot-handle {
+        width: 16px;
+        height: 8px;
+        border-radius: 8px;
+      }
+    }
+
     &[data-side*='right'] {
       transform: translate(50%, -50%);
     }
@@ -45,13 +70,6 @@
     }
     &[data-side='bottom-right'] {
       transform: translate(50%, 50%);
-    }
-
-    &-handle {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background-color: var(--es-drager-color);
     }
   }
 }

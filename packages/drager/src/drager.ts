@@ -40,11 +40,21 @@ interface PropSize {
   angle?: number
 }
 
+interface PropDefaultSize {
+  width?: number
+  height?: number
+  left?: number
+  top?: number
+  angle?: number
+}
+
 export interface DragerProps {
+  className?: string
+  style?: React.CSSProperties
   type?: 'rect' | 'text' | 'image'
   tag?: React.ComponentType<any>
   size?: PropSize
-  defaultSize?: PropSize
+  defaultSize?: PropDefaultSize
   resizable?: boolean
   rotatable?: boolean
   boundary?: boolean
@@ -69,7 +79,7 @@ export interface DragerProps {
   snap?: boolean
   snapThreshold?: number
   markline?: boolean | ((data: MarklineData) => void)
-  children: React.ReactNode
+  children?: React.ReactNode
   onChange?: (data: DragData) => void
   onDrag?: (data: DragData) => void
   onDragStart?: (data: DragData) => void

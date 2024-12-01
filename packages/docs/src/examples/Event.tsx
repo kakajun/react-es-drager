@@ -8,9 +8,6 @@ const MyComponent = () => {
     }
   }
 
-  // 定义所有事件处理器
-  const [isFocused, setIsFocused] = useState(false)
-
   const onChange = handleEvent('onChange')
   const onDrag = handleEvent('onDrag')
   const onDragStart = handleEvent('onDragStart')
@@ -23,11 +20,9 @@ const MyComponent = () => {
   const onRotateEnd = handleEvent('onRotateEnd')
   const onFocus = (val: boolean) => {
     console.log('onFocus', val)
-    setIsFocused(val)
   }
   const onBlur = (val: boolean) => {
     console.log('onBlur', val)
-    setIsFocused(val)
   }
 
   return (

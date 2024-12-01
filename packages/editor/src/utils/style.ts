@@ -15,7 +15,7 @@ const textStyleKeys = [
 export function pickStyle(obj: AnyObject | undefined, flag: boolean = true) {
   if (!obj) return obj
   const result: AnyObject = {}
-  const keys = Object.keys(obj).filter(key => {
+  const keys = Object.keys(obj).filter((key) => {
     return flag ? textStyleKeys.includes(key) : !textStyleKeys.includes(key)
   })
   for (const key of keys) {

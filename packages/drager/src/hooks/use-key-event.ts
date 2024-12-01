@@ -78,7 +78,7 @@ export function useKeyEvent(
             left: oldLeft,
             top: oldTop
           }))
-        triggerEvent('dragEnd', { ...dragData, left: oldLeft, top: oldTop })
+        triggerEvent('drag-end', { ...dragData, left: oldLeft, top: oldTop })
       }
     }
     oldLeft = 0

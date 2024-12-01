@@ -28,16 +28,16 @@ export function setupMove(
   document.addEventListener('touchend', onMouseup)
 }
 
-export function getXY(e: React.MouseEvent | React.TouchEvent) {
+export function getXY(e: MouseTouchEvent) {
   let clientX = 0,
     clientY = 0
   if (isTouchEvent(e)) {
     const touch = e.targetTouches[0]
     clientX = touch.pageX
     clientY = touch.pageY
-  } else if (e.nativeEvent instanceof MouseEvent) {
-    clientX = e.nativeEvent.clientX
-    clientY = e.nativeEvent.clientY
+  } else {
+    clientX = e.clientX
+    clientY = e.clientY
   }
 
   return { clientX, clientY }

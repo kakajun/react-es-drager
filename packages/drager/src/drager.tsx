@@ -22,7 +22,7 @@ type ChildrenSlots = [Slot, Slot, Slot]
 
 const Drager: React.FC<DragerProps> = (props) => {
   const {
-    type = 'rect',
+    type: propsType = 'rect',
     disabled,
     border = true,
     resizable = true,
@@ -33,7 +33,6 @@ const Drager: React.FC<DragerProps> = (props) => {
     resizeList,
     minWidth = 1,
     minHeight = 1,
-    aspectRatio,
     equalProportion,
     maxWidth = 99999,
     maxHeight = 9999,
@@ -73,7 +72,7 @@ const Drager: React.FC<DragerProps> = (props) => {
 
   const dragStyle = useMemo(() => {
     const { width, height, left, top, angle } = currentDragData
-    const style: React.CSSProperties = {}
+    const style: React.CSSProperties = { ...(props.style || {}) }
     // 优先考虑props.size
     style.width = props.size?.width ?? withUnit(width)
     const curentHeight = props.size?.height ?? height
@@ -85,10 +84,11 @@ const Drager: React.FC<DragerProps> = (props) => {
       }
     }
     let transform: string[] = [
-      `translateX(${props.size?.left ?? withUnit(left)})`,
-      `translateY(${props.size?.top ?? withUnit(top)})`,
+      `translateX(${withUnit(props.size?.left ?? left)})`,
+      `translateY(${withUnit(props.size?.top ?? top)})`,
       `rotate(${props.size?.angle ?? angle}deg)`
     ]
+
     return {
       ...style,
       zIndex: zIndex,
@@ -103,7 +103,7 @@ const Drager: React.FC<DragerProps> = (props) => {
   }
 
   const onDotMousedown = useCallback(
-    (dotInfo: any, e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+    (dotInfo: any, e: MouseTouchEvent) => {
       if (disabled) return
       e.stopPropagation()
       const { clientX, clientY } = getXY(e)
@@ -127,12 +127,20 @@ const Drager: React.FC<DragerProps> = (props) => {
       if (boundary) {
         boundaryInfo = getBoundary()
       }
+
+      let aspectRatio = props.aspectRatio
+      if (['text', 'image'].includes(propsType) && type.includes('-')) {
+        aspectRatio = rect.width / rect.height
+      }
+
       let d: DragData | null = null
       const onMousemove = (e: MouseTouchEvent) => {
         const { clientX, clientY } = getXY(e)
+        // 距离
         let deltaX = (clientX - downX) / scaleRatio
         let deltaY = (clientY - downY) / scaleRatio
 
+        // 开启网格缩放
         if (snapToGrid) {
           deltaX = calcGrid(deltaX, gridX)
           deltaY = calcGrid(deltaY, gridY)
@@ -174,6 +182,7 @@ const Drager: React.FC<DragerProps> = (props) => {
           ...formatData(pData, centerX, centerY)
         }
 
+        // 最大宽高限制
         if (maxWidth > 0) {
           d.width = Math.min(d.width, maxWidth)
         }
@@ -181,6 +190,7 @@ const Drager: React.FC<DragerProps> = (props) => {
           d.height = Math.min(d.height, maxHeight)
         }
 
+        // 如果开启了边界，则调用 fixResizeBoundary 函数处理
         if (boundary) {
           d = fixResizeBoundary(d, boundaryInfo, ratio)
         }
@@ -226,10 +236,12 @@ const Drager: React.FC<DragerProps> = (props) => {
       }
 
       if (!isMaxTop) {
+        // 宽度变为parentWidth减去left，这样元素的left+width的和刚好等于parentWidth
         d.width = parentWidth - d.left
       }
 
       if (!isMaxLeft) {
+        // 宽度变为parentHeight减去top，这样元素的top+height的和刚好等于parentHeight
         d.height = parentHeight - d.top
       }
     }
@@ -274,8 +286,9 @@ const Drager: React.FC<DragerProps> = (props) => {
     <Wrapper
       ref={dragRef}
       className={[
+        props.className,
         'es-drager',
-        `es-drager-${type}`,
+        `es-drager-${propsType}`,
         border ? 'border' : '',
         selected ? 'selected' : '',
         disabled ? 'disabled' : '',
@@ -288,7 +301,7 @@ const Drager: React.FC<DragerProps> = (props) => {
       {defaultSlot}
       {showResize && (
         <>
-          {dotList.map((item, index) => (
+          {dots.map((item, index) => (
             <div
               key={index}
               className="es-drager-dot"

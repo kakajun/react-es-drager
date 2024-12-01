@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { ColorPicker } from 'antd'
 
-
 const ColorPickerComponent = () => {
   const [popperClassName, setPopperClassName] = useState('')
 
