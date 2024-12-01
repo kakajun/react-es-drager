@@ -9,6 +9,7 @@ import Info from './examples/Info'
 import Markline from './examples/Markline'
 import Slot from './examples/Slot'
 import Chart from './examples/Chart'
+import Snap from './examples/Snap'
 // import Menu from './examples/Menu'
 
 export const menuRoutes = [
@@ -66,6 +67,13 @@ export const menuRoutes = [
     element: <Group></Group>,
     meta: {
       title: 'group'
+    }
+  },
+  {
+    path: '/snap',
+    element: <Snap></Snap>,
+    meta: {
+      title: 'snap'
     }
   }
   // {

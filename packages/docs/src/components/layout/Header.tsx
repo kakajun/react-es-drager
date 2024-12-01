@@ -44,7 +44,6 @@ const EsHeader: React.FC<Props> = ({ title = 'react-es-drager', children }) => {
         <a
           className={['es-header-link', isLight ? 'light' : 'dark'].join(' ')}
           onClick={() => handleThemeChange()}
-          href="#"
         >
           <img src={isLight ? lightThemeIcon : darkThemeIcon} />
         </a>

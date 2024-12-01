@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import Drager from 'react-es-drager'
 import { GridRect } from '@es-drager/editor'
 import './Grid.less'
