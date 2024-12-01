@@ -2,7 +2,11 @@ import { ComponentType, EditorDataType } from '../types'
 
 import React, { useState, useEffect, useRef } from 'react'
 
-export function useArea(data: EditorDataType, areaRef: any) {
+export function useArea(
+  data: EditorDataType,
+  areaRef: any,
+  setData: React.Dispatch<React.SetStateAction<EditorDataType>>
+) {
   const [areaSelected, setAreaSelected] = useState(false)
 
   function onEditorMouseDown(e: React.MouseEvent) {
@@ -20,19 +24,23 @@ export function useArea(data: EditorDataType, areaRef: any) {
   }
 
   function onAreaMove(areaData: { left: number; top: number; width: number; height: number }) {
-    for (let i = 0; i < data.elements.length; i++) {
-      const item = data.elements[i] as Required<ComponentType>
+    const updatedElements = data.elements.map((item) => {
       const containLeft =
         areaData.left < item.left && areaData.left + areaData.width > item.left + item.width
       const containTop =
         areaData.top < item.top && areaData.top + areaData.height > item.top + item.height
 
-      if (containLeft && containTop) {
-        item.selected = true
-      } else {
-        item.selected = false
+      return {
+        ...item,
+        selected: containLeft && containTop
       }
-    }
+    })
+    console.log(updatedElements, '55555')
+
+    setData((prevData) => ({
+      ...prevData,
+      elements: updatedElements
+    }))
   }
 
   function onAreaUp() {

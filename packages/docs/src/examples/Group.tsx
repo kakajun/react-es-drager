@@ -48,7 +48,7 @@ const MyComponent = () => {
 
   const editorRect = editorRef.current?.getBoundingClientRect() || ({} as DOMRect)
 
-  const { areaSelected, onEditorMouseDown, onAreaMove, onAreaUp } = useArea(data, areaRef)
+  const { areaSelected, onEditorMouseDown, onAreaMove, onAreaUp } = useArea(data, areaRef, setData)
 
   function onDragstart(index: number) {
     if (!areaSelected) {
@@ -81,10 +81,11 @@ const MyComponent = () => {
     })
   }
 
-  function onChange(dragData: DragData, item: ComponentType) {
-    Object.keys(dragData).forEach((key) => {
-      item[key as keyof DragData] = dragData[key as keyof DragData]
-    })
+  const onChange = (index: number, dragData: DragData) => {
+    setData((prevState) => ({
+      ...prevState,
+      elements: prevState.elements.map((item, i) => (i === index ? { ...item, ...dragData } : item))
+    }))
   }
 
   function handleMakeGroup() {
@@ -120,6 +121,7 @@ const MyComponent = () => {
         {data.elements.map((item, index) => (
           <Drager
             key={item.id}
+            selected={item.selected}
             size={{
               width: item.width,
               height: item.height,
@@ -130,9 +132,9 @@ const MyComponent = () => {
             rotatable
             onDragStart={() => onDragstart(index)}
             onDrag={onDrag}
-            onChange={(event: DragData) => onChange(event, item)}
-            onClick={(e) => e.stopPropagation()}
-            onMouseDown={(e) => e.stopPropagation()}
+            onChange={(e: DragData) => onChange(index, e)}
+            onClick={(e: any) => e.stopPropagation()}
+            onMouseDown={(e: any) => e.stopPropagation()}
           >
             <div
               is={item.component}

@@ -73,6 +73,10 @@ export function useDrager(
   const [isMousedown, setIsMousedown] = useState(false)
   const [selected, setSelected] = useState(props.selected || false)
 
+  useEffect(() => {
+    setSelected(props.selected || false)
+  }, [props.selected])
+
   const [dragData, setDragData] = useState<DragData>({
     width: propsSize.width || 0,
     height: propsSize.height || 0,
