@@ -13,23 +13,19 @@ const SnapExample: React.FC = () => {
         id: 'div1',
         component: 'div',
         text: 'div1',
-        size: {
-          width: 100,
-          height: 100,
-          left: 0,
-          top: 0
-        }
+        width: 100,
+        height: 100,
+        left: 0,
+        top: 0
       },
       {
         id: 'div2',
         component: 'div',
         text: 'div2',
-        size: {
-          width: 100,
-          height: 100,
-          top: 100,
-          left: 100
-        }
+        width: 100,
+        height: 100,
+        top: 100,
+        left: 100
       }
     ]
   })
@@ -76,19 +72,17 @@ const SnapExample: React.FC = () => {
   )
 
   const onChange = (index: number, dragData: DragData) => {
-    console.log('onChange', index, dragData)
-
     setData((prevState) => ({
       componentList: prevState.componentList.map((item, i) =>
         i === index ? { ...item, ...dragData } : item
       )
     }))
-    // post.shadow = {
-    //   x: item.left,
-    //   y: item.top,
-    //   width: item.width,
-    //   height: item.height
-    // }
+    post.shadow = {
+      x: dragData.left,
+      y: dragData.top,
+      width: dragData.width,
+      height: dragData.height
+    }
   }
 
   return (
@@ -99,7 +93,12 @@ const SnapExample: React.FC = () => {
             {data.componentList.map((item, index) => (
               <Drager
                 key={item.id}
-                {...item}
+                size={{
+                  width: item.width,
+                  height: item.height,
+                  left: item.left,
+                  top: item.top
+                }}
                 snap
                 className="dragerItem"
                 snapThreshold={10}

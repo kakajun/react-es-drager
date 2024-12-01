@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react'
-import Drager, { DragData } from 'react-es-drager'
+import Drager, { type DragData } from 'react-es-drager'
 import { ComponentType, EditorDataType, GridRect, Area, useArea } from '@es-drager/editor'
 import { useId, makeGroup, cancelGroup } from '@es-drager/editor/src/utils'
 import { useTranslation } from 'react-i18next'
@@ -130,7 +130,7 @@ const MyComponent = () => {
             rotatable
             onDragStart={() => onDragstart(index)}
             onDrag={onDrag}
-            onChange={(event) => onChange(event, item)}
+            onChange={(event: DragData) => onChange(event, item)}
             onClick={(e) => e.stopPropagation()}
             onMouseDown={(e) => e.stopPropagation()}
           >

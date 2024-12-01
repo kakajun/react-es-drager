@@ -37,8 +37,8 @@ function App() {
         defaultSize={{
           left: 350,
           top: 100,
-          width: 400,
-          height: 100
+          width: 300,
+          height: 32
         }}
       >
         <ContentEditable html={text.current} onBlur={handleBlur} onChange={handleChange} />

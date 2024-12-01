@@ -34,6 +34,12 @@ export function useDrager(
   props: DragerProps
 ): UseDragerResult {
   const {
+    guideline = {
+      h: [],
+      v: []
+    },
+    scaleRatio = 1,
+    snapThreshold = 10,
     onDragStart,
     onDrag,
     onDragEnd,
@@ -63,7 +69,7 @@ export function useDrager(
   // 获取组件的尺寸属性
   const propsSize = props.size || props.defaultSize || DEFAULT_SIZE
 
-  const scaleRatio = props.scaleRatio || 1
+  // const scaleRatio = scaleRatio || 1
   const [isMousedown, setIsMousedown] = useState(false)
   const [selected, setSelected] = useState(props.selected || false)
 
@@ -91,9 +97,7 @@ export function useDrager(
     setSelected(true)
 
     let { clientX: downX, clientY: downY } = getXY(e)
-    const { left, top } = currentDragData
-    console.log(left, top, 'left, top')
-
+    const { left, top, width, height } = currentDragData
     let minX = 0,
       maxX = 0,
       minY = 0,
@@ -123,6 +127,48 @@ export function useDrager(
         // 计算网格移动距离
         moveX = curX + calcGrid(diffX, props.gridX || 50)
         moveY = curY + calcGrid(diffY, props.gridY || 50)
+      }
+
+      if (guideline.v && guideline.v.length) {
+        const guideSnapsV = guideline.v.slice()
+        // 检查 left 是否接近 guideSnapsV 中的某个值
+        for (const snap of guideSnapsV) {
+          console.log(Math.abs(snap - moveX))
+          if (Math.abs(snap - moveX) < snapThreshold / scaleRatio) {
+            console.log('kaojing')
+            moveX = snap
+            break
+          }
+        }
+
+        // 检查 left + width 是否接近 guideSnapsV 中的某个值
+        const rightEdge = moveX + width
+        for (const snap of guideSnapsV) {
+          if (Math.abs(snap - rightEdge) < snapThreshold / scaleRatio) {
+            moveX = snap - width
+            break
+          }
+        }
+      }
+
+      if (guideline.h && guideline.h.length) {
+        // 水平方向吸附,两个y方向吸附, top和 top+height 都吸附
+        const guideSnapsH = guideline.h.slice()
+        // 检查 top 是否接近 guideSnapsH 中的某个值
+        for (const snap of guideSnapsH) {
+          if (Math.abs(snap - moveY) < snapThreshold / scaleRatio) {
+            moveY = snap
+            break
+          }
+        }
+        // 检查 top + height 是否接近 guideSnapsH 中的某个值
+        const bottomEdge = moveY + height
+        for (const snap of guideSnapsH) {
+          if (Math.abs(snap - bottomEdge) < snapThreshold / scaleRatio) {
+            moveY = snap - height
+            break
+          }
+        }
       }
 
       if (props.boundary) {
