@@ -7,7 +7,7 @@
 
 <table width="100%" align="center">
 <tr>
-<th colspan="4">ES Drager</th>
+<th colspan="4">React ES Drager</th>
 </tr>
 <tr>
 <td align="center"><a href="https://kakajun.github.io/react-es-drager/"><strong>Draggable</strong></a></td>
