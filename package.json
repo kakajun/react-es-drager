@@ -5,7 +5,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "dev": "pnpm --filter ./packages/docs dev",
+    "dev": "pnpm build && pnpm --filter ./packages/docs dev",
     "build": "pnpm --filter ./packages/drager build",
     "build:demo": "pnpm --filter ./packages/docs build",
     "format": "prettier --write  \"packages/**/src/**/*.{js,ts,json,tsx,less,vue,html,md}\"",
