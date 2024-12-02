@@ -190,6 +190,6 @@ export type DragData = {
 | resize  | 缩放handle     |
 | rotate  | 旋转handle     |
 
-## 引用
+### 引用
 
-本工程属于经原创同意,vue转react项目,原创属于 [es-drager](https://github.com/vangleer/es-drager), 项目将会长期更新, 欢迎issue和pr
+本工程属于经原创同意,vue转react项目, 引用自[es-drager](https://github.com/vangleer/es-drager), 本项目将会长期更新, 欢迎issue和pr

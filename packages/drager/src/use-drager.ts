@@ -137,9 +137,7 @@ export function useDrager(
         const guideSnapsV = guideline.v.slice()
         // 检查 left 是否接近 guideSnapsV 中的某个值
         for (const snap of guideSnapsV) {
-          console.log(Math.abs(snap - moveX))
           if (Math.abs(snap - moveX) < snapThreshold / scaleRatio) {
-            console.log('kaojing')
             moveX = snap
             break
           }
