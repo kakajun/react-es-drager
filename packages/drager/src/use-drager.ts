@@ -10,6 +10,9 @@ import {
 } from './utils'
 import { useMarkline, useKeyEvent } from './hooks'
 
+// 储存的原则, 永远只有一套数据,如果是defaultSize, 则dragData是真实值,如果是size, 那么dragData是摆设
+// 最终唯一数据源就是currentDragData,如果存在size, 那么不要更新dragData,更新时,前面一定带!props.size判断
+
 interface UseDragerResult {
   triggerEvent: (event: EventType, data: DragData) => void
   isMousedown: boolean
@@ -72,12 +75,7 @@ export function useDrager(
   // const scaleRatio = scaleRatio || 1
   const [isMousedown, setIsMousedown] = useState(false)
   const [selected, setSelected] = useState(props.selected || false)
-  useEffect(() => {
-    if (!isMousedown) {
-      // 由于有些是吸附过去的, 需要把最新的值传出去
-      triggerEvent('drag-end', dragData)
-    }
-  }, [isMousedown])
+
   useEffect(() => {
     setSelected(props.selected || false)
   }, [props.selected])
@@ -94,7 +92,12 @@ export function useDrager(
     ...(props.size || dragData),
     angle: props.size?.angle ?? dragData.angle // 确保 angle 始终存在
   }
-
+  useEffect(() => {
+    if (!isMousedown) {
+      // 由于有些是吸附过去的, 需要把最新的值传出去
+      triggerEvent('drag-end', currentDragData)
+    }
+  }, [isMousedown])
   const { marklineEmit } = useMarkline(targetRef, props)
   // 限制多个鼠标键按下的情况
   const mouseSet = new Set()
@@ -191,7 +194,7 @@ export function useDrager(
         const isCollision = checkDragerCollision()
         if (isCollision) {
           !props.size && setDragData((prev) => ({ ...prev, top, left }))
-          triggerEvent('drag-end', currentDragData)
+          // triggerEvent('drag-end', { ...currentDragData, top, left })
         }
       }
       mouseSet.clear()
@@ -209,7 +212,7 @@ export function useDrager(
             ...currentDragData,
             left: currentDragData.left + (markLine?.diffX || 0)
           }
-          setDragData(tempDatas)
+          !props.size && setDragData(tempDatas)
           onChange?.(tempDatas)
         }
 
@@ -218,7 +221,7 @@ export function useDrager(
             ...currentDragData,
             top: currentDragData.top + (markLine?.diffY || 0)
           }
-          setDragData(tempDatas)
+          !props.size && setDragData(tempDatas)
           onChange?.(tempDatas)
         }
       }

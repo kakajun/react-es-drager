@@ -10,6 +10,7 @@ export function useMarkline(
   targetRef: React.MutableRefObject<HTMLDivElement | null>,
   props: DragerProps
 ) {
+  const propsColor = props.color || '#3a7afe'
   const scaleRatio = props.scaleRatio || 1
   const lineX = useRef<HTMLDivElement | null>(null)
   const lineY = useRef<HTMLDivElement | null>(null)
@@ -37,13 +38,13 @@ export function useMarkline(
       if (!lineX.current) {
         lineX.current =
           document.querySelector<HTMLDivElement>('.es-drager-markline-x') ||
-          initLine('x', parentRef.current!, props.color)
+          initLine('x', parentRef.current!, propsColor)
       }
 
       if (!lineY.current) {
         lineY.current =
           document.querySelector<HTMLDivElement>('.es-drager-markline-y') ||
-          initLine('y', parentRef.current!, props.color)
+          initLine('y', parentRef.current!, propsColor)
       }
     }
   }
@@ -60,7 +61,7 @@ export function useMarkline(
     } else {
       if (lineX.current) {
         lineX.current.style.left = `${marklineData.left}px`
-        lineX.current.style.backgroundColor = props.color || ''
+        lineX.current.style.backgroundColor = propsColor
         lineX.current.style.display = 'block'
       }
     }
@@ -70,7 +71,7 @@ export function useMarkline(
     } else {
       if (lineY.current) {
         lineY.current.style.top = `${marklineData.top}px`
-        lineY.current.style.backgroundColor = props.color || ''
+        lineY.current.style.backgroundColor = propsColor
         lineY.current.style.display = 'block'
       }
     }
@@ -158,7 +159,7 @@ export function useMarkline(
   }
 }
 
-function initLine(dir: 'x' | 'y' = 'x', parent: Element, color = '') {
+function initLine(dir: 'x' | 'y' = 'x', parent: Element, color: string) {
   const line = document.createElement('div')
   line.classList.add(`es-drager-markline-${dir}`)
   // common style
