@@ -1,6 +1,6 @@
 {
   "name": "react-es-drager",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A draggable, resizable, rotatable component based on react",
   "type": "module",
   "keywords": [

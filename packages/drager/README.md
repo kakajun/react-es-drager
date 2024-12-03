@@ -1,13 +1,10 @@
-# Rect ES Drager 拖拽组件
-
-- [中文](https://github.com/kakajun/react-es-drager)
-- [English](https://github.com/kakajun/react-es-drager/blob/main/README_en.md)
+# Rect Es Drager 拖拽组件
 
 <p align="middle" ><img width="100" src="https://kakajun.github.io/react-es-drager/logo/logo.png"/></p>
 
 <table width="100%" align="center">
 <tr>
-<th colspan="4">React ES Drager</th>
+<th colspan="4">Rect Es Drager</th>
 </tr>
 <tr>
 <td align="center"><a href="https://kakajun.github.io/react-es-drager/"><strong>Draggable</strong></a></td>
@@ -126,12 +123,14 @@ export default BasicComponent
 
 | 属性名 | 说明 | 类型 | 默认 |
 | --- | --- | --- | --- |
+| tag | component组件的标签属性 | ^[string] | div |
+| type | 类型，`rect`, `text`, `image` | ^[string] | rect |
 | defaultSize | 默认值 | object | {width: 100, height: 100, left: 0, top: 0, angle: 0 } |
 | size | 外部传入属性值 | object(内部属性同上) | - |
 | color | 颜色 | ^[string] | #3a7afe |
 | resizable | 是否可缩放 | ^[boolean] | true |
 | rotatable | 是否可旋转 | ^[boolean] | - |
-| boundary | 是否判断边界(最近定位父节点) | ^[boolean] | - |
+| boundary | 是否判断边界(最近定位父节点，考虑性能谨慎使用) | ^[boolean] | - |
 | disabled | 是否禁用 | ^[boolean] | - |
 | minWidth | 最小宽度 | ^[number] | 1 |
 | minHeight | 最小高度 | ^[number] | 1 |
@@ -144,14 +143,14 @@ export default BasicComponent
 | gridY | 网格Y大小 | ^[number] | 50 |
 | snap | 开启吸附 | ^[boolean] | - |
 | snapThreshold | 吸附阈值 | ^[number] | 10 |
-| markline | 辅助线([可自定义] | ^[boolean]^[Function] | - |
+| markline | 辅助线[可自定义](demo markline) | ^[boolean]^[Function] | - |
+| extraLines | 添加除了es-drager元素以外的对齐线，例如添加中心点对齐([可参考](demo markline)) | ^[Function] |  |
 | scaleRatio | 缩放比 | ^[number] | 1 |
 | disabledKeyEvent | 禁用方向键移动 | ^[boolean] | - |
 | border | 是否显示边框 | ^[boolean] | true |
 | aspectRatio | 宽高缩放比 | ^[number] | - |
 | equalProportion | 宽高等比缩放(该属性和aspectRatio互斥，同时使用会存在问题) | ^[boolean] | - |
 | resizeList | 显示的缩放handle列表，`top`, `bottom`, `left`, `right`, `top-left`, `top-right`, `bottom-left`, `bottom-right` | ^[string[]] | - |
-| guideline | 吸附参考线 | object<Array> | {h:[],v:[]} |
 
 ### Drager 事件
 
