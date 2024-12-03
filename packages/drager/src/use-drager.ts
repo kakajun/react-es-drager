@@ -37,12 +37,7 @@ export function useDrager(
   props: DragerProps
 ): UseDragerResult {
   const {
-    guideline = {
-      h: [],
-      v: []
-    },
     scaleRatio = 1,
-    snapThreshold = 10,
     onDragStart,
     onDrag,
     onDragEnd,
@@ -71,8 +66,6 @@ export function useDrager(
   }
   // 获取组件的尺寸属性
   const propsSize = props.size || props.defaultSize || DEFAULT_SIZE
-
-  // const scaleRatio = scaleRatio || 1
   const [isMousedown, setIsMousedown] = useState(false)
   const [selected, setSelected] = useState(props.selected || false)
 
@@ -95,7 +88,7 @@ export function useDrager(
   useEffect(() => {
     if (!isMousedown) {
       // 由于有些是吸附过去的, 需要把最新的值传出去
-      triggerEvent('drag-end', currentDragData)
+      // triggerEvent('drag-end', currentDragData)
     }
   }, [isMousedown])
   const { marklineEmit } = useMarkline(targetRef, props)
@@ -199,6 +192,7 @@ export function useDrager(
       const rect = getBoundingClientRectByScale(targetRef.current!, scaleRatio)
       minX = rect.left - Math.floor(left - (rect.width - width) + parentElRect.left)
       minY = rect.top - Math.floor(top - (rect.height - height) + parentElRect.top)
+
     }
 
     const maxX = parentElRect.width - width
@@ -228,7 +222,7 @@ export function useDrager(
     })
     for (let i = 0; i < broList.length; i++) {
       const item = broList[i]
-      const flag = checkCollision(targetRef.current!, item, scaleRatio || 1)
+      const flag = checkCollision(targetRef.current!, item, scaleRatio)
       if (flag) return true
     }
     return false
@@ -254,7 +248,7 @@ export function useDrager(
     if (!targetRef.current) return
     // 只有文字才没有宽高,处理文字的
     if (!currentDragData.width && !currentDragData.height) {
-      const { width, height } = getBoundingClientRectByScale(targetRef.current, scaleRatio || 1)
+      const { width, height } = getBoundingClientRectByScale(targetRef.current, scaleRatio)
       !props.size &&
         setDragData((prev) => ({
           ...prev,
