@@ -25,11 +25,6 @@ export type IDot = {
   cursor?: string
 }
 
-interface LineType {
-  h: number[]
-  v: number[]
-}
-
 export interface MarklineData {
   top?: null | number
   left?: null | number
@@ -85,7 +80,7 @@ export interface DragerProps {
   snapThreshold?: number
   markline?: boolean | ((data: MarklineData) => void)
   children?: React.ReactNode
-  guideline?: LineType
+  extraLines?:  (target: DOMRect) => Element[] | Array<{ showTop?: number, top?: number, showLeft?: number, left?: number }>;
   onChange?: (data: DragData) => void
   onDrag?: (data: DragData) => void
   onDragStart?: (data: DragData) => void

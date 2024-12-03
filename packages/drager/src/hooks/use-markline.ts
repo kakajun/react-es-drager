@@ -76,20 +76,35 @@ export function useMarkline(
       }
     }
   }
-
+  // 吸附
   const handleDragStart = () => {
+    debugger
     const source = getBoundingClientRectByScale(targetRef.current!, scaleRatio)
-    const elList = document.querySelectorAll('.es-drager')
-    const targets = []
+    const elList = Array.from(document.querySelectorAll('.es-drager')) as any[]
+    if (props.extraLines) {
+      const extras = props.extraLines(source) || []
+      elList.push(...extras)
+    }
+    const targets = [],
+      x = [],
+      y = []
 
     for (let i = 0; i < elList.length; i++) {
-      const el = elList[i] as HTMLDivElement
-      if (el !== targetRef.current) {
-        targets.push(getBoundingClientRectByScale(el, scaleRatio))
+      const el = elList[i]
+      if (el.nodeType === 1) {
+        if (el !== targetRef.current) {
+          targets.push(getBoundingClientRectByScale(el, scaleRatio))
+        }
+      } else if (el.showTop || el.showTop === 0) {
+        y.push(el)
+      } else if (el.showLeft || el.showLeft === 0) {
+        x.push(el)
       }
     }
 
     lines.current = calcLines(targets, source)
+    // lines.current.x.push(...x)
+    // lines.current.y.push(...y)
   }
 
   const handleDrag = () => {

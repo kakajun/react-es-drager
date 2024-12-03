@@ -17,9 +17,6 @@ import { DragData, DragerProps } from './drager.ts'
 import { useDrager } from './use-drager'
 import './drager.less'
 
-type Slot = React.ReactNode | null
-type ChildrenSlots = [Slot, Slot, Slot]
-
 const Drager: React.FC<DragerProps> = (props) => {
   const {
     type: propsType = 'rect',

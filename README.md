@@ -1,10 +1,10 @@
-# Rect ES Drager 拖拽组件
+# Rect Es Drager 拖拽组件
 
 <p align="middle" ><img width="100" src="https://kakajun.github.io/react-es-drager/logo/logo.png"/></p>
 
 <table width="100%" align="center">
 <tr>
-<th colspan="4">ES Drager</th>
+<th colspan="4">Rect Es Drager</th>
 </tr>
 <tr>
 <td align="center"><a href="https://kakajun.github.io/react-es-drager/"><strong>Draggable</strong></a></td>

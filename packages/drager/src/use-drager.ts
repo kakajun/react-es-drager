@@ -109,7 +109,7 @@ export function useDrager(
     setSelected(true)
 
     let { clientX: downX, clientY: downY } = getXY(e)
-    const { left, top, width, height } = currentDragData
+    const { left, top } = currentDragData
     let minX = 0,
       maxX = 0,
       minY = 0,
@@ -141,46 +141,6 @@ export function useDrager(
         moveY = curY + calcGrid(diffY, props.gridY || 50)
       }
 
-      if (guideline.v && guideline.v.length) {
-        const guideSnapsV = guideline.v.slice()
-        // 检查 left 是否接近 guideSnapsV 中的某个值
-        for (const snap of guideSnapsV) {
-          if (Math.abs(snap - moveX) < snapThreshold / scaleRatio) {
-            moveX = snap
-            break
-          }
-        }
-
-        // 检查 left + width 是否接近 guideSnapsV 中的某个值
-        const rightEdge = moveX + width
-        for (const snap of guideSnapsV) {
-          if (Math.abs(snap - rightEdge) < snapThreshold / scaleRatio) {
-            moveX = snap - width
-            break
-          }
-        }
-      }
-
-      if (guideline.h && guideline.h.length) {
-        // 水平方向吸附,两个y方向吸附, top和 top+height 都吸附
-        const guideSnapsH = guideline.h.slice()
-        // 检查 top 是否接近 guideSnapsH 中的某个值
-        for (const snap of guideSnapsH) {
-          if (Math.abs(snap - moveY) < snapThreshold / scaleRatio) {
-            moveY = snap
-            break
-          }
-        }
-        // 检查 top + height 是否接近 guideSnapsH 中的某个值
-        const bottomEdge = moveY + height
-        for (const snap of guideSnapsH) {
-          if (Math.abs(snap - bottomEdge) < snapThreshold / scaleRatio) {
-            moveY = snap - height
-            break
-          }
-        }
-      }
-
       if (props.boundary) {
         ;[moveX, moveY] = fixBoundary(moveX, moveY, minX, maxX, minY, maxY)
       }
@@ -204,7 +164,7 @@ export function useDrager(
   }
 
   useEffect(() => {
-    if (props.markline && isMousedown) {
+    if (isMousedown) {
       const markLine = marklineEmit('drag')
       if (props.snap && markLine) {
         if (markLine.diffX) {

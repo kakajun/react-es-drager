@@ -68,7 +68,10 @@ const SnapExample: React.FC = () => {
     }),
     [state]
   )
-
+  const extraLines = () => {
+    // 可以返回dom元素列表
+    return Array.from(document.querySelectorAll('.sketch-ruler .lines .line'))
+  }
   const onChange = (index: number, dragData: DragData) => {
     setData((prevState) => ({
       componentList: prevState.componentList.map((item, i) =>
@@ -105,7 +108,7 @@ const SnapExample: React.FC = () => {
                 className="dragerItem"
                 snapThreshold={10}
                 scaleRatio={state.scale}
-                guideline={state.lines}
+                extraLines={extraLines}
                 markline
                 onChange={(e: DragData) => onChange(index, e)}
               >

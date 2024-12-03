@@ -13,7 +13,7 @@
     "i18next": "^23.15.1",
     "i18next-browser-languagedetector": "^8.0.0",
     "react-i18next": "^15.0.2",
-    "react-sketch-ruler": "^1.2.9",
+    "react-sketch-ruler": "^1.2.10",
     "react-contenteditable": "^3.3.7"
   }
 }
