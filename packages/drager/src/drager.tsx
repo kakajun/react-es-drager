@@ -260,7 +260,7 @@ const Drager: React.FC<DragerProps> = (props) => {
   }
 
   const [defaultSlot, resizeSlot, rotateSlot] = React.Children.toArray(children).reduce(
-    (acc: ChildrenSlots, child: React.ReactNode) => {
+    (acc: [React.ReactNode[], React.ReactNode, React.ReactNode], child: React.ReactNode) => {
       if (React.isValidElement(child)) {
         const slot = child.props.slot
         if (slot === 'rotate') {
@@ -268,14 +268,14 @@ const Drager: React.FC<DragerProps> = (props) => {
         } else if (slot === 'resize') {
           acc[1] = child
         } else {
-          acc[0] = child
+          acc[0].push(child)
         }
       } else {
-        acc[0] = child
+        acc[0].push(child)
       }
       return acc
     },
-    [null, null, null]
+    [[], null, null]
   )
   const setRotate = (rotate: number) => {
     !props.size && setDragData({ ...currentDragData, angle: rotate })
@@ -298,7 +298,10 @@ const Drager: React.FC<DragerProps> = (props) => {
       onClick={(e) => e.stopPropagation()}
       onMouseDown={(e) => e.stopPropagation()}
     >
-      {defaultSlot}
+      {defaultSlot.map((child, index) => {
+        console.log(child, 'child')
+        return <React.Fragment key={index}>{child}</React.Fragment>
+      })}
       {showResize && (
         <>
           {dots.map((item, index) => (

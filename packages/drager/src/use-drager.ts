@@ -197,26 +197,21 @@ export function useDrager(
   }
 
   useEffect(() => {
-    const handleDrag = async () => {
-      const markLine = marklineEmit('drag')
+    const markLine = marklineEmit('drag')
+    if (props.snap && markLine) {
+      if (markLine.diffX) {
+        !props.size &&
+          setDragData((prev) => ({
+            ...prev,
+            left: currentDragData.left + (markLine?.diffX || 0)
+          }))
+      }
 
-      if (props.snap && markLine) {
-        if (markLine.diffX) {
-          !props.size &&
-            setDragData((prev) => ({
-              ...prev,
-              left: currentDragData.left + (markLine?.diffX || 0)
-            }))
-        }
-
-        if (markLine.diffY) {
-          !props.size &&
-            setDragData((prev) => ({ ...prev, top: currentDragData.top + (markLine?.diffY || 0) }))
-        }
+      if (markLine.diffY) {
+        !props.size &&
+          setDragData((prev) => ({ ...prev, top: currentDragData.top + (markLine?.diffY || 0) }))
       }
     }
-
-    handleDrag()
   }, [props.size, currentDragData])
 
   const getBoundary = () => {
