@@ -299,7 +299,6 @@ const Drager: React.FC<DragerProps> = (props) => {
       onMouseDown={(e) => e.stopPropagation()}
     >
       {defaultSlot.map((child, index) => {
-        console.log(child, 'child')
         return <React.Fragment key={index}>{child}</React.Fragment>
       })}
       {showResize && (

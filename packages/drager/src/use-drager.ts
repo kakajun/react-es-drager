@@ -72,7 +72,12 @@ export function useDrager(
   // const scaleRatio = scaleRatio || 1
   const [isMousedown, setIsMousedown] = useState(false)
   const [selected, setSelected] = useState(props.selected || false)
-
+  useEffect(() => {
+    if (!isMousedown) {
+      // 由于有些是吸附过去的, 需要把最新的值传出去
+      triggerEvent('drag-end', dragData)
+    }
+  }, [isMousedown])
   useEffect(() => {
     setSelected(props.selected || false)
   }, [props.selected])
@@ -192,7 +197,6 @@ export function useDrager(
       mouseSet.clear()
       setIsMousedown(false)
       marklineEmit('drag-end')
-      triggerEvent('drag-end', newDragData)
     })
   }
 
@@ -201,16 +205,21 @@ export function useDrager(
       const markLine = marklineEmit('drag')
       if (props.snap && markLine) {
         if (markLine.diffX) {
-          !props.size &&
-            setDragData((prev) => ({
-              ...prev,
-              left: currentDragData.left + (markLine?.diffX || 0)
-            }))
+          const tempDatas = {
+            ...currentDragData,
+            left: currentDragData.left + (markLine?.diffX || 0)
+          }
+          setDragData(tempDatas)
+          onChange?.(tempDatas)
         }
 
         if (markLine.diffY) {
-          !props.size &&
-            setDragData((prev) => ({ ...prev, top: currentDragData.top + (markLine?.diffY || 0) }))
+          const tempDatas = {
+            ...currentDragData,
+            top: currentDragData.top + (markLine?.diffY || 0)
+          }
+          setDragData(tempDatas)
+          onChange?.(tempDatas)
         }
       }
     }
@@ -280,7 +289,7 @@ export function useDrager(
 
   useEffect(() => {
     if (!targetRef.current) return
-    // TODO 下面是干啥的？
+    // 只有文字才没有宽高,处理文字的
     if (!currentDragData.width && !currentDragData.height) {
       const { width, height } = getBoundingClientRectByScale(targetRef.current, scaleRatio || 1)
       !props.size &&
