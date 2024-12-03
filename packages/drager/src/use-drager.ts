@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react'
+import React, { useEffect, useState } from 'react'
 import type { DragerProps, DragData, EventType } from './drager'
 import {
   setupMove,
@@ -197,19 +197,21 @@ export function useDrager(
   }
 
   useEffect(() => {
-    const markLine = marklineEmit('drag')
-    if (props.snap && markLine) {
-      if (markLine.diffX) {
-        !props.size &&
-          setDragData((prev) => ({
-            ...prev,
-            left: currentDragData.left + (markLine?.diffX || 0)
-          }))
-      }
+    if (props.markline && isMousedown) {
+      const markLine = marklineEmit('drag')
+      if (props.snap && markLine) {
+        if (markLine.diffX) {
+          !props.size &&
+            setDragData((prev) => ({
+              ...prev,
+              left: currentDragData.left + (markLine?.diffX || 0)
+            }))
+        }
 
-      if (markLine.diffY) {
-        !props.size &&
-          setDragData((prev) => ({ ...prev, top: currentDragData.top + (markLine?.diffY || 0) }))
+        if (markLine.diffY) {
+          !props.size &&
+            setDragData((prev) => ({ ...prev, top: currentDragData.top + (markLine?.diffY || 0) }))
+        }
       }
     }
   }, [props.size, currentDragData])
