@@ -21,8 +21,7 @@
   "files": [
     "lib"
   ],
-  "main1": "lib/index.js",
-  "main": "./index.tsx",
+  "main": "lib/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/kakajun/react-es-drager.git"
