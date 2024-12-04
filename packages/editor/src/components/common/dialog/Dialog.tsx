@@ -5,25 +5,14 @@ import { Button, Modal } from 'antd'
 // import 'ace-builds/src-min-noconflict/mode-json5'
 import dayjs from 'dayjs'
 
-interface Props {
-  option: {
-    content?: string
-    confirm?: (value: string) => void
-  }
-}
-
-const EditorDialog: React.FC<Props> = ({ option }) => {
-  const [state, setState] = useState({
-    option,
-    visible: false
-  })
-
+const Dialog = ({ option }) => {
+  const [visible, setVisible] = useState(false)
+  const [currentOption, setCurrentOption] = useState(option || {})
   const editorRef = useRef(null)
-  const editorContainerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (state.visible && editorContainerRef.current) {
-      editorRef.current = ace.edit(editorContainerRef.current, {
+    if (visible) {
+      const editor = ace.edit(editorRef.current, {
         maxLines: 34,
         minLines: 34,
         fontSize: 14,
@@ -33,36 +22,30 @@ const EditorDialog: React.FC<Props> = ({ option }) => {
         readOnly: false
       })
 
-      if (state.option.content) {
-        editorRef.current!.setValue(JSON.stringify(JSON.parse(state.option.content), null, 4))
+      editor.setValue(JSON.stringify(JSON.parse(currentOption.content), null, 4))
+
+      return () => {
+        editor.destroy()
       }
     }
+  }, [visible, currentOption])
 
-    return () => {
-      if (editorRef.current) {
-        editorRef.current.destroy()
-      }
-    }
-  }, [state.visible])
-
-  const open = (newOption: Record<string, any>) => {
-    setState((prevState) => ({
-      ...prevState,
-      option: newOption,
-      visible: true
-    }))
+  const open = (newOption) => {
+    setCurrentOption(newOption)
+    setVisible(true)
   }
 
-  const close = () => {
-    setState((prevState) => ({
-      ...prevState,
-      visible: false
-    }))
+  const handleOk = () => {
+    setVisible(false)
+  }
+
+  const handleCancel = () => {
+    setVisible(false)
   }
 
   const handleConfirm = () => {
-    const { confirm } = state.option
-    confirm && confirm(editorRef.current?.getValue())
+    const { confirm } = currentOption
+    confirm && confirm(editorRef.current.session.getValue())
   }
 
   const handleExport = () => {
@@ -72,14 +55,29 @@ const EditorDialog: React.FC<Props> = ({ option }) => {
     const filename = dayjs().format('YYYY-MM-DD') + '-es-drager.json'
     link.download = filename
 
-    const blob = new Blob([editorRef.current.getValue()])
+    const blob = new Blob([editorRef.current.session.getValue()])
     const href = URL.createObjectURL(blob)
     link.href = href
+
     link.click()
     URL.revokeObjectURL(href)
   }
 
-  return <div></div>
+  return (
+    <Modal open={visible} {...currentOption} onOk={handleOk} draggable onCancel={handleCancel}>
+      <div ref={editorRef} id="esEditor"></div>
+
+      <template slot="footer">
+        <Button onClick={handleCancel}>取消</Button>
+        <Button type="primary" onClick={handleConfirm}>
+          保存编辑
+        </Button>
+        <Button type="primary" onClick={handleExport}>
+          导出JSON
+        </Button>
+      </template>
+    </Modal>
+  )
 }
 
-export default EditorDialog
+export default Dialog

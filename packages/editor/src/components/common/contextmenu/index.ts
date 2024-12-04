@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react'
-import Menu from './Menu' // 假设Menu组件已经适配了React
-
+import Menu from './Menu'
+import ReactDOM from 'react-dom/client';
 export type ActionType =
   | 'remove'
   | 'cut'
@@ -28,17 +28,16 @@ export type MenuOption = {
   onClick?: (item: MenuItem) => void
 }
 
-const menuRef = useRef<React.ReactInstance>(null)
+const menuRef = useRef<ReactDOM.Root | null>(null);
 
 export const $contextmenu = (option: MenuOption) => {
   if (!menuRef.current) {
-    const container = document.createElement('div')
-    document.body.appendChild(container) // 假设这里使用body作为容器，实际使用时应根据具体情况调整
+    const container = document.createElement('div');
+    document.body.appendChild(container); // 假设这里使用body作为容器，实际使用时应根据具体情况调整
 
-    menuRef.current = React.createElement(Menu, { option })
-
-    ReactDOM.render(menuRef.current, container)
+    menuRef.current = ReactDOM.createRoot(container);
+    menuRef.current.render(<Menu option={option} />);
   } else {
-    ;(menuRef.current as any).props.open(option)
+    menuRef.current.render(<Menu option={option} />);
   }
-}
+};
