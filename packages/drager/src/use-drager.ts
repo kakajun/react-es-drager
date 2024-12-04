@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react'
+import React, { useEffect, useState } from 'react'
 import type { DragerProps, DragData, EventType } from './drager'
 import {
   setupMove,
@@ -9,6 +9,9 @@ import {
   getBoundingClientRectByScale
 } from './utils'
 import { useMarkline, useKeyEvent } from './hooks'
+
+// 储存的原则, 永远只有一套数据,如果是defaultSize, 则dragData是真实值,如果是size, 那么dragData是摆设
+// 最终唯一数据源就是currentDragData,如果存在size, 那么不要更新dragData,更新时,前面一定带!props.size判断
 
 interface UseDragerResult {
   triggerEvent: (event: EventType, data: DragData) => void
@@ -34,12 +37,7 @@ export function useDrager(
   props: DragerProps
 ): UseDragerResult {
   const {
-    guideline = {
-      h: [],
-      v: []
-    },
     scaleRatio = 1,
-    snapThreshold = 10,
     onDragStart,
     onDrag,
     onDragEnd,
@@ -68,8 +66,6 @@ export function useDrager(
   }
   // 获取组件的尺寸属性
   const propsSize = props.size || props.defaultSize || DEFAULT_SIZE
-
-  // const scaleRatio = scaleRatio || 1
   const [isMousedown, setIsMousedown] = useState(false)
   const [selected, setSelected] = useState(props.selected || false)
 
@@ -89,7 +85,12 @@ export function useDrager(
     ...(props.size || dragData),
     angle: props.size?.angle ?? dragData.angle // 确保 angle 始终存在
   }
-
+  useEffect(() => {
+    if (!isMousedown) {
+      // 由于有些是吸附过去的, 需要把最新的值传出去
+      // triggerEvent('drag-end', currentDragData)
+    }
+  }, [isMousedown])
   const { marklineEmit } = useMarkline(targetRef, props)
   // 限制多个鼠标键按下的情况
   const mouseSet = new Set()
@@ -101,7 +102,7 @@ export function useDrager(
     setSelected(true)
 
     let { clientX: downX, clientY: downY } = getXY(e)
-    const { left, top, width, height } = currentDragData
+    const { left, top } = currentDragData
     let minX = 0,
       maxX = 0,
       minY = 0,
@@ -133,48 +134,6 @@ export function useDrager(
         moveY = curY + calcGrid(diffY, props.gridY || 50)
       }
 
-      if (guideline.v && guideline.v.length) {
-        const guideSnapsV = guideline.v.slice()
-        // 检查 left 是否接近 guideSnapsV 中的某个值
-        for (const snap of guideSnapsV) {
-          console.log(Math.abs(snap - moveX))
-          if (Math.abs(snap - moveX) < snapThreshold / scaleRatio) {
-            console.log('kaojing')
-            moveX = snap
-            break
-          }
-        }
-
-        // 检查 left + width 是否接近 guideSnapsV 中的某个值
-        const rightEdge = moveX + width
-        for (const snap of guideSnapsV) {
-          if (Math.abs(snap - rightEdge) < snapThreshold / scaleRatio) {
-            moveX = snap - width
-            break
-          }
-        }
-      }
-
-      if (guideline.h && guideline.h.length) {
-        // 水平方向吸附,两个y方向吸附, top和 top+height 都吸附
-        const guideSnapsH = guideline.h.slice()
-        // 检查 top 是否接近 guideSnapsH 中的某个值
-        for (const snap of guideSnapsH) {
-          if (Math.abs(snap - moveY) < snapThreshold / scaleRatio) {
-            moveY = snap
-            break
-          }
-        }
-        // 检查 top + height 是否接近 guideSnapsH 中的某个值
-        const bottomEdge = moveY + height
-        for (const snap of guideSnapsH) {
-          if (Math.abs(snap - bottomEdge) < snapThreshold / scaleRatio) {
-            moveY = snap - height
-            break
-          }
-        }
-      }
-
       if (props.boundary) {
         ;[moveX, moveY] = fixBoundary(moveX, moveY, minX, maxX, minY, maxY)
       }
@@ -188,37 +147,38 @@ export function useDrager(
         const isCollision = checkDragerCollision()
         if (isCollision) {
           !props.size && setDragData((prev) => ({ ...prev, top, left }))
-          triggerEvent('drag-end', currentDragData)
+          // triggerEvent('drag-end', { ...currentDragData, top, left })
         }
       }
       mouseSet.clear()
       setIsMousedown(false)
       marklineEmit('drag-end')
-      triggerEvent('drag-end', newDragData)
     })
   }
 
   useEffect(() => {
-    const handleDrag = async () => {
+    if (isMousedown) {
       const markLine = marklineEmit('drag')
-
       if (props.snap && markLine) {
         if (markLine.diffX) {
-          !props.size &&
-            setDragData((prev) => ({
-              ...prev,
-              left: currentDragData.left + (markLine?.diffX || 0)
-            }))
+          const tempDatas = {
+            ...currentDragData,
+            left: currentDragData.left + (markLine?.diffX || 0)
+          }
+          !props.size && setDragData(tempDatas)
+          onChange?.(tempDatas)
         }
 
         if (markLine.diffY) {
-          !props.size &&
-            setDragData((prev) => ({ ...prev, top: currentDragData.top + (markLine?.diffY || 0) }))
+          const tempDatas = {
+            ...currentDragData,
+            top: currentDragData.top + (markLine?.diffY || 0)
+          }
+          !props.size && setDragData(tempDatas)
+          onChange?.(tempDatas)
         }
       }
     }
-
-    handleDrag()
   }, [props.size, currentDragData])
 
   const getBoundary = () => {
@@ -232,6 +192,7 @@ export function useDrager(
       const rect = getBoundingClientRectByScale(targetRef.current!, scaleRatio)
       minX = rect.left - Math.floor(left - (rect.width - width) + parentElRect.left)
       minY = rect.top - Math.floor(top - (rect.height - height) + parentElRect.top)
+
     }
 
     const maxX = parentElRect.width - width
@@ -261,7 +222,7 @@ export function useDrager(
     })
     for (let i = 0; i < broList.length; i++) {
       const item = broList[i]
-      const flag = checkCollision(targetRef.current!, item, scaleRatio || 1)
+      const flag = checkCollision(targetRef.current!, item, scaleRatio)
       if (flag) return true
     }
     return false
@@ -285,9 +246,9 @@ export function useDrager(
 
   useEffect(() => {
     if (!targetRef.current) return
-    // TODO 下面是干啥的？
+    // 只有文字才没有宽高,处理文字的
     if (!currentDragData.width && !currentDragData.height) {
-      const { width, height } = getBoundingClientRectByScale(targetRef.current, scaleRatio || 1)
+      const { width, height } = getBoundingClientRectByScale(targetRef.current, scaleRatio)
       !props.size &&
         setDragData((prev) => ({
           ...prev,

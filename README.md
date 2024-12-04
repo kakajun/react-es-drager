@@ -1,13 +1,10 @@
-# Rect ES Drager 拖拽组件
-
-- [中文](https://github.com/kakajun/react-es-drager)
-- [English](https://github.com/kakajun/react-es-drager/blob/main/README_en.md)
+# Rect Es Drager 拖拽组件
 
 <p align="middle" ><img width="100" src="https://kakajun.github.io/react-es-drager/logo/logo.png"/></p>
 
 <table width="100%" align="center">
 <tr>
-<th colspan="4">ES Drager</th>
+<th colspan="4">Rect Es Drager</th>
 </tr>
 <tr>
 <td align="center"><a href="https://kakajun.github.io/react-es-drager/"><strong>Draggable</strong></a></td>
@@ -190,6 +187,6 @@ export type DragData = {
 | resize  | 缩放handle     |
 | rotate  | 旋转handle     |
 
-## 引用
+### 引用
 
-本工程属于经原创同意,vue转react项目,原创属于 [es-drager](https://github.com/vangleer/es-drager), 项目将会长期更新, 欢迎issue和pr
+本工程属于经原创同意,vue转react项目, 引用自[es-drager](https://github.com/vangleer/es-drager), 本项目将会长期更新, 欢迎issue和pr

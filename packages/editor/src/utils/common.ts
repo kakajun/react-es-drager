@@ -1,5 +1,5 @@
 import { ComponentType } from '../types'
-
+import { Group as EsGroup } from '../components/index'
 let uid = 1
 
 export function useId(prefix = 'es-drager') {
@@ -51,8 +51,7 @@ export function calcLines(list: ComponentType[], current: ComponentType) {
  */
 export function makeGroup(elements: ComponentType[], editorRect: DOMRect) {
   const selectedItems = elements.filter((item) => item.selected)
-
-  if (!selectedItems.length) return elements
+  if (selectedItems.length < 2) return elements
 
   let minLeft = Infinity,
     minTop = Infinity,
@@ -103,7 +102,7 @@ export function makeGroup(elements: ComponentType[], editorRect: DOMRect) {
   // 组合组件信息
   const groupElement: ComponentType = {
     id: useId(),
-    component: 'es-group',
+    component: EsGroup,
     group: true,
     selected: true,
     ...dragData,
@@ -129,7 +128,7 @@ export function cancelGroup(elements: ComponentType[], editorRect: DOMRect) {
   // 得到当前选中元素
   const current = elements.find((item) => item.selected) as Required<ComponentType>
   // 如果没有选中的元素或者不是组合元素直接返回
-  if (!current || current.component !== 'es-group') {
+  if (!current || current.component.name !== 'EsGroup') {
     return elements
   }
 

@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react'
 import Drager, { type DragData } from 'react-es-drager'
-import { ComponentType, EditorDataType, GridRect, Area, useArea } from '@es-drager/editor'
+import { EditorDataType, GridRect, Area, useArea } from '@es-drager/editor'
 import { useId, makeGroup, cancelGroup } from '@es-drager/editor/src/utils'
 import { useTranslation } from 'react-i18next'
 import { Button } from 'antd'
@@ -105,7 +105,7 @@ const MyComponent = () => {
   return (
     <div className="es-container">
       <div className="es-tools">
-        <Button type="primary" onClick={handleMakeGroup}>
+        <Button type="primary" className="left-btn" onClick={handleMakeGroup}>
           {t('examples.group')}
         </Button>
         <Button type="primary" onClick={handleCancelGroup}>
@@ -118,37 +118,40 @@ const MyComponent = () => {
         onMouseDown={onEditorMouseDown}
         onClick={(e) => e.stopPropagation()}
       >
-        {data.elements.map((item, index) => (
-          <Drager
-            key={item.id}
-            selected={item.selected}
-            size={{
-              width: item.width,
-              height: item.height,
-              left: item.left,
-              top: item.top,
-              angle: item.angle
-            }}
-            rotatable
-            onDragStart={() => onDragstart(index)}
-            onDrag={onDrag}
-            onChange={(e: DragData) => onChange(index, e)}
-            onClick={(e: any) => e.stopPropagation()}
-            onMouseDown={(e: any) => e.stopPropagation()}
-          >
-            <div
-              is={item.component}
-              {...item.props}
-              style={{
-                ...item.style,
-                width: '100%',
-                height: '100%'
+        {data.elements.map((item, index) => {
+          const DynamicComponent = item.component
+          return (
+            <Drager
+              key={item.id}
+              selected={item.selected}
+              size={{
+                width: item.width,
+                height: item.height,
+                left: item.left,
+                top: item.top,
+                angle: item.angle
               }}
+              rotatable
+              onDragStart={() => onDragstart(index)}
+              onDrag={onDrag}
+              onChange={(e: DragData) => onChange(index, e)}
+              onClick={(e: any) => e.stopPropagation()}
+              onMouseDown={(e: any) => e.stopPropagation()}
             >
-              {item.text}
-            </div>
-          </Drager>
-        ))}
+              <DynamicComponent
+                {...item}
+                {...item.props}
+                style={{
+                  ...item.style,
+                  width: '100%',
+                  height: '100%'
+                }}
+              >
+                {item.text}
+              </DynamicComponent>
+            </Drager>
+          )
+        })}
 
         <GridRect />
         <Area ref={areaRef} onMove={onAreaMove} onUp={onAreaUp} />

@@ -17,9 +17,6 @@ import { DragData, DragerProps } from './drager.ts'
 import { useDrager } from './use-drager'
 import './drager.less'
 
-type Slot = React.ReactNode | null
-type ChildrenSlots = [Slot, Slot, Slot]
-
 const Drager: React.FC<DragerProps> = (props) => {
   const {
     type: propsType = 'rect',
@@ -72,6 +69,7 @@ const Drager: React.FC<DragerProps> = (props) => {
 
   const dragStyle = useMemo(() => {
     const { width, height, left, top, angle } = currentDragData
+
     const style: React.CSSProperties = { ...(props.style || {}) }
     // 优先考虑props.size
     style.width = props.size?.width ?? withUnit(width)
@@ -110,6 +108,7 @@ const Drager: React.FC<DragerProps> = (props) => {
       const downX = clientX
       const downY = clientY
       const { width, height, left, top } = currentDragData
+
       const centerX = left + width / 2
       const centerY = top + height / 2
 
@@ -189,11 +188,11 @@ const Drager: React.FC<DragerProps> = (props) => {
         if (maxHeight > 0) {
           d.height = Math.min(d.height, maxHeight)
         }
-
         // 如果开启了边界，则调用 fixResizeBoundary 函数处理
         if (boundary) {
           d = fixResizeBoundary(d, boundaryInfo, ratio)
         }
+
         !props.size && setDragData(d)
         triggerEvent('resize', d)
       }
@@ -210,7 +209,8 @@ const Drager: React.FC<DragerProps> = (props) => {
   )
 
   const fixResizeBoundary = (d: DragData, boundaryInfo: number[], ratio: number | undefined) => {
-    const [minX, minY, parentWidth, parentHeight] = boundaryInfo
+    // 注意没用到也要占位,否则数组接收值会错乱
+    const [minX, maxX, minY, maxY, parentWidth, parentHeight] = boundaryInfo
     const isMinLeft = d.left < minX
     const isMaxLeft = d.left + d.width > parentWidth
     const isMinTop = d.top < minY
@@ -247,11 +247,15 @@ const Drager: React.FC<DragerProps> = (props) => {
     }
 
     if ((isMaxTop || isMinTop) && ratio) {
+      // top超出并且等比缩放
+      // width、left需要复原
       d.width = currentDragData.width
       d.left = currentDragData.left
     }
 
     if ((isMaxLeft || isMinLeft) && ratio) {
+      // left超出并且等比缩放
+      // height、top需要复原
       d.height = currentDragData.height
       d.top = currentDragData.top
     }
@@ -260,7 +264,7 @@ const Drager: React.FC<DragerProps> = (props) => {
   }
 
   const [defaultSlot, resizeSlot, rotateSlot] = React.Children.toArray(children).reduce(
-    (acc: ChildrenSlots, child: React.ReactNode) => {
+    (acc: [React.ReactNode[], React.ReactNode, React.ReactNode], child: React.ReactNode) => {
       if (React.isValidElement(child)) {
         const slot = child.props.slot
         if (slot === 'rotate') {
@@ -268,14 +272,14 @@ const Drager: React.FC<DragerProps> = (props) => {
         } else if (slot === 'resize') {
           acc[1] = child
         } else {
-          acc[0] = child
+          acc[0].push(child)
         }
       } else {
-        acc[0] = child
+        acc[0].push(child)
       }
       return acc
     },
-    [null, null, null]
+    [[], null, null]
   )
   const setRotate = (rotate: number) => {
     !props.size && setDragData({ ...currentDragData, angle: rotate })
@@ -298,7 +302,9 @@ const Drager: React.FC<DragerProps> = (props) => {
       onClick={(e) => e.stopPropagation()}
       onMouseDown={(e) => e.stopPropagation()}
     >
-      {defaultSlot}
+      {defaultSlot.map((child, index) => {
+        return <React.Fragment key={index}>{child}</React.Fragment>
+      })}
       {showResize && (
         <>
           {dots.map((item, index) => (

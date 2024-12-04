@@ -51,6 +51,8 @@ function App() {
   const [redoStack, setRedoStack] = React.useState<EditorState[]>([])
 
   const onChange = (index: number, dragData: DragData) => {
+    // console.log(dragData, 'dragData')
+
     setComDatas((prevState) => ({
       componentList: prevState.componentList.map((item, i) =>
         i === index ? { ...item, ...dragData } : item

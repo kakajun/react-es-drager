@@ -50,6 +50,8 @@ const nested = {
       text: 'Child1',
       defaultSize: {
         width: 100,
+        left: 0,
+        top: 0,
         height: 100
       },
       boundary: true,
@@ -60,7 +62,8 @@ const nested = {
       defaultSize: {
         width: 100,
         height: 100,
-        left: 110
+        left: 110,
+        top: 0
       },
       boundary: true,
       zIndex: 1
@@ -91,9 +94,9 @@ const BasicComponent = () => {
       )}
 
       <Drager {...nested}>
-        {nested.children.map((item, index) => (
-          <Drager key={index} {...item}>
-            {item.text}
+        {nested.children.map((obj, i) => (
+          <Drager key={i} {...obj}>
+            {obj.text}
           </Drager>
         ))}
       </Drager>
