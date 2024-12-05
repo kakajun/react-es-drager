@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react'
+import React, { useState, useEffect  } from 'react'
 import { GridRect } from '@es-drager/editor'
 import Drager, { type DragData, MarklineData } from 'react-es-drager'
 import { useTranslation } from 'react-i18next'

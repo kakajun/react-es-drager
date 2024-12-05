@@ -91,25 +91,73 @@ npm i react-es-drager -D
 
 ```jsx
 import Drager from 'react-es-drager'
-const dragList = []
+import React, { useState, useEffect  } from 'react'
+
+type ComponentType = {
+  id?: string
+  component: string
+  text?: string
+  width?: number
+  height?: number
+  top?: number
+  left?: number
+  angle?: number
+  style?: React.CSSProperties
+}
+interface EditorState {
+  componentList: ComponentType[]
+}
+
 const BasicComponent = () => {
+  const [comDatas, setComDatas] = useState<EditorState>({
+    componentList: [
+      {
+        id: 'div1',
+        component: 'div',
+        text: 'div1',
+        width: 100,
+        height: 100,
+        left: 0,
+        top: 0
+      },
+      {
+        id: 'div2',
+        component: 'div',
+        text: 'div2',
+        width: 100,
+        height: 100,
+        top: 100,
+        left: 100
+      }
+    ]
+  })
+  const onChange = (index: number, dragData: DragData) => {
+  setComDatas((prevState) => ({
+    componentList: prevState.componentList.map((item, i) =>
+      i === index ? { ...item, ...dragData } : item
+    )
+  }))
+  }
   return (
     <>
-      {dragList.map((list, index) =>
-        list.map((item, index2) => (
+     <div className="es-editor">
+        {comDatas.componentList.map((item, index) => (
           <Drager
-            key={`${index}-${index2}`}
-            width={100}
-            height={100}
-            left={index2 * 150 + 30}
-            top={index * 150 + 30}
-            {...item}
-            style={{ color: item.color }}
+            key={item.id}
+            size={{
+              width: item.width,
+              height: item.height,
+              left: item.left,
+              top: item.top
+            }}
+            snap
+            snapThreshold={10}
+            markline
+            onChange={(e: DragData) => onChange(index, e)}
           >
-            {item.text}
+            <div>{item.text}</div>
           </Drager>
-        ))
-      )}
+        ))}
     </>
   )
 }
