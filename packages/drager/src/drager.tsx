@@ -44,6 +44,7 @@ const Drager: React.FC<DragerProps> = (props) => {
   const dragRef = useRef<HTMLDivElement>(null)
 
   const {
+    onMousedown,
     selected,
     setDragData,
     triggerEvent,
@@ -300,7 +301,10 @@ const Drager: React.FC<DragerProps> = (props) => {
       ].join(' ')}
       style={dragStyle}
       onClick={(e) => e.stopPropagation()}
-      onMouseDown={(e) => e.stopPropagation()}
+      onMouseDown={(e) => {
+        onMousedown(e)
+        e.stopPropagation()
+      }}
     >
       {defaultSlot.map((child, index) => {
         return <React.Fragment key={index}>{child}</React.Fragment>

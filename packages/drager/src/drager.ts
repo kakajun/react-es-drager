@@ -80,7 +80,9 @@ export interface DragerProps {
   snapThreshold?: number
   markline?: boolean | ((data: MarklineData) => void)
   children?: React.ReactNode
-  extraLines?:  (target: DOMRect) => Element[] | Array<{ showTop?: number, top?: number, showLeft?: number, left?: number }>;
+  extraLines?: (
+    target: DOMRect
+  ) => Element[] | Array<{ showTop?: number; top?: number; showLeft?: number; left?: number }>
   onChange?: (data: DragData) => void
   onDrag?: (data: DragData) => void
   onDragStart?: (data: DragData) => void

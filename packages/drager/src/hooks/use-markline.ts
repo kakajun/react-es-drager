@@ -78,7 +78,6 @@ export function useMarkline(
   }
   // 吸附
   const handleDragStart = () => {
-    debugger
     const source = getBoundingClientRectByScale(targetRef.current!, scaleRatio)
     const elList = Array.from(document.querySelectorAll('.es-drager')) as any[]
     if (props.extraLines) {

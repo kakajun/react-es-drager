@@ -20,6 +20,7 @@ interface UseDragerResult {
   setSelected: (selected: boolean) => void
   setDragData: React.Dispatch<React.SetStateAction<DragData>>
   getBoundary: () => number[]
+  onMousedown: (e: MouseTouchEvent) => void
   checkDragerCollision: () => boolean
   currentDragData: DragData
 }
@@ -95,7 +96,7 @@ export function useDrager(
   // 限制多个鼠标键按下的情况
   const mouseSet = new Set()
 
-  function onMousedown(e: MouseTouchEvent) {
+  const onMousedown = (e: MouseTouchEvent) => {
     mouseSet.add((e as MouseEvent).button)
     if (props.disabled) return
     setIsMousedown(true)
@@ -192,7 +193,6 @@ export function useDrager(
       const rect = getBoundingClientRectByScale(targetRef.current!, scaleRatio)
       minX = rect.left - Math.floor(left - (rect.width - width) + parentElRect.left)
       minY = rect.top - Math.floor(top - (rect.height - height) + parentElRect.top)
-
     }
 
     const maxX = parentElRect.width - width
@@ -256,13 +256,7 @@ export function useDrager(
           height: height || 100
         }))
     }
-    targetRef.current.addEventListener('mousedown', onMousedown)
-    targetRef.current.addEventListener('touchstart', onMousedown, { passive: true })
-    return () => {
-      targetRef.current?.removeEventListener('mousedown', onMousedown)
-      targetRef.current?.removeEventListener('touchstart', onMousedown)
-    }
-  }, [dragData, props.size])
+  }, [])
 
   useEffect(() => {
     if (selected) {
@@ -285,6 +279,7 @@ export function useDrager(
   }, [selected])
 
   return {
+    onMousedown,
     triggerEvent,
     isMousedown,
     selected,

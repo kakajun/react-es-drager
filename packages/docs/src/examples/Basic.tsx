@@ -1,5 +1,5 @@
 import React from 'react'
-import Drager from 'react-es-drager'
+import Drager from 'react-es-drager/index'
 import { useTranslation } from 'react-i18next'
 import './Basic.less'
 const dragList = [
