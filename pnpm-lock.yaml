@@ -138,8 +138,8 @@ importers:
         specifier: ^15.0.2
         version: 15.0.2(i18next@23.15.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-sketch-ruler:
-        specifier: ^1.2.9
-        version: 1.2.9
+        specifier: ^1.2.10
+        version: 1.2.10
 
   packages/drager: {}
 
@@ -3056,8 +3056,8 @@ packages:
   react-selecto@1.26.3:
     resolution: {integrity: sha512-Ubik7kWSnZyQEBNro+1k38hZaI1tJarE+5aD/qsqCOA1uUBSjgKVBy3EWRzGIbdmVex7DcxznFZLec/6KZNvwQ==}
 
-  react-sketch-ruler@1.2.9:
-    resolution: {integrity: sha512-fcZdvAG7Tn0B4gU8TKvqkwIxPiGw9gYFXL9D2sd5YjHPXBVo8QMOHJqbTBnh2GV1bOQ0u25njEXT2TAbkH0wcA==}
+  react-sketch-ruler@1.2.10:
+    resolution: {integrity: sha512-OJuKAJh6thKhkY2XRWJL8HOUluKEdVQBQME5a1vxmxyKhGBOfWemubfzx6aMRDXh0+vv0mPntQIkwxD06U/PgA==}
 
   react@18.3.1:
     resolution: {integrity: sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==}
@@ -6911,7 +6911,7 @@ snapshots:
     dependencies:
       selecto: 1.26.3
 
-  react-sketch-ruler@1.2.9: {}
+  react-sketch-ruler@1.2.10: {}
 
   react@18.3.1:
     dependencies:
