@@ -86,22 +86,19 @@ export function useDrager(
     ...(props.size || dragData),
     angle: props.size?.angle ?? dragData.angle // 确保 angle 始终存在
   }
-  useEffect(() => {
-    if (!isMousedown) {
-      // 由于有些是吸附过去的, 需要把最新的值传出去
-      // triggerEvent('drag-end', currentDragData)
-    }
-  }, [isMousedown])
+
   const { marklineEmit } = useMarkline(targetRef, props)
   // 限制多个鼠标键按下的情况
   const mouseSet = new Set()
 
   const onMousedown = (e: MouseTouchEvent) => {
-    mouseSet.add((e as MouseEvent).button)
+    if ('button' in e) {
+      mouseSet.add(e.button)
+    }
     if (props.disabled) return
     setIsMousedown(true)
     setSelected(true)
-
+    e.stopPropagation()
     let { clientX: downX, clientY: downY } = getXY(e)
     const { left, top } = currentDragData
     let minX = 0,
@@ -148,7 +145,7 @@ export function useDrager(
         const isCollision = checkDragerCollision()
         if (isCollision) {
           !props.size && setDragData((prev) => ({ ...prev, top, left }))
-          // triggerEvent('drag-end', { ...currentDragData, top, left })
+          triggerEvent('drag-end', { ...currentDragData, top, left })
         }
       }
       mouseSet.clear()

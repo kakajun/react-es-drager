@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
+import React, { useState, useRef, useMemo, useCallback } from 'react'
 import {
   formatData,
   withUnit,
@@ -301,10 +301,8 @@ const Drager: React.FC<DragerProps> = (props) => {
       ].join(' ')}
       style={dragStyle}
       onClick={(e) => e.stopPropagation()}
-      onMouseDown={(e) => {
-        onMousedown(e)
-        e.stopPropagation()
-      }}
+      onMouseDown={onMousedown}
+      onTouchStart={onMousedown}
     >
       {defaultSlot.map((child, index) => {
         return <React.Fragment key={index}>{child}</React.Fragment>

@@ -1,6 +1,5 @@
 import { DragData } from './drager'
-
-export type MouseTouchEvent = MouseEvent | TouchEvent
+export type MouseTouchEvent = React.MouseEvent | React.TouchEvent
 /**
  * 统一处理拖拽事件
  * @param onMousemove 鼠标移动处理函数
@@ -11,28 +10,28 @@ export function setupMove(
 ) {
   const onMouseup = (_e: MouseTouchEvent) => {
     onMouseupCb && onMouseupCb(_e)
-    document.removeEventListener('mousemove', onMousemove)
-    document.removeEventListener('mouseup', onMouseup)
-    document.removeEventListener('mouseleave', onMouseup)
+    document.removeEventListener('mousemove', onMousemove as any)
+    document.removeEventListener('mouseup', onMouseup as any)
+    document.removeEventListener('mouseleave', onMouseup as any)
 
     // for mobile
-    document.removeEventListener('touchmove', onMousemove)
-    document.removeEventListener('touchend', onMouseup)
+    document.removeEventListener('touchmove', onMousemove as any)
+    document.removeEventListener('touchend', onMouseup as any)
   }
-  document.addEventListener('mousemove', onMousemove)
-  document.addEventListener('mouseup', onMouseup)
-  document.addEventListener('mouseleave', onMouseup)
+  document.addEventListener('mousemove', onMousemove as any)
+  document.addEventListener('mouseup', onMouseup as any)
+  document.addEventListener('mouseleave', onMouseup as any)
 
   // for mobile
-  document.addEventListener('touchmove', onMousemove)
-  document.addEventListener('touchend', onMouseup)
+  document.addEventListener('touchmove', onMousemove as any)
+  document.addEventListener('touchend', onMouseup as any)
 }
 
 export function getXY(e: MouseTouchEvent) {
   let clientX = 0,
     clientY = 0
   if (isTouchEvent(e)) {
-    const touch = e.targetTouches[0]
+    const touch = e.targetTouches[0] || e.changedTouches[0]
     clientX = touch.pageX
     clientY = touch.pageY
   } else {
@@ -43,7 +42,7 @@ export function getXY(e: MouseTouchEvent) {
   return { clientX, clientY }
 }
 
-function isTouchEvent(val: unknown): val is TouchEvent {
+function isTouchEvent(val: unknown): val is React.TouchEvent {
   const typeStr = Object.prototype.toString.call(val)
   return typeStr.substring(8, typeStr.length - 1) === 'TouchEvent'
 }

@@ -1,5 +1,5 @@
 import React, { useRef } from 'react'
-import { getXY, MouseTouchEvent, setupMove } from './utils'
+import { getXY, setupMove, MouseTouchEvent } from './utils'
 import { DragData } from './drager.ts'
 import './rotate.less'
 
@@ -22,16 +22,12 @@ const Rotate: React.FC<RotateProps> = ({
 }) => {
   const rotateRef = useRef<HTMLDivElement>(null)
 
-  const onRotateMousedown = (
-    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
-  ) => {
-    const event = e.nativeEvent as MouseEvent | TouchEvent
+  const onRotateMousedown = (e: MouseTouchEvent) => {
     if (!element) {
       console.warn('[es-drager] rotate component needs drag element property')
       return
     }
-
-    event.stopPropagation()
+    e.stopPropagation()
     const { width, height, left, top } = element.getBoundingClientRect()
     const centerX = left + width / 2
     const centerY = top + height / 2
