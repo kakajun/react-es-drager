@@ -180,6 +180,8 @@ export function useDrager(
   }, [props.size, currentDragData])
 
   const getBoundary = () => {
+ 
+
     let minX = 0,
       minY = 0
     const { left, top, height, width, angle } = currentDragData

@@ -373,3 +373,33 @@ export const getBoundingClientRectByScale = (el: HTMLElement | Element, scaleRat
     height: curRect.height / scaleRatio
   } as DOMRect
 }
+
+// 计算旋转矩阵，围绕元素中心旋转
+const rotateMatrix = (x: number, y: number, centerX: number, centerY: number, angle: number) => {
+  const radian = (angle * Math.PI) / 180
+  const translatedX = x - centerX
+  const translatedY = y - centerY
+  return [
+    translatedX * Math.cos(radian) - translatedY * Math.sin(radian) + centerX,
+    translatedX * Math.sin(radian) + translatedY * Math.cos(radian) + centerY
+  ]
+}
+
+// 获取旋转后的边界
+export const getRotatedBounds = (d: DragData, angle: number) => {
+  const centerX = d.left + d.width / 2
+  const centerY = d.top + d.height / 2
+  const corners = [
+    rotateMatrix(d.left, d.top, centerX, centerY, angle),
+    rotateMatrix(d.left + d.width, d.top, centerX, centerY, angle),
+    rotateMatrix(d.left, d.top + d.height, centerX, centerY, angle),
+    rotateMatrix(d.left + d.width, d.top + d.height, centerX, centerY, angle)
+  ]
+
+  const rotatedMinX = Math.min(...corners.map((corner) => corner[0]))
+  const rotatedMaxX = Math.max(...corners.map((corner) => corner[0]))
+  const rotatedMinY = Math.min(...corners.map((corner) => corner[1]))
+  const rotatedMaxY = Math.max(...corners.map((corner) => corner[1]))
+
+  return { rotatedMinX, rotatedMaxX, rotatedMinY, rotatedMaxY }
+}

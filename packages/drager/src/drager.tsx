@@ -226,14 +226,15 @@ const Drager: React.FC<DragerProps> = (props) => {
       d.top = minY
       d.height = currentDragData.height
     }
-
     if (isMaxLeft || isMaxTop) {
       if (isMaxLeft) {
         d.left = currentDragData.left
+        d.width = parentWidth - d.left
       }
 
       if (isMaxTop) {
         d.top = currentDragData.top
+        d.height = parentHeight - d.top
       }
 
       if (!isMaxTop) {
@@ -260,7 +261,6 @@ const Drager: React.FC<DragerProps> = (props) => {
       d.height = currentDragData.height
       d.top = currentDragData.top
     }
-
     return d
   }
 
@@ -329,6 +329,8 @@ const Drager: React.FC<DragerProps> = (props) => {
           dragData={currentDragData}
           element={dragRef.current}
           onRotate={setRotate}
+          boundary={boundary}
+          getBoundary={getBoundary}
           onRotateStart={(data) => triggerEvent('rotate-start', data)}
           onRotateEnd={handleRotateEnd}
         >
