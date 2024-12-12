@@ -10,7 +10,8 @@ import {
   calcGrid,
   setupMove,
   getXY,
-  MouseTouchEvent
+  MouseTouchEvent,
+  getRotatedBounds
 } from './utils'
 import Rotate from './rotate'
 import { DragData, DragerProps } from './drager.ts'
@@ -216,15 +217,18 @@ const Drager: React.FC<DragerProps> = (props) => {
     const isMaxLeft = d.left + d.width > parentWidth
     const isMinTop = d.top < minY
     const isMaxTop = d.top + d.height > parentHeight
+    const { rotatedMinX, rotatedMaxX, rotatedMinY, rotatedMaxY } = getRotatedBounds(d, d.angle)
 
     if (isMinLeft) {
+      const newWidth = d.width - (minX - rotatedMinX)
       d.left = minX
-      d.width = currentDragData.width
+      d.width = Math.max(newWidth, minWidth) // 确保宽度不低于最小宽度
     }
 
     if (isMinTop) {
+      const newHeight = d.height - (minY - rotatedMinY)
       d.top = minY
-      d.height = currentDragData.height
+      d.height = Math.max(newHeight, minHeight) // 确保高度不低于最小高度
     }
     if (isMaxLeft || isMaxTop) {
       if (isMaxLeft) {
