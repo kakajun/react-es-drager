@@ -113,7 +113,7 @@ const MyComponent = () => {
         </Button>
       </div>
       <div
-        ref={editorRef}
+        ref={editorRef as React.Ref<HTMLDivElement>}
         className="es-editor"
         onMouseDown={onEditorMouseDown}
         onClick={(e) => e.stopPropagation()}
