@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { Row, Tooltip, Button, Divider, Select, Input, InputNumber, Col } from 'antd'
 import ColorPicker from '../components/ColorPicker'
-import InputNumberComponent from '../components/InputNumber'
 import SvgIcon from '../components/svgIcon/SvgIcon'
 import { useEditorStore } from '@es-drager/editor/src/store'
 import './TextStyle.less'
@@ -10,7 +9,6 @@ const FontStyleSettings = () => {
 
   const [titleValue, setTitleValue] = useState('')
   const [textStyle, setTextStyle] = useState({})
-  const [fontStyleList, setFontStyleList] = useState([])
 
   const titles = useMemo(
     () => [
@@ -55,7 +53,7 @@ const FontStyleSettings = () => {
         selected: getValue(item.key) === item.value
       }))
     )
-  }, [defaultList])
+  }, [defaultList, getValue])
 
   const fontFamilyList = useMemo(
     () => [
@@ -76,7 +74,6 @@ const FontStyleSettings = () => {
   useEffect(() => {
     setTitleValue(store.current.style?.fontWeight === 'bold' ? 'normal' : '')
     setTextStyle(store.current.style || {})
-    setFontStyleList(fontStyleListFormat)
   }, [store.current.style, fontStyleListFormat])
 
   const handleFontStyleClick = (item) => {

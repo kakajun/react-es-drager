@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import Drager, { type DragData } from 'react-es-drager'
 
 const MyComponent = () => {

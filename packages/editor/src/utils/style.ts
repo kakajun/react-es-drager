@@ -27,7 +27,7 @@ type AnyObject = { [key in string]: any }
 // 实现 pick 函数
 export function pick(obj: AnyObject, keys: string[]) {
   return keys.reduce((acc, key) => {
-    if (obj.hasOwnProperty(key)) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
       acc[key] = obj[key]
     }
     return acc

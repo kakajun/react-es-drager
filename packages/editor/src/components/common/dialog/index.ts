@@ -1,7 +1,7 @@
 import { useEditorContainer } from '../../../hooks'
 import React, { useEffect, useRef, useState } from 'react'
 import Dialog from './Dialog'
-export function $dialog(option: Object) {
+export function $dialog(option: object) {
   const globalContainer = useEditorContainer().container
   const dialogRef = useRef(null)
 

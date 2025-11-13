@@ -55,8 +55,8 @@ const EsEditorArea: React.ForwardRefRenderFunction<EsEditorAreaRef, EsEditorArea
 
       let left = offsetX
       let top = offsetY
-      let width = Math.abs(disX)
-      let height = Math.abs(disY)
+      const width = Math.abs(disX)
+      const height = Math.abs(disY)
 
       if (width > 2 || height > 2) {
         setShow(true)

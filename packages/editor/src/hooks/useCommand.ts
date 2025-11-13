@@ -1,6 +1,6 @@
 import { EditorState } from '../types'
 import { deepCopy, events } from '../utils'
-import React, { useState, useEffect, useRef } from 'react'
+import  { useEffect } from 'react'
 
 type QueueType = {
   redo?: Function
@@ -56,7 +56,7 @@ export function useCommand(store: EditorState) {
     execute() {
       return {
         redo() {
-          let item = state.queue[state.current + 1]
+          const item = state.queue[state.current + 1]
           if (item) {
             item.redo && item.redo()
             state.current++
@@ -73,7 +73,7 @@ export function useCommand(store: EditorState) {
       return {
         redo() {
           if (state.current === -1) return
-          let item = state.queue[state.current]
+          const item = state.queue[state.current]
           if (item) {
             item.undo && item.undo()
             state.current--
@@ -160,7 +160,7 @@ export function useCommand(store: EditorState) {
     return () => {
       state.destoryArray.forEach((fn) => fn && fn())
     }
-  }, [])
+  }, [keyboardEvent])
 
   return state
 }

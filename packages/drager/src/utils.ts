@@ -86,7 +86,7 @@ export const getCursor = (rotateAngle: number, d: string) => {
 }
 
 export const getDotList = (angle: number = 0, resizeList?: string[]) => {
-  let dots = []
+  const dots = []
   for (let index = 0; index < cursorDirectionArray.length; index++) {
     const key = cursorDirectionArray[index]
 
@@ -362,7 +362,7 @@ export function checkCollision(element1: Element, element2: Element, scaleRatio:
  * 获取缩放后得Rect
  */
 export const getBoundingClientRectByScale = (el: HTMLElement | Element, scaleRatio: number) => {
-  var curRect = el.getBoundingClientRect()
+  const curRect = el.getBoundingClientRect()
   return {
     ...curRect,
     left: curRect.left / scaleRatio,

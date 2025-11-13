@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef } from 'react'
 import Drager from 'react-es-drager'
 import Chart from '@/components/Chart'
 
@@ -7,7 +7,7 @@ type ChartType = {
 }
 
 function DragerComponent() {
-  const [defaultSize, setDefaultSize] = useState({
+  const [defaultSize] = useState({
     width: 300,
     height: 200,
     left: 100,

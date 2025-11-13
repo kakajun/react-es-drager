@@ -12,8 +12,9 @@ import { useTranslation } from 'react-i18next'
 import './home.less'
 const examplesSource = import.meta.glob('../examples/*.tsx', {
   eager: true,
-  as: 'raw'
-})
+  query: '?raw',
+  import: 'default'
+}) as Record<string, string>
 
 type MenuItemType = {
   key: string

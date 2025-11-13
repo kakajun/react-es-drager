@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { Form, Row, Col, InputNumber, Tooltip, Button, Divider, Checkbox, Flex } from 'antd'
 import { useEditorStore } from '@es-drager/editor/src/store'
-import InputNumberComponent from '../components/InputNumber'
 import SvgIcon from '../components/svgIcon/SvgIcon'
 import './Position.less'
 
@@ -44,6 +43,7 @@ const PositionForm = () => {
   }
 
   const handleOptions1Change = (val: string[]) => {
+    setOptions1Value(val)
     const keys = options1.map((item) => item.value)
     keys.forEach((key) => {
       if (val.includes(key)) {

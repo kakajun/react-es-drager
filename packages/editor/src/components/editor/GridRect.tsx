@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import MColor from 'color'
-import { useId } from '../../utils/index'
+import { genId } from '../../utils/index'
 import { useEditorStore } from '../../store'
 import './GridRect.less'
 
@@ -15,8 +15,8 @@ interface GridRectProps {
 const GridRect: React.FC<GridRectProps> = (props) => {
   const { grid = 10, gridCount = 5, showSmall = true, borderColor } = props
   const { theme } = useEditorStore()
-  const smallGridId = useMemo(() => props.smallGridId || useId('smallGrid'), [props.smallGridId])
-  const gridId = useMemo(() => props.gridId || useId('grid'), [props.gridId])
+  const smallGridId = useMemo(() => props.smallGridId || genId('smallGrid'), [props.smallGridId])
+  const gridId = useMemo(() => props.gridId || genId('grid'), [props.gridId])
 
   const bigGrid = useMemo(() => grid * gridCount, [grid, gridCount])
 

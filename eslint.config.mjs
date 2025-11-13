@@ -3,6 +3,9 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import js from '@eslint/js'
 import { FlatCompat } from '@eslint/eslintrc'
+import tsParser from '@typescript-eslint/parser'
+import reactRefresh from 'eslint-plugin-react-refresh'
+import reactHooks from 'eslint-plugin-react-hooks'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -16,22 +19,17 @@ export default [
   {
     ignores: ['**/node_modules', '**/lib']
   },
-  ...compat.extends(
-    'eslint:recommended',
-    'plugin:@typescript-eslint/recommended',
-    'plugin:react-hooks/recommended'
-  ),
+  ...compat.extends('eslint:recommended', 'plugin:@typescript-eslint/recommended'),
   {
-    plugins: ['react-refresh'],
-    parser: '@typescript-eslint/parser',
+    plugins: { 'react-refresh': reactRefresh, 'react-hooks': reactHooks },
     languageOptions: {
+      parser: tsParser,
       globals: {
         ...globals.browser,
         ...globals.node
       },
-      ecmaVersion: 5,
+      ecmaVersion: 2020,
       parserOptions: {
-        parser: '@typescript-eslint/parser',
         project: './tsconfig.eslint.json'
       }
     },
@@ -59,6 +57,8 @@ export default [
       ],
 
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
       'no-unused-vars': 'off',
       'no-redeclare': 'off',
       'no-dupe-class-members': 'off',

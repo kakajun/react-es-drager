@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useEffect } from 'react'
 import { $contextmenu, ActionType, MenuItem } from '../components/common'
 import { ComponentType, EditorDataType } from '../types'
-import { cancelGroup, deepCopy, makeGroup, useId } from '../utils'
+import { cancelGroup, deepCopy, makeGroup, genId } from '../utils'
 
 type ActionMethods = {
   [key in ActionType]?: (element: ComponentType, ...args: any[]) => void
@@ -39,7 +39,7 @@ export function useActions(
   const addElement = (element: ComponentType | null) => {
     if (!element) return
     const newElement = deepCopy(element)
-    newElement.id = useId()
+    newElement.id = genId()
     data.elements.push(newElement)
   }
 
@@ -182,7 +182,7 @@ export function useActions(
     return () => {
       window.removeEventListener('keydown', onKeydown)
     }
-  }, [])
+  }, [onKeydown])
 
   return {
     editorRect,

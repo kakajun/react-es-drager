@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react'
 import Drager, { type DragData } from 'react-es-drager'
 import { EditorDataType, GridRect, Area, useArea } from '@es-drager/editor'
-import { useId, makeGroup, cancelGroup } from '@es-drager/editor/src/utils'
+import { genId, makeGroup, cancelGroup } from '@es-drager/editor/src/utils'
 import { useTranslation } from 'react-i18next'
 import { Button } from 'antd'
 import './Group.less'
@@ -16,7 +16,7 @@ const MyComponent = () => {
     },
     elements: [
       {
-        id: useId(),
+        id: genId(),
         component: 'div',
         text: 'div1',
         width: 100,
@@ -26,7 +26,7 @@ const MyComponent = () => {
         style: { border: '1px solid #3a7afe' }
       },
       {
-        id: useId(),
+        id: genId(),
         component: 'div',
         text: 'div2',
         width: 100,

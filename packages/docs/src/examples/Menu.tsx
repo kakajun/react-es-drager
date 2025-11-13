@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Drager, { DragData } from 'react-es-drager'
 import { ComponentType, EditorDataType, ToolType, GridRect, useActions } from '@es-drager/editor'
-import { useId } from '@es-drager/editor/src/utils'
+import { genId } from '@es-drager/editor/src/utils'
 import { $dialog, $upload } from '@es-drager/editor/src/components/common'
 import { useTranslation } from 'react-i18next'
 
@@ -16,7 +16,7 @@ function App() {
     },
     elements: [
       {
-        id: useId(),
+        id: genId(),
         component: 'div',
         width: 100,
         height: 100,
@@ -26,7 +26,7 @@ function App() {
         style: { backgroundColor: '#fff2cc', border: '2px solid #d6b656' }
       },
       {
-        id: useId(),
+        id: genId(),
         component: 'div',
         width: 100,
         height: 100,
@@ -73,7 +73,7 @@ function App() {
           resultType: 'image',
           onChange(e: string) {
             const newElement: ComponentType = {
-              id: useId(),
+              id: genId(),
               component: 'img',
               props: {
                 src: e,

@@ -99,7 +99,7 @@ export function useDrager(
     setIsMousedown(true)
     setSelected(true)
     e.stopPropagation()
-    let { clientX: downX, clientY: downY } = getXY(e)
+    const { clientX: downX, clientY: downY } = getXY(e)
     const { left, top } = currentDragData
     let minX = 0,
       maxX = 0,

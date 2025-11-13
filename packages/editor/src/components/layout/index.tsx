@@ -5,7 +5,7 @@ import Editor from '../editor/index'
 import Preview from '../common/Preview'
 import { useEditorStore } from '../../store'
 import { useCommand } from '../../hooks/useCommand'
-import { useId } from '../../utils/common'
+import { genId } from '../../utils/common'
 import {
   RedoOutlined,
   UndoOutlined,
@@ -76,7 +76,7 @@ const App = ({ data, theme }) => {
       ...store.data.elements,
       {
         ...currentComponent,
-        id: useId(),
+        id: genId(),
         left: e.clientX - currentComponent.width / 2,
         top: e.clientY - currentComponent.height / 2,
         style: currentComponent.style || {}

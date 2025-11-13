@@ -2,7 +2,7 @@ import { ComponentType } from '../types'
 import { Group as EsGroup } from '../components/index'
 let uid = 1
 
-export function useId(prefix = 'es-drager') {
+export function genId(prefix = 'es-drager') {
   return `${prefix}-${Date.now()}-${uid++}`
 }
 
@@ -101,7 +101,7 @@ export function makeGroup(elements: ComponentType[], editorRect: DOMRect) {
 
   // 组合组件信息
   const groupElement: ComponentType = {
-    id: useId(),
+    id: genId(),
     component: EsGroup,
     group: true,
     selected: true,

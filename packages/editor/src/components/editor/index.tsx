@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react'
 import ESDrager, { DragData } from 'react-es-drager'
-import 'react-es-drager/lib/style.css'
+import 'react-es-drager/lib/index.css'
 import { omit, events, pickStyle } from '../../utils'
 import { EditorDataType, ComponentType } from '../../types'
 import GridRect from './GridRect'
