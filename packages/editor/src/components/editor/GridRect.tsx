@@ -24,7 +24,7 @@ const GridRect: React.FC<GridRectProps> = (props) => {
     if (borderColor) {
       return {
         bigGrid: borderColor,
-        grid: MColor(props.borderColor).darken(0.2).rgb().string()
+        grid: MColor(props.borderColor).lighten(0.3).rgb().string()
       }
     }
     const colors = [
@@ -32,11 +32,11 @@ const GridRect: React.FC<GridRectProps> = (props) => {
       ['#414243', '#363637']
     ]
     const [bigGridColor, gridColor] = colors[theme === 'light' ? 0 : 1]
-    const darkerGrid = MColor(gridColor)
-      .darken(theme === 'light' ? 0.2 : 0.1)
+    const lighterGrid = MColor(gridColor)
+      .lighten(theme === 'light' ? 0.2 : 0.3)
       .rgb()
       .string()
-    return { bigGrid: bigGridColor, grid: darkerGrid }
+    return { bigGrid: bigGridColor, grid: lighterGrid }
   }, [borderColor, theme])
 
   const rectStyle = useMemo(() => ({ '--border-color': color.bigGrid }), [color.bigGrid])

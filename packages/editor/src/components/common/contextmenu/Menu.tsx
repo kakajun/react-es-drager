@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { computePosition, flip, shift, offset } from '@floating-ui/react-dom'
 import type { MenuOption, MenuItem } from './index'
+import './Menu.less'
 
 interface Props {
   option: MenuOption
@@ -60,6 +61,10 @@ const MenuComponent: React.FC<Props> = ({ option }) => {
     state.option.onClick && state.option.onClick(item)
     close()
   }
+
+  useEffect(() => {
+    open(option)
+  }, [option])
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

@@ -114,7 +114,15 @@ function App() {
           <button onClick={item.handler}>{item.label}</button>
         ))}
       </div>
-      <div ref={editorRef} className="es-editor" onContextMenu={(e) => onEditorContextMenu(e)}>
+      <div
+        ref={editorRef}
+        className="es-editor"
+        onContextMenu={(e) => {
+          e.preventDefault()
+          onEditorContextMenu(e)
+        }}
+      >
+        <GridRect />
         {data.current.elements.map((item) => (
           <Drager
             size={{
@@ -148,7 +156,6 @@ function App() {
             })()}
           </Drager>
         ))}
-        <GridRect />
       </div>
     </div>
   )
