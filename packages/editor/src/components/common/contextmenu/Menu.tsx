@@ -1,20 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { computePosition, flip, shift, offset } from '@floating-ui/react-dom'
+import type { MenuOption, MenuItem } from './index'
 
 interface Props {
   option: MenuOption
-}
-
-interface MenuItem {
-  label: string
-  onClick?: (item: MenuItem) => void
-}
-
-interface MenuOption {
-  items?: MenuItem[]
-  clientX?: number
-  clientY?: number
-  onClick?: (item: MenuItem) => void
 }
 
 const MenuComponent: React.FC<Props> = ({ option }) => {

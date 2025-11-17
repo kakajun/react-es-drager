@@ -42,13 +42,7 @@ export default [
       '@typescript-eslint/no-empty-interface': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-empty-object-type': 'off',
-      '@typescript-eslint/no-unused-vars': [
-        'error',
-        {
-          argsIgnorePattern: '^_'
-        }
-      ],
-
+      '@typescript-eslint/no-unused-vars': 'off',
       'no-constant-condition': [
         'error',
         {

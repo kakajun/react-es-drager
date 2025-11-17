@@ -1,17 +1,17 @@
 import { EditorState } from '../types'
 import { deepCopy, events } from '../utils'
-import  { useEffect } from 'react'
+import { useEffect } from 'react'
 
 type QueueType = {
-  redo?: Function
-  undo?: Function
+  redo?: () => void
+  undo?: () => void
 }
 
 type CommandType = {
   name: string
   keyboard?: string
   pushQueue?: boolean
-  init?: Function
+  init?: () => (() => void) | void
   execute: (...args: any[]) => QueueType
 }
 
@@ -36,7 +36,7 @@ export function useCommand(store: EditorState) {
     state.commandArray.push(command)
     state.commands[command.name] = (...args: any[]) => {
       const { redo, undo } = command.execute(...args)
-      redo && redo()
+      if (redo) redo()
 
       if (command.pushQueue) {
         let { queue } = state
@@ -58,7 +58,7 @@ export function useCommand(store: EditorState) {
         redo() {
           const item = state.queue[state.current + 1]
           if (item) {
-            item.redo && item.redo()
+            if (item.redo) item.redo()
             state.current++
           }
         }
@@ -75,7 +75,7 @@ export function useCommand(store: EditorState) {
           if (state.current === -1) return
           const item = state.queue[state.current]
           if (item) {
-            item.undo && item.undo()
+            if (item.undo) item.undo()
             state.current--
           }
         }

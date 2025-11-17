@@ -108,15 +108,13 @@ function App() {
   }
 
   return (
-    <div class="es-container">
-      <div class="es-tools">
+    <div className="es-container">
+      <div className="es-tools">
         {tools.map((item) => (
-          <el-button type="primary" onClick={item.handler}>
-            {item.label}
-          </el-button>
+          <button onClick={item.handler}>{item.label}</button>
         ))}
       </div>
-      <div ref={editorRef} class="es-editor" onContextMenu={(e) => onEditorContextMenu(e)}>
+      <div ref={editorRef} className="es-editor" onContextMenu={(e) => onEditorContextMenu(e)}>
         {data.current.elements.map((item) => (
           <Drager
             size={{
@@ -133,17 +131,21 @@ function App() {
             onClick={() => {}}
             onMouseDown={() => {}}
           >
-            <component
-              is={item.component}
-              {...item.props}
-              style={{
-                ...item.style,
-                width: '100%',
-                height: '100%'
-              }}
-            >
-              {item.text}
-            </component>
+            {(() => {
+              const Comp: any = item.component
+              return (
+                <Comp
+                  {...item.props}
+                  style={{
+                    ...item.style,
+                    width: '100%',
+                    height: '100%'
+                  }}
+                >
+                  {item.text}
+                </Comp>
+              )
+            })()}
           </Drager>
         ))}
         <GridRect />

@@ -7,7 +7,7 @@ import { pickStyle } from '../../utils'
 import { useEditorStore } from '../../store'
 
 interface ElementProps {
-  component: React.ComponentType<any>
+  component: any
   props: any
   style: any
   text?: string
@@ -19,7 +19,7 @@ const Element: React.FC<ElementProps> = ({ component: Component, props, style, t
       {...props}
       style={{ ...style, ...pickStyle(props.style, false), ...pickStyle(style) }}
     >
-      {text && <TextEditor text={text} style={pickStyle(style)} />}
+      {text && <TextEditor text={text} editable={false} />}
     </Component>
   )
 }

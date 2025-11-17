@@ -10,7 +10,7 @@ import Markline from './examples/Markline'
 import Slot from './examples/Slot'
 import Chart from './examples/Chart'
 import Snap from './examples/Snap'
-// import Menu from './examples/Menu'
+import Menu from './examples/Menu'
 
 export const menuRoutes = [
   {
@@ -75,14 +75,14 @@ export const menuRoutes = [
     meta: {
       title: 'snap'
     }
+  },
+  {
+    path: 'menu',
+    element: <Menu></Menu>,
+    meta: {
+      title: 'menu'
+    }
   }
-  // {
-  //   path: 'menu',
-  //   element: <Menu></Menu>,
-  //   meta: {
-  //     title: 'menu'
-  //   }
-  // },
 ]
 
 export const router = createHashRouter([

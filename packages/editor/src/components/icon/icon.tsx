@@ -25,7 +25,10 @@ const ElIconWrapper: React.FC<Props> = ({ element, icon }) => {
 
   return (
     <i className="es-icon" style={getStyle()}>
-      <component is={icon} />
+      {(() => {
+        const IconComp: any = icon
+        return <IconComp />
+      })()}
     </i>
   )
 }

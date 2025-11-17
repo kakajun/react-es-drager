@@ -154,20 +154,25 @@ const EsEditor: React.FC<{
           onMouseDown={(e) => e.stopPropagation()}
           onClick={(e) => e.stopPropagation()}
         >
-          <component
-            is={item.component}
-            element={item}
-            {...item.props}
-            style={{
-              ...pickStyle(item.style, false),
-              width: '100%',
-              height: '100%'
-            }}
-          >
-            {item.text && (
-              <TextEditor editable={item.editable} text={item.text} style={pickStyle(item.style)} />
-            )}
-          </component>
+          {(() => {
+            const Comp: any = item.component
+            return (
+              <Comp
+                id={item.id}
+                element={item}
+                {...item.props}
+                style={{
+                  ...pickStyle(item.style, false),
+                  width: '100%',
+                  height: '100%'
+                }}
+              >
+                {item.text && (
+                  <TextEditor editable={item.editable} text={item.text} />
+                )}
+              </Comp>
+            )
+          })()}
         </ESDrager>
       ))}
 

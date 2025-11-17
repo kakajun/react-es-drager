@@ -157,7 +157,9 @@ export function useActions(
         if (action === 'paste') {
           actions.paste!(currentMenudownElement!, clientX, clientY)
         } else {
-          actions[action] && actions[action]!(currentMenudownElement!)
+          if (actions[action]) {
+            actions[action]!(currentMenudownElement!)
+          }
         }
       }
     })
@@ -180,7 +182,7 @@ export function useActions(
   useEffect(() => {
     window.addEventListener('keydown', onKeydown)
     return () => {
-      window.removeEventListener('keydown', onKeydown)
+      window.removeEventListener('keydown', onKeydown as unknown as EventListener)
     }
   }, [onKeydown])
 
